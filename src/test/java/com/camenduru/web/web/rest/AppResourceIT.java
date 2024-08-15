@@ -412,12 +412,7 @@ class AppResourceIT {
         App partialUpdatedApp = new App();
         partialUpdatedApp.setId(app.getId());
 
-        partialUpdatedApp
-            .type(UPDATED_TYPE)
-            .schema(UPDATED_SCHEMA)
-            .title(UPDATED_TITLE)
-            .isActive(UPDATED_IS_ACTIVE)
-            .isFree(UPDATED_IS_FREE);
+        partialUpdatedApp.type(UPDATED_TYPE).title(UPDATED_TITLE).isDefault(UPDATED_IS_DEFAULT).isFree(UPDATED_IS_FREE);
 
         restAppMockMvc
             .perform(

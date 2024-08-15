@@ -555,11 +555,13 @@ class JobResourceIT {
         partialUpdatedJob.setId(job.getId());
 
         partialUpdatedJob
+            .login(UPDATED_LOGIN)
+            .date(UPDATED_DATE)
             .status(UPDATED_STATUS)
             .type(UPDATED_TYPE)
-            .amount(UPDATED_AMOUNT)
             .notifyUri(UPDATED_NOTIFY_URI)
-            .source(UPDATED_SOURCE)
+            .discordId(UPDATED_DISCORD_ID)
+            .discordChannel(UPDATED_DISCORD_CHANNEL)
             .result(UPDATED_RESULT);
 
         restJobMockMvc

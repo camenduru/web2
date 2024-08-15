@@ -394,7 +394,7 @@ class RedeemResourceIT {
         Redeem partialUpdatedRedeem = new Redeem();
         partialUpdatedRedeem.setId(redeem.getId());
 
-        partialUpdatedRedeem.date(UPDATED_DATE).status(UPDATED_STATUS).type(UPDATED_TYPE).code(UPDATED_CODE);
+        partialUpdatedRedeem.login(UPDATED_LOGIN).status(UPDATED_STATUS).type(UPDATED_TYPE).amount(UPDATED_AMOUNT).code(UPDATED_CODE);
 
         restRedeemMockMvc
             .perform(
