@@ -1,0 +1,80 @@
+enum JobStatus {
+    WAITING,
+    WORKING,
+    DONE,
+    FAILED,
+    CANCELED,
+    EXPIRED
+}
+
+enum JobSource {
+    WEB,
+    IOS,
+    ANDROID,
+    DISCORD
+}
+
+enum Membership {
+    FREE,
+    PAID
+}
+
+enum RedeemStatus {
+    WAITING,
+    USED,
+    FAILED,
+    CANCELED,
+    EXPIRED
+}
+
+entity Setting {
+    login String required
+    total String required
+    membership Membership required
+    notifyUri String required
+    notifyToken String required
+    discordUsername String required
+    discordId String required
+    discordChannel String required
+    discordToken String required
+}
+
+entity App {
+    type String required
+    amount String required
+    schema String required
+    model String required
+    title String required
+    isDefault Boolean required
+    isActive Boolean required
+    isFree Boolean required
+}
+
+entity Job {
+    login String required
+    date Instant required
+    status JobStatus required
+    type String required
+    command String required
+    amount String required
+    notifyUri String required
+    notifyToken String required
+    discordUsername String required
+    discordId String required
+    discordChannel String required
+    discordToken String required
+    source JobSource required
+    result String required
+}
+
+entity Redeem {
+    login String required
+    date Instant required
+    status RedeemStatus required
+    type String required
+    author String required
+    amount String required
+    code String required
+}
+
+paginate all with pagination

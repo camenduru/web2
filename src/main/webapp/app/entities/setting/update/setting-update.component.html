@@ -1,0 +1,181 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2 id="jhi-setting-heading" data-cy="SettingCreateUpdateHeading" jhiTranslate="web2App.setting.home.createOrEditLabel">
+        Create or edit a Setting
+      </h2>
+
+      <div>
+        <jhi-alert-error></jhi-alert-error>
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" for="field_id" jhiTranslate="web2App.setting.id">ID</label>
+            <input type="text" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        <div class="mb-3">
+          <label class="form-label" for="field_login" jhiTranslate="web2App.setting.login">Login</label>
+          <input type="text" class="form-control" name="login" id="field_login" data-cy="login" formControlName="login" />
+          @if (editForm.get('login')!.invalid && (editForm.get('login')!.dirty || editForm.get('login')!.touched)) {
+            <div>
+              @if (editForm.get('login')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_total" jhiTranslate="web2App.setting.total">Total</label>
+          <input type="text" class="form-control" name="total" id="field_total" data-cy="total" formControlName="total" />
+          @if (editForm.get('total')!.invalid && (editForm.get('total')!.dirty || editForm.get('total')!.touched)) {
+            <div>
+              @if (editForm.get('total')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_membership" jhiTranslate="web2App.setting.membership">Membership</label>
+          <select class="form-control" name="membership" formControlName="membership" id="field_membership" data-cy="membership">
+            <option [ngValue]="null">{{ 'web2App.Membership.null' | translate }}</option>
+            @for (membership of membershipValues; track $index) {
+              <option [value]="membership">{{ 'web2App.Membership.' + membership | translate }}</option>
+            }
+          </select>
+          @if (editForm.get('membership')!.invalid && (editForm.get('membership')!.dirty || editForm.get('membership')!.touched)) {
+            <div>
+              @if (editForm.get('membership')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_notifyUri" jhiTranslate="web2App.setting.notifyUri">Notify Uri</label>
+          <input type="text" class="form-control" name="notifyUri" id="field_notifyUri" data-cy="notifyUri" formControlName="notifyUri" />
+          @if (editForm.get('notifyUri')!.invalid && (editForm.get('notifyUri')!.dirty || editForm.get('notifyUri')!.touched)) {
+            <div>
+              @if (editForm.get('notifyUri')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_notifyToken" jhiTranslate="web2App.setting.notifyToken">Notify Token</label>
+          <input
+            type="text"
+            class="form-control"
+            name="notifyToken"
+            id="field_notifyToken"
+            data-cy="notifyToken"
+            formControlName="notifyToken"
+          />
+          @if (editForm.get('notifyToken')!.invalid && (editForm.get('notifyToken')!.dirty || editForm.get('notifyToken')!.touched)) {
+            <div>
+              @if (editForm.get('notifyToken')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_discordUsername" jhiTranslate="web2App.setting.discordUsername">Discord Username</label>
+          <input
+            type="text"
+            class="form-control"
+            name="discordUsername"
+            id="field_discordUsername"
+            data-cy="discordUsername"
+            formControlName="discordUsername"
+          />
+          @if (
+            editForm.get('discordUsername')!.invalid && (editForm.get('discordUsername')!.dirty || editForm.get('discordUsername')!.touched)
+          ) {
+            <div>
+              @if (editForm.get('discordUsername')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_discordId" jhiTranslate="web2App.setting.discordId">Discord Id</label>
+          <input type="text" class="form-control" name="discordId" id="field_discordId" data-cy="discordId" formControlName="discordId" />
+          @if (editForm.get('discordId')!.invalid && (editForm.get('discordId')!.dirty || editForm.get('discordId')!.touched)) {
+            <div>
+              @if (editForm.get('discordId')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_discordChannel" jhiTranslate="web2App.setting.discordChannel">Discord Channel</label>
+          <input
+            type="text"
+            class="form-control"
+            name="discordChannel"
+            id="field_discordChannel"
+            data-cy="discordChannel"
+            formControlName="discordChannel"
+          />
+          @if (
+            editForm.get('discordChannel')!.invalid && (editForm.get('discordChannel')!.dirty || editForm.get('discordChannel')!.touched)
+          ) {
+            <div>
+              @if (editForm.get('discordChannel')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_discordToken" jhiTranslate="web2App.setting.discordToken">Discord Token</label>
+          <input
+            type="text"
+            class="form-control"
+            name="discordToken"
+            id="field_discordToken"
+            data-cy="discordToken"
+            formControlName="discordToken"
+          />
+          @if (editForm.get('discordToken')!.invalid && (editForm.get('discordToken')!.dirty || editForm.get('discordToken')!.touched)) {
+            <div>
+              @if (editForm.get('discordToken')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+            </div>
+          }
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

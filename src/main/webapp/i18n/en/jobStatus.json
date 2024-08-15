@@ -1,0 +1,13 @@
+{
+  "web2App": {
+    "JobStatus": {
+      "null": "",
+      "WAITING": "WAITING",
+      "WORKING": "WORKING",
+      "DONE": "DONE",
+      "FAILED": "FAILED",
+      "CANCELED": "CANCELED",
+      "EXPIRED": "EXPIRED"
+    }
+  }
+}

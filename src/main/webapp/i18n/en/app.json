@@ -1,0 +1,31 @@
+{
+  "web2App": {
+    "app": {
+      "home": {
+        "title": "Apps",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new App",
+        "createOrEditLabel": "Create or edit a App",
+        "notFound": "No Apps found"
+      },
+      "created": "A new App is created with identifier {{ param }}",
+      "updated": "A App is updated with identifier {{ param }}",
+      "deleted": "A App is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete App {{ id }}?"
+      },
+      "detail": {
+        "title": "App"
+      },
+      "id": "ID",
+      "type": "Type",
+      "amount": "Amount",
+      "schema": "Schema",
+      "model": "Model",
+      "title": "Title",
+      "isDefault": "Is Default",
+      "isActive": "Is Active",
+      "isFree": "Is Free"
+    }
+  }
+}

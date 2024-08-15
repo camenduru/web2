@@ -1,0 +1,62 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (app()) {
+      <div>
+        <h2 data-cy="appDetailsHeading"><span jhiTranslate="web2App.app.detail.title">App</span></h2>
+
+        <hr />
+
+        <jhi-alert-error></jhi-alert-error>
+
+        <jhi-alert></jhi-alert>
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ app()!.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="web2App.app.type">Type</span></dt>
+          <dd>
+            <span>{{ app()!.type }}</span>
+          </dd>
+          <dt><span jhiTranslate="web2App.app.amount">Amount</span></dt>
+          <dd>
+            <span>{{ app()!.amount }}</span>
+          </dd>
+          <dt><span jhiTranslate="web2App.app.schema">Schema</span></dt>
+          <dd>
+            <span>{{ app()!.schema }}</span>
+          </dd>
+          <dt><span jhiTranslate="web2App.app.model">Model</span></dt>
+          <dd>
+            <span>{{ app()!.model }}</span>
+          </dd>
+          <dt><span jhiTranslate="web2App.app.title">Title</span></dt>
+          <dd>
+            <span>{{ app()!.title }}</span>
+          </dd>
+          <dt><span jhiTranslate="web2App.app.isDefault">Is Default</span></dt>
+          <dd>
+            <span>{{ app()!.isDefault }}</span>
+          </dd>
+          <dt><span jhiTranslate="web2App.app.isActive">Is Active</span></dt>
+          <dd>
+            <span>{{ app()!.isActive }}</span>
+          </dd>
+          <dt><span jhiTranslate="web2App.app.isFree">Is Free</span></dt>
+          <dd>
+            <span>{{ app()!.isFree }}</span>
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+        </button>
+
+        <button type="button" [routerLink]="['/app', app()!.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

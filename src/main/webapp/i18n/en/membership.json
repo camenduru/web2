@@ -1,0 +1,9 @@
+{
+  "web2App": {
+    "Membership": {
+      "null": "",
+      "FREE": "FREE",
+      "PAID": "PAID"
+    }
+  }
+}

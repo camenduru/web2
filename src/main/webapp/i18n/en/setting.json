@@ -1,0 +1,32 @@
+{
+  "web2App": {
+    "setting": {
+      "home": {
+        "title": "Settings",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Setting",
+        "createOrEditLabel": "Create or edit a Setting",
+        "notFound": "No Settings found"
+      },
+      "created": "A new Setting is created with identifier {{ param }}",
+      "updated": "A Setting is updated with identifier {{ param }}",
+      "deleted": "A Setting is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Setting {{ id }}?"
+      },
+      "detail": {
+        "title": "Setting"
+      },
+      "id": "ID",
+      "login": "Login",
+      "total": "Total",
+      "membership": "Membership",
+      "notifyUri": "Notify Uri",
+      "notifyToken": "Notify Token",
+      "discordUsername": "Discord Username",
+      "discordId": "Discord Id",
+      "discordChannel": "Discord Channel",
+      "discordToken": "Discord Token"
+    }
+  }
+}

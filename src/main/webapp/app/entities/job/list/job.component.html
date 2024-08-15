@@ -1,0 +1,223 @@
+<div>
+  <h2 id="page-heading" data-cy="JobHeading">
+    <span jhiTranslate="web2App.job.home.title">Jobs</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [animation]="isLoading ? 'spin' : undefined"></fa-icon>
+        <span jhiTranslate="web2App.job.home.refreshListLabel">Refresh list</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-job"
+        [routerLink]="['/job/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span jhiTranslate="web2App.job.home.createLabel">Create a new Job</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  @if (jobs?.length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="web2App.job.home.notFound">No Jobs found</span>
+    </div>
+  }
+
+  @if (jobs && jobs.length > 0) {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [sortState]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">ID</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="login">
+              <div class="d-flex">
+                <span jhiTranslate="web2App.job.login">Login</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="date">
+              <div class="d-flex">
+                <span jhiTranslate="web2App.job.date">Date</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="status">
+              <div class="d-flex">
+                <span jhiTranslate="web2App.job.status">Status</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="type">
+              <div class="d-flex">
+                <span jhiTranslate="web2App.job.type">Type</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="command">
+              <div class="d-flex">
+                <span jhiTranslate="web2App.job.command">Command</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="amount">
+              <div class="d-flex">
+                <span jhiTranslate="web2App.job.amount">Amount</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="notifyUri">
+              <div class="d-flex">
+                <span jhiTranslate="web2App.job.notifyUri">Notify Uri</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="notifyToken">
+              <div class="d-flex">
+                <span jhiTranslate="web2App.job.notifyToken">Notify Token</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="discordUsername">
+              <div class="d-flex">
+                <span jhiTranslate="web2App.job.discordUsername">Discord Username</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="discordId">
+              <div class="d-flex">
+                <span jhiTranslate="web2App.job.discordId">Discord Id</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="discordChannel">
+              <div class="d-flex">
+                <span jhiTranslate="web2App.job.discordChannel">Discord Channel</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="discordToken">
+              <div class="d-flex">
+                <span jhiTranslate="web2App.job.discordToken">Discord Token</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="source">
+              <div class="d-flex">
+                <span jhiTranslate="web2App.job.source">Source</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="result">
+              <div class="d-flex">
+                <span jhiTranslate="web2App.job.result">Result</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (job of jobs; track trackId) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/job', job.id, 'view']">{{ job.id }}</a>
+              </td>
+              <td>{{ job.login }}</td>
+              <td>{{ job.date | formatMediumDatetime }}</td>
+              <td [jhiTranslate]="'web2App.JobStatus.' + (job.status ?? 'null')">
+                {{
+                  {
+                    null: '',
+                    WAITING: 'WAITING',
+                    WORKING: 'WORKING',
+                    DONE: 'DONE',
+                    FAILED: 'FAILED',
+                    CANCELED: 'CANCELED',
+                    EXPIRED: 'EXPIRED',
+                  }[job.status ?? 'null']
+                }}
+              </td>
+              <td>{{ job.type }}</td>
+              <td>{{ job.command }}</td>
+              <td>{{ job.amount }}</td>
+              <td>{{ job.notifyUri }}</td>
+              <td>{{ job.notifyToken }}</td>
+              <td>{{ job.discordUsername }}</td>
+              <td>{{ job.discordId }}</td>
+              <td>{{ job.discordChannel }}</td>
+              <td>{{ job.discordToken }}</td>
+              <td [jhiTranslate]="'web2App.JobSource.' + (job.source ?? 'null')">
+                {{ { null: '', WEB: 'WEB', IOS: 'IOS', ANDROID: 'ANDROID', DISCORD: 'DISCORD' }[job.source ?? 'null'] }}
+              </td>
+              <td>{{ job.result }}</td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a [routerLink]="['/job', job.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+                  </a>
+
+                  <a [routerLink]="['/job', job.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(job)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+  @if (jobs && jobs.length > 0) {
+    <div>
+      <div class="d-flex justify-content-center">
+        <jhi-item-count [params]="{ page: page, totalItems: totalItems, itemsPerPage: itemsPerPage }"></jhi-item-count>
+      </div>
+
+      <div class="d-flex justify-content-center">
+        <ngb-pagination
+          [collectionSize]="totalItems"
+          [page]="page"
+          [pageSize]="itemsPerPage"
+          [maxSize]="5"
+          [rotate]="true"
+          [boundaryLinks]="true"
+          (pageChange)="navigateToPage($event)"
+        ></ngb-pagination>
+      </div>
+    </div>
+  }
+</div>
