@@ -26,6 +26,7 @@ type AppFormGroupContent = {
   isDefault: FormControl<IApp['isDefault']>;
   isActive: FormControl<IApp['isActive']>;
   isFree: FormControl<IApp['isFree']>;
+  cooldown: FormControl<IApp['cooldown']>;
 };
 
 export type AppFormGroup = FormGroup<AppFormGroupContent>;
@@ -67,6 +68,9 @@ export class AppFormService {
         validators: [Validators.required],
       }),
       isFree: new FormControl(appRawValue.isFree, {
+        validators: [Validators.required],
+      }),
+      cooldown: new FormControl(appRawValue.cooldown, {
         validators: [Validators.required],
       }),
     });

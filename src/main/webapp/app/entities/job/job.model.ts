@@ -17,6 +17,7 @@ export interface IJob {
   discordChannel?: string | null;
   discordToken?: string | null;
   source?: keyof typeof JobSource | null;
+  total?: string | null;
   result?: string | null;
 }
 

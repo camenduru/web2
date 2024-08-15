@@ -8,6 +8,7 @@ export interface IApp {
   isDefault?: boolean | null;
   isActive?: boolean | null;
   isFree?: boolean | null;
+  cooldown?: string | null;
 }
 
 export type NewApp = Omit<IApp, 'id'> & { id: null };

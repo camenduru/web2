@@ -79,6 +79,10 @@
               { null: '', WEB: 'WEB', IOS: 'IOS', ANDROID: 'ANDROID', DISCORD: 'DISCORD' }[job()!.source ?? 'null']
             }}</span>
           </dd>
+          <dt><span jhiTranslate="web2App.job.total">Total</span></dt>
+          <dd>
+            <span>{{ job()!.total }}</span>
+          </dd>
           <dt><span jhiTranslate="web2App.job.result">Result</span></dt>
           <dd>
             <span>{{ job()!.result }}</span>

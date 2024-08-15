@@ -44,6 +44,7 @@ type JobFormGroupContent = {
   discordChannel: FormControl<JobFormRawValue['discordChannel']>;
   discordToken: FormControl<JobFormRawValue['discordToken']>;
   source: FormControl<JobFormRawValue['source']>;
+  total: FormControl<JobFormRawValue['total']>;
   result: FormControl<JobFormRawValue['result']>;
 };
 
@@ -101,6 +102,9 @@ export class JobFormService {
         validators: [Validators.required],
       }),
       source: new FormControl(jobRawValue.source, {
+        validators: [Validators.required],
+      }),
+      total: new FormControl(jobRawValue.total, {
         validators: [Validators.required],
       }),
       result: new FormControl(jobRawValue.result, {

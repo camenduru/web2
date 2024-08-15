@@ -16,9 +16,4 @@ export const EntityNavbarItems: NavbarItem[] = [
     route: '/job',
     translationKey: 'global.menu.entities.job',
   },
-  {
-    name: 'Redeem',
-    route: '/redeem',
-    translationKey: 'global.menu.entities.redeem',
-  },
 ];

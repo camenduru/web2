@@ -2,7 +2,7 @@
 # This file will be used at compile time to generate Spring-MVC endpoint stubs using openapi-generator
 openapi: '3.0.1'
 info:
-  title: 'web2'
+  title: 'tost'
   version: 0.0.1
 servers:
   - url: http://localhost:8080/api
@@ -27,7 +27,7 @@ components:
                   it SHOULD provide human-readable documentation for the problem type
                   (e.g., using HTML).
                 default: 'about:blank'
-                example: 'https://www.jhipster.tech/problem/problem-with-message'
+                example: 'http://localhost:8080/problem/constraint-violation'
               title:
                 type: string
                 description: |

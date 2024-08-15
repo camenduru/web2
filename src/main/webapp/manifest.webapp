@@ -1,25 +1,10 @@
 {
-  "name": "Web2",
-  "short_name": "Web2",
+  "name": "Tost AI",
+  "short_name": "Tost AI",
   "icons": [
     {
-      "src": "./content/images/jhipster_family_member_2_head-192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "./content/images/jhipster_family_member_2_head-256.png",
-      "sizes": "256x256",
-      "type": "image/png"
-    },
-    {
-      "src": "./content/images/jhipster_family_member_2_head-384.png",
-      "sizes": "384x384",
-      "type": "image/png"
-    },
-    {
-      "src": "./content/images/jhipster_family_member_2_head-512.png",
-      "sizes": "512x512",
+      "src": "./content/images/logo-jhipster.png",
+      "sizes": "128x128",
       "type": "image/png"
     }
   ],

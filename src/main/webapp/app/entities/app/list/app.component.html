@@ -98,6 +98,13 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
+            <th scope="col" jhiSortBy="cooldown">
+              <div class="d-flex">
+                <span jhiTranslate="web2App.app.cooldown">Cooldown</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
             <th scope="col"></th>
           </tr>
         </thead>
@@ -115,6 +122,7 @@
               <td>{{ app.isDefault }}</td>
               <td>{{ app.isActive }}</td>
               <td>{{ app.isFree }}</td>
+              <td>{{ app.cooldown }}</td>
               <td class="text-end">
                 <div class="btn-group">
                   <a [routerLink]="['/app', app.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">

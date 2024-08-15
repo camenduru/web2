@@ -53,6 +53,9 @@ class AppResourceIT {
     private static final Boolean DEFAULT_IS_FREE = false;
     private static final Boolean UPDATED_IS_FREE = true;
 
+    private static final String DEFAULT_COOLDOWN = "AAAAAAAAAA";
+    private static final String UPDATED_COOLDOWN = "BBBBBBBBBB";
+
     private static final String ENTITY_API_URL = "/api/apps";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
 
@@ -84,7 +87,8 @@ class AppResourceIT {
             .title(DEFAULT_TITLE)
             .isDefault(DEFAULT_IS_DEFAULT)
             .isActive(DEFAULT_IS_ACTIVE)
-            .isFree(DEFAULT_IS_FREE);
+            .isFree(DEFAULT_IS_FREE)
+            .cooldown(DEFAULT_COOLDOWN);
         return app;
     }
 
@@ -103,7 +107,8 @@ class AppResourceIT {
             .title(UPDATED_TITLE)
             .isDefault(UPDATED_IS_DEFAULT)
             .isActive(UPDATED_IS_ACTIVE)
-            .isFree(UPDATED_IS_FREE);
+            .isFree(UPDATED_IS_FREE)
+            .cooldown(UPDATED_COOLDOWN);
         return app;
     }
 
@@ -278,6 +283,21 @@ class AppResourceIT {
     }
 
     @Test
+    void checkCooldownIsRequired() throws Exception {
+        long databaseSizeBeforeTest = getRepositoryCount();
+        // set the field null
+        app.setCooldown(null);
+
+        // Create the App, which fails.
+
+        restAppMockMvc
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(app)))
+            .andExpect(status().isBadRequest());
+
+        assertSameRepositoryCount(databaseSizeBeforeTest);
+    }
+
+    @Test
     void getAllApps() throws Exception {
         // Initialize the database
         insertedApp = appRepository.save(app);
@@ -295,7 +315,8 @@ class AppResourceIT {
             .andExpect(jsonPath("$.[*].title").value(hasItem(DEFAULT_TITLE)))
             .andExpect(jsonPath("$.[*].isDefault").value(hasItem(DEFAULT_IS_DEFAULT.booleanValue())))
             .andExpect(jsonPath("$.[*].isActive").value(hasItem(DEFAULT_IS_ACTIVE.booleanValue())))
-            .andExpect(jsonPath("$.[*].isFree").value(hasItem(DEFAULT_IS_FREE.booleanValue())));
+            .andExpect(jsonPath("$.[*].isFree").value(hasItem(DEFAULT_IS_FREE.booleanValue())))
+            .andExpect(jsonPath("$.[*].cooldown").value(hasItem(DEFAULT_COOLDOWN)));
     }
 
     @Test
@@ -316,7 +337,8 @@ class AppResourceIT {
             .andExpect(jsonPath("$.title").value(DEFAULT_TITLE))
             .andExpect(jsonPath("$.isDefault").value(DEFAULT_IS_DEFAULT.booleanValue()))
             .andExpect(jsonPath("$.isActive").value(DEFAULT_IS_ACTIVE.booleanValue()))
-            .andExpect(jsonPath("$.isFree").value(DEFAULT_IS_FREE.booleanValue()));
+            .andExpect(jsonPath("$.isFree").value(DEFAULT_IS_FREE.booleanValue()))
+            .andExpect(jsonPath("$.cooldown").value(DEFAULT_COOLDOWN));
     }
 
     @Test
@@ -342,7 +364,8 @@ class AppResourceIT {
             .title(UPDATED_TITLE)
             .isDefault(UPDATED_IS_DEFAULT)
             .isActive(UPDATED_IS_ACTIVE)
-            .isFree(UPDATED_IS_FREE);
+            .isFree(UPDATED_IS_FREE)
+            .cooldown(UPDATED_COOLDOWN);
 
         restAppMockMvc
             .perform(
@@ -412,7 +435,13 @@ class AppResourceIT {
         App partialUpdatedApp = new App();
         partialUpdatedApp.setId(app.getId());
 
-        partialUpdatedApp.type(UPDATED_TYPE).title(UPDATED_TITLE).isDefault(UPDATED_IS_DEFAULT).isFree(UPDATED_IS_FREE);
+        partialUpdatedApp
+            .type(UPDATED_TYPE)
+            .schema(UPDATED_SCHEMA)
+            .title(UPDATED_TITLE)
+            .isActive(UPDATED_IS_ACTIVE)
+            .isFree(UPDATED_IS_FREE)
+            .cooldown(UPDATED_COOLDOWN);
 
         restAppMockMvc
             .perform(
@@ -447,7 +476,8 @@ class AppResourceIT {
             .title(UPDATED_TITLE)
             .isDefault(UPDATED_IS_DEFAULT)
             .isActive(UPDATED_IS_ACTIVE)
-            .isFree(UPDATED_IS_FREE);
+            .isFree(UPDATED_IS_FREE)
+            .cooldown(UPDATED_COOLDOWN);
 
         restAppMockMvc
             .perform(

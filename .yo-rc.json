@@ -19,7 +19,7 @@
     "entities": ["Setting", "App", "Job", "Redeem"],
     "feignClient": null,
     "jhipsterVersion": "8.6.0",
-    "jwtSecretKey": "${com_camenduru_web_base64_secret}",
+    "jwtSecretKey": "${com_camenduru_web2_base64_secret}",
     "languages": ["en"],
     "lastLiquibaseTimestamp": 1723739759000,
     "messageBroker": false,

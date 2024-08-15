@@ -1,0 +1,30 @@
+[Unit]
+Description=Web2
+After=syslog.target network.target
+[Service]
+User=root
+Environment="PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/local/cuda/bin"
+Environment="com_camenduru_mongodb_uri=mongodb://127.0.0.1:27017/web2"
+Environment="com_camenduru_web2_default_result=/content/images/generating.jpg"
+Environment="com_camenduru_web2_default_result_suffix=result_suffix"
+Environment="com_camenduru_web2_default_discord_username=discord_username"
+Environment="com_camenduru_web2_default_discord_id=discord_id"
+Environment="com_camenduru_web2_default_discord_channel=discord_channel"
+Environment="com_camenduru_web2_default_discord_token=discord_token"
+Environment="com_camenduru_web2_default_free_total=0"
+Environment="com_camenduru_web2_default_paid_total=0"
+Environment="com_camenduru_web2_default_min_total=0"
+Environment="com_camenduru_web2_mail_host=smtp.gmail.com"
+Environment="com_camenduru_web2_mail_password=password"
+Environment="com_camenduru_web2_mail_port=587"
+Environment="com_camenduru_web2_mail_smtp_ssl_trust=smtp.gmail.com"
+Environment="com_camenduru_web2_mail_username=mail@gmail.com"
+Environment="com_camenduru_web2_mail_from=no-reply@gmail.com"
+Environment="com_camenduru_web2_base_url=base_url"
+Environment="com_camenduru_web2_base64_secret=base64_secret"
+Environment="com_camenduru_web2_token=web2_token"
+WorkingDirectory=/content/com.camenduru/web2
+ExecStart=/bin/bash -c 'java -Dserver.port=4000 -jar target/web2-0.0.1.jar --spring.profiles.active=prod'
+Restart=always
+[Install]
+WantedBy=multi-user.target

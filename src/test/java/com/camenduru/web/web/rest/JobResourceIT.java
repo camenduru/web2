@@ -72,6 +72,9 @@ class JobResourceIT {
     private static final JobSource DEFAULT_SOURCE = JobSource.WEB;
     private static final JobSource UPDATED_SOURCE = JobSource.IOS;
 
+    private static final String DEFAULT_TOTAL = "AAAAAAAAAA";
+    private static final String UPDATED_TOTAL = "BBBBBBBBBB";
+
     private static final String DEFAULT_RESULT = "AAAAAAAAAA";
     private static final String UPDATED_RESULT = "BBBBBBBBBB";
 
@@ -112,6 +115,7 @@ class JobResourceIT {
             .discordChannel(DEFAULT_DISCORD_CHANNEL)
             .discordToken(DEFAULT_DISCORD_TOKEN)
             .source(DEFAULT_SOURCE)
+            .total(DEFAULT_TOTAL)
             .result(DEFAULT_RESULT);
         return job;
     }
@@ -137,6 +141,7 @@ class JobResourceIT {
             .discordChannel(UPDATED_DISCORD_CHANNEL)
             .discordToken(UPDATED_DISCORD_TOKEN)
             .source(UPDATED_SOURCE)
+            .total(UPDATED_TOTAL)
             .result(UPDATED_RESULT);
         return job;
     }
@@ -387,6 +392,21 @@ class JobResourceIT {
     }
 
     @Test
+    void checkTotalIsRequired() throws Exception {
+        long databaseSizeBeforeTest = getRepositoryCount();
+        // set the field null
+        job.setTotal(null);
+
+        // Create the Job, which fails.
+
+        restJobMockMvc
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(job)))
+            .andExpect(status().isBadRequest());
+
+        assertSameRepositoryCount(databaseSizeBeforeTest);
+    }
+
+    @Test
     void checkResultIsRequired() throws Exception {
         long databaseSizeBeforeTest = getRepositoryCount();
         // set the field null
@@ -425,6 +445,7 @@ class JobResourceIT {
             .andExpect(jsonPath("$.[*].discordChannel").value(hasItem(DEFAULT_DISCORD_CHANNEL)))
             .andExpect(jsonPath("$.[*].discordToken").value(hasItem(DEFAULT_DISCORD_TOKEN)))
             .andExpect(jsonPath("$.[*].source").value(hasItem(DEFAULT_SOURCE.toString())))
+            .andExpect(jsonPath("$.[*].total").value(hasItem(DEFAULT_TOTAL)))
             .andExpect(jsonPath("$.[*].result").value(hasItem(DEFAULT_RESULT)));
     }
 
@@ -452,6 +473,7 @@ class JobResourceIT {
             .andExpect(jsonPath("$.discordChannel").value(DEFAULT_DISCORD_CHANNEL))
             .andExpect(jsonPath("$.discordToken").value(DEFAULT_DISCORD_TOKEN))
             .andExpect(jsonPath("$.source").value(DEFAULT_SOURCE.toString()))
+            .andExpect(jsonPath("$.total").value(DEFAULT_TOTAL))
             .andExpect(jsonPath("$.result").value(DEFAULT_RESULT));
     }
 
@@ -484,6 +506,7 @@ class JobResourceIT {
             .discordChannel(UPDATED_DISCORD_CHANNEL)
             .discordToken(UPDATED_DISCORD_TOKEN)
             .source(UPDATED_SOURCE)
+            .total(UPDATED_TOTAL)
             .result(UPDATED_RESULT);
 
         restJobMockMvc
@@ -555,13 +578,12 @@ class JobResourceIT {
         partialUpdatedJob.setId(job.getId());
 
         partialUpdatedJob
-            .login(UPDATED_LOGIN)
-            .date(UPDATED_DATE)
             .status(UPDATED_STATUS)
             .type(UPDATED_TYPE)
+            .amount(UPDATED_AMOUNT)
             .notifyUri(UPDATED_NOTIFY_URI)
-            .discordId(UPDATED_DISCORD_ID)
-            .discordChannel(UPDATED_DISCORD_CHANNEL)
+            .source(UPDATED_SOURCE)
+            .total(UPDATED_TOTAL)
             .result(UPDATED_RESULT);
 
         restJobMockMvc
@@ -603,6 +625,7 @@ class JobResourceIT {
             .discordChannel(UPDATED_DISCORD_CHANNEL)
             .discordToken(UPDATED_DISCORD_TOKEN)
             .source(UPDATED_SOURCE)
+            .total(UPDATED_TOTAL)
             .result(UPDATED_RESULT);
 
         restJobMockMvc

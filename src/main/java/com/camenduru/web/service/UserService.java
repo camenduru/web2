@@ -2,8 +2,11 @@ package com.camenduru.web.service;
 
 import com.camenduru.web.config.Constants;
 import com.camenduru.web.domain.Authority;
+import com.camenduru.web.domain.Setting;
 import com.camenduru.web.domain.User;
+import com.camenduru.web.domain.enumeration.Membership;
 import com.camenduru.web.repository.AuthorityRepository;
+import com.camenduru.web.repository.SettingRepository;
 import com.camenduru.web.repository.UserRepository;
 import com.camenduru.web.security.AuthoritiesConstants;
 import com.camenduru.web.security.SecurityUtils;
@@ -15,6 +18,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -39,16 +43,35 @@ public class UserService {
 
     private final CacheManager cacheManager;
 
+    private final SettingRepository settingRepository;
+
+    @Value("${camenduru.web2.default.discord.username}")
+    private String defaultDiscordUsername;
+
+    @Value("${camenduru.web2.default.discord.id}")
+    private String defaultDiscordId;
+
+    @Value("${camenduru.web2.default.discord.channel}")
+    private String defaultDiscordChannel;
+
+    @Value("${camenduru.web2.default.discord.token}")
+    private String defaultDiscordToken;
+
+    @Value("${camenduru.web2.default.free.total}")
+    private String defaultFreeTotal;
+
     public UserService(
         UserRepository userRepository,
         PasswordEncoder passwordEncoder,
         AuthorityRepository authorityRepository,
-        CacheManager cacheManager
+        CacheManager cacheManager,
+        SettingRepository settingRepository
     ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authorityRepository = authorityRepository;
         this.cacheManager = cacheManager;
+        this.settingRepository = settingRepository;
     }
 
     public Optional<User> activateRegistration(String key) {
@@ -62,6 +85,28 @@ public class UserService {
                 userRepository.save(user);
                 this.clearUserCaches(user);
                 log.debug("Activated user: {}", user);
+                if (user != null && user.getLogin() != null && !user.getLogin().isEmpty()) {
+                    Setting setting = new Setting();
+                    setting.setDiscordUsername(defaultDiscordUsername);
+                    setting.setDiscordId(defaultDiscordId);
+                    setting.setDiscordChannel(defaultDiscordChannel);
+                    setting.discordToken(defaultDiscordToken);
+                    setting.setLogin(user.getLogin());
+                    setting.setTotal(defaultFreeTotal);
+                    setting.setMembership(Membership.FREE);
+                    if (settingRepository.findOneByLogin(user.getLogin()).isEmpty()) {
+                        try {
+                            settingRepository.save(setting);
+                            log.debug("Created Information for Setting: {}", setting);
+                        } catch (Exception e) {
+                            log.debug("Error creating Setting");
+                        }
+                    } else {
+                        log.debug("Setting already exists");
+                    }
+                } else {
+                    log.debug("Invalid newUser or login is empty");
+                }
                 return user;
             });
     }
@@ -94,7 +139,34 @@ public class UserService {
             });
     }
 
+    String[] allowedDomains = {
+        "@camenduru.",
+        "@tost.",
+        "@gmail.",
+        "@hotmail.",
+        "@live.",
+        "@outlook.",
+        "@msn.",
+        "@ymail.",
+        "@yahoo.",
+        "@icloud.",
+        "@me.",
+        "@qq.",
+        "@yandex.",
+        "@mail.",
+    };
+
     public User registerUser(AdminUserDTO userDTO, String password) {
+        boolean isAllowed = false;
+        for (String allowedDomain : allowedDomains) {
+            if (userDTO.getEmail().contains(allowedDomain)) {
+                isAllowed = true;
+                break;
+            }
+        }
+        if (!isAllowed) {
+            throw new EmailServiceNotAllowedException();
+        }
         userRepository
             .findOneByLogin(userDTO.getLogin().toLowerCase())
             .ifPresent(existingUser -> {

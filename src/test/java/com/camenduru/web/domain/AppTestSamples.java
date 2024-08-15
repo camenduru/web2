@@ -5,11 +5,11 @@ import java.util.UUID;
 public class AppTestSamples {
 
     public static App getAppSample1() {
-        return new App().id("id1").type("type1").amount("amount1").schema("schema1").model("model1").title("title1");
+        return new App().id("id1").type("type1").amount("amount1").schema("schema1").model("model1").title("title1").cooldown("cooldown1");
     }
 
     public static App getAppSample2() {
-        return new App().id("id2").type("type2").amount("amount2").schema("schema2").model("model2").title("title2");
+        return new App().id("id2").type("type2").amount("amount2").schema("schema2").model("model2").title("title2").cooldown("cooldown2");
     }
 
     public static App getAppRandomSampleGenerator() {
@@ -19,6 +19,7 @@ public class AppTestSamples {
             .amount(UUID.randomUUID().toString())
             .schema(UUID.randomUUID().toString())
             .model(UUID.randomUUID().toString())
-            .title(UUID.randomUUID().toString());
+            .title(UUID.randomUUID().toString())
+            .cooldown(UUID.randomUUID().toString());
     }
 }

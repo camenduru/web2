@@ -1,15 +1,36 @@
 package com.camenduru.web.web.rest;
 
+import com.camenduru.web.domain.App;
+import com.camenduru.web.domain.Authority;
 import com.camenduru.web.domain.Job;
+import com.camenduru.web.domain.Setting;
+import com.camenduru.web.domain.User;
+import com.camenduru.web.domain.enumeration.JobSource;
+import com.camenduru.web.domain.enumeration.JobStatus;
+import com.camenduru.web.repository.AppRepository;
 import com.camenduru.web.repository.JobRepository;
+import com.camenduru.web.repository.SettingRepository;
+import com.camenduru.web.repository.UserRepository;
+import com.camenduru.web.security.AuthoritiesConstants;
+import com.camenduru.web.security.SecurityUtils;
 import com.camenduru.web.web.rest.errors.BadRequestAlertException;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import javax.imageio.ImageIO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +38,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
@@ -37,10 +60,39 @@ public class JobResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
-    private final JobRepository jobRepository;
+    @Value("${camenduru.web2.default.result}")
+    private String camenduruWebResult;
 
-    public JobResource(JobRepository jobRepository) {
+    @Value("${camenduru.web2.default.result.suffix}")
+    private String camenduruWebResultSuffix;
+
+    @Value("${camenduru.web2.default.free.total}")
+    private String camenduruWebFreeTotal;
+
+    @Value("${camenduru.web2.default.paid.total}")
+    private String camenduruWebPaidTotal;
+
+    @Value("${camenduru.web2.default.min.total}")
+    private String camenduruWebMinTotal;
+
+    private final JobRepository jobRepository;
+    private final SettingRepository settingRepository;
+    private final UserRepository userRepository;
+    private final AppRepository appRepository;
+    private final SimpMessageSendingOperations simpMessageSendingOperations;
+
+    public JobResource(
+        JobRepository jobRepository,
+        SettingRepository settingRepository,
+        UserRepository userRepository,
+        AppRepository appRepository,
+        SimpMessageSendingOperations simpMessageSendingOperations
+    ) {
         this.jobRepository = jobRepository;
+        this.settingRepository = settingRepository;
+        this.userRepository = userRepository;
+        this.appRepository = appRepository;
+        this.simpMessageSendingOperations = simpMessageSendingOperations;
     }
 
     /**
@@ -51,15 +103,116 @@ public class JobResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
+    @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<Job> createJob(@Valid @RequestBody Job job) throws URISyntaxException {
-        log.debug("REST request to save Job : {}", job);
-        if (job.getId() != null) {
-            throw new BadRequestAlertException("A new job cannot already have an ID", ENTITY_NAME, "idexists");
+        Setting setting = settingRepository.findAllByUserIsCurrentUser(SecurityUtils.getCurrentUserLogin().orElseThrow()).orElseThrow();
+        int total = Integer.parseInt(setting.getTotal());
+        App app = appRepository.findOneByType(job.getType()).orElseThrow();
+        int amount = Integer.parseInt(app.getAmount());
+        String destination = String.format("/notify/%s", setting.getLogin());
+        int cooldown = Integer.parseInt(app.getCooldown());
+        Date date = new Date(System.currentTimeMillis() - (cooldown * 1000));
+
+        if (SecurityUtils.hasCurrentUserThisAuthority(AuthoritiesConstants.ADMIN)) {
+            log.debug("REST request to save Job : {}", job);
+            if (job.getId() != null) {
+                throw new BadRequestAlertException("A new job cannot already have an ID", ENTITY_NAME, "idexists");
+            }
+            job = jobRepository.save(job);
+            return ResponseEntity.created(new URI("/api/jobs/" + job.getId()))
+                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, job.getId()))
+                .body(job);
+        } else if (total >= amount) {
+            if (
+                jobRepository.findAllByUserNonExpiredJobsNewerThanTheDate(SecurityUtils.getCurrentUserLogin().orElseThrow(), date).size() >
+                0
+            ) {
+                String result = String.format("Oops! Cooldown is %s seconds.", cooldown);
+                String payload = String.format("%s", result);
+                simpMessageSendingOperations.convertAndSend(destination, payload);
+                // throw new BadRequestAlertException("User in cooldown state.", ENTITY_NAME, "Cooldown State");
+                return ResponseEntity.ok().body(null);
+            } else {
+                log.debug("REST request to save Job : {}", job);
+                if (job.getId() != null) {
+                    throw new BadRequestAlertException("A new job cannot already have an ID", ENTITY_NAME, "idexists");
+                }
+                User user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin().orElseThrow()).orElseThrow();
+                if (
+                    (!user.getAuthorities().contains(new Authority().name("ROLE_PAID")) && app.getIsFree()) ||
+                    user.getAuthorities().contains(new Authority().name("ROLE_PAID"))
+                ) {
+                    int width = 512;
+                    int height = 512;
+                    String jsonString = job.getCommand();
+                    try {
+                        JsonElement jsonElement = JsonParser.parseString(jsonString);
+                        if (jsonElement.isJsonObject()) {
+                            JsonObject jsonObject = jsonElement.getAsJsonObject();
+                            if (jsonObject.has("input_image_check")) {
+                                String input_image = jsonObject.get("input_image_check").getAsString();
+                                URL image_url;
+                                BufferedImage image;
+                                try {
+                                    image_url = new URL(input_image);
+                                    image = ImageIO.read(image_url);
+                                    width = image.getWidth();
+                                    height = image.getHeight();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            } else {
+                                for (String key : jsonObject.keySet()) {
+                                    if (key.startsWith("width")) {
+                                        width = jsonObject.get(key).getAsInt();
+                                    }
+                                    if (key.startsWith("height")) {
+                                        height = jsonObject.get(key).getAsInt();
+                                    }
+                                }
+                            }
+                        }
+                    } catch (JsonSyntaxException e) {
+                        System.err.println("Invalid JSON syntax: " + e.getMessage());
+                    }
+                    job.setResult(camenduruWebResult + width + "x" + height + camenduruWebResultSuffix);
+                    job.setType(app.getType());
+                    job.setAmount(app.getAmount());
+                    job.setDiscordChannel(setting.getDiscordChannel());
+                    job.setDiscordId(setting.getDiscordId());
+                    job.setDiscordUsername(setting.getDiscordUsername());
+                    job.setDiscordToken(setting.getDiscordToken());
+                    job.setDate(Instant.now());
+                    job.setStatus(JobStatus.WAITING);
+                    job.setLogin(SecurityUtils.getCurrentUserLogin().orElseThrow());
+                    job.setSource(JobSource.WEB);
+                    job.setTotal(setting.getTotal());
+                    job = jobRepository.save(job);
+                    return ResponseEntity.created(new URI("/api/jobs/" + job.getId()))
+                        .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, job.getId()))
+                        .body(job);
+                } else {
+                    throw new BadRequestAlertException("User authority and job authority mismatch.", ENTITY_NAME, "Invalid Authority");
+                }
+            }
+        } else {
+            String result = String.format(
+                """
+                    Oops! Your balance is insufficient. If you want a daily wallet balance of
+                    <span class='text-info' style='font-weight: bold;'>%s</span> ($%s/month), please subscribe to
+                    <a class='text-info' style='font-weight: bold;' href='https://github.com/sponsors/camenduru'>GitHub Sponsors</a> or
+                    <a class='text-info' style='font-weight: bold;' href='https://www.patreon.com/camenduru'>Patreon</a>,
+                    or wait for the daily free <span class='text-info' style='font-weight: bold;'>%s</span> Tost wallet balance.
+                """,
+                camenduruWebPaidTotal,
+                camenduruWebMinTotal,
+                camenduruWebFreeTotal
+            );
+            String payload = String.format("%s", result);
+            simpMessageSendingOperations.convertAndSend(destination, payload);
+            // throw new BadRequestAlertException("User balance is insufficient.", ENTITY_NAME, "Insufficient Balance");
+            return ResponseEntity.ok().body(null);
         }
-        job = jobRepository.save(job);
-        return ResponseEntity.created(new URI("/api/jobs/" + job.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, job.getId()))
-            .body(job);
     }
 
     /**
@@ -73,6 +226,7 @@ public class JobResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<Job> updateJob(@PathVariable(value = "id", required = false) final String id, @Valid @RequestBody Job job)
         throws URISyntaxException {
         log.debug("REST request to update Job : {}, {}", id, job);
@@ -103,6 +257,7 @@ public class JobResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<Job> partialUpdateJob(
         @PathVariable(value = "id", required = false) final String id,
         @NotNull @RequestBody Job job
@@ -161,6 +316,9 @@ public class JobResource {
                 if (job.getSource() != null) {
                     existingJob.setSource(job.getSource());
                 }
+                if (job.getTotal() != null) {
+                    existingJob.setTotal(job.getTotal());
+                }
                 if (job.getResult() != null) {
                     existingJob.setResult(job.getResult());
                 }
@@ -179,9 +337,38 @@ public class JobResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of jobs in body.
      */
     @GetMapping("")
+    @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<List<Job>> getAllJobs(@org.springdoc.core.annotations.ParameterObject Pageable pageable) {
         log.debug("REST request to get a page of Jobs");
-        Page<Job> page = jobRepository.findAll(pageable);
+        Page<Job> page;
+        if (SecurityUtils.hasCurrentUserThisAuthority(AuthoritiesConstants.ADMIN)) {
+            page = jobRepository.findAll(pageable);
+        } else {
+            page = jobRepository.findAllByUserIsCurrentUser(pageable, SecurityUtils.getCurrentUserLogin().orElseThrow());
+        }
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
+     * {@code GET  /jobs/type} : get all the jobs by type.
+     *
+     * @param pageable the pagination information.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of jobs in body.
+     */
+    @GetMapping("/type/{type}")
+    @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
+    public ResponseEntity<List<Job>> getAllJobsByType(
+        @PathVariable("type") String type,
+        @org.springdoc.core.annotations.ParameterObject Pageable pageable
+    ) {
+        log.debug("REST request to get a page of Jobs");
+        Page<Job> page;
+        if (SecurityUtils.hasCurrentUserThisAuthority(AuthoritiesConstants.ADMIN)) {
+            page = jobRepository.findAllByType(pageable, type);
+        } else {
+            page = jobRepository.findAllByTypeByUserIsCurrentUser(pageable, SecurityUtils.getCurrentUserLogin().orElseThrow(), type);
+        }
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
@@ -193,6 +380,7 @@ public class JobResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the job, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<Job> getJob(@PathVariable("id") String id) {
         log.debug("REST request to get Job : {}", id);
         Optional<Job> job = jobRepository.findById(id);
@@ -206,6 +394,7 @@ public class JobResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteJob(@PathVariable("id") String id) {
         log.debug("REST request to delete Job : {}", id);
         jobRepository.deleteById(id);

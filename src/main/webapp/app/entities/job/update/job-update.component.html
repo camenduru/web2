@@ -228,6 +228,18 @@
         </div>
 
         <div class="mb-3">
+          <label class="form-label" for="field_total" jhiTranslate="web2App.job.total">Total</label>
+          <input type="text" class="form-control" name="total" id="field_total" data-cy="total" formControlName="total" />
+          @if (editForm.get('total')!.invalid && (editForm.get('total')!.dirty || editForm.get('total')!.touched)) {
+            <div>
+              @if (editForm.get('total')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
           <label class="form-label" for="field_result" jhiTranslate="web2App.job.result">Result</label>
           <input type="text" class="form-control" name="result" id="field_result" data-cy="result" formControlName="result" />
           @if (editForm.get('result')!.invalid && (editForm.get('result')!.dirty || editForm.get('result')!.touched)) {

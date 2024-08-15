@@ -72,6 +72,11 @@
       "fieldValues": "WEB,IOS,ANDROID,DISCORD"
     },
     {
+      "fieldName": "total",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
       "fieldName": "result",
       "fieldType": "String",
       "fieldValidateRules": ["required"]

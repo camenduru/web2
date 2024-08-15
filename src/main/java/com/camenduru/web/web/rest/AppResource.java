@@ -146,6 +146,9 @@ public class AppResource {
                 if (app.getIsFree() != null) {
                     existingApp.setIsFree(app.getIsFree());
                 }
+                if (app.getCooldown() != null) {
+                    existingApp.setCooldown(app.getCooldown());
+                }
 
                 return existingApp;
             })

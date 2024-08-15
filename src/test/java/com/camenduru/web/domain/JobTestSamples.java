@@ -17,6 +17,7 @@ public class JobTestSamples {
             .discordId("discordId1")
             .discordChannel("discordChannel1")
             .discordToken("discordToken1")
+            .total("total1")
             .result("result1");
     }
 
@@ -33,6 +34,7 @@ public class JobTestSamples {
             .discordId("discordId2")
             .discordChannel("discordChannel2")
             .discordToken("discordToken2")
+            .total("total2")
             .result("result2");
     }
 
@@ -49,6 +51,7 @@ public class JobTestSamples {
             .discordId(UUID.randomUUID().toString())
             .discordChannel(UUID.randomUUID().toString())
             .discordToken(UUID.randomUUID().toString())
+            .total(UUID.randomUUID().toString())
             .result(UUID.randomUUID().toString());
     }
 }

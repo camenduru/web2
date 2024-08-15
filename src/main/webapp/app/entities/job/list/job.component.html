@@ -133,6 +133,13 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
+            <th scope="col" jhiSortBy="total">
+              <div class="d-flex">
+                <span jhiTranslate="web2App.job.total">Total</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
             <th scope="col" jhiSortBy="result">
               <div class="d-flex">
                 <span jhiTranslate="web2App.job.result">Result</span>
@@ -176,6 +183,7 @@
               <td [jhiTranslate]="'web2App.JobSource.' + (job.source ?? 'null')">
                 {{ { null: '', WEB: 'WEB', IOS: 'IOS', ANDROID: 'ANDROID', DISCORD: 'DISCORD' }[job.source ?? 'null'] }}
               </td>
+              <td>{{ job.total }}</td>
               <td>{{ job.result }}</td>
               <td class="text-end">
                 <div class="btn-group">

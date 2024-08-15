@@ -74,6 +74,10 @@ public class Job implements Serializable {
     private JobSource source;
 
     @NotNull
+    @Field("total")
+    private String total;
+
+    @NotNull
     @Field("result")
     private String result;
 
@@ -261,6 +265,19 @@ public class Job implements Serializable {
         this.source = source;
     }
 
+    public String getTotal() {
+        return this.total;
+    }
+
+    public Job total(String total) {
+        this.setTotal(total);
+        return this;
+    }
+
+    public void setTotal(String total) {
+        this.total = total;
+    }
+
     public String getResult() {
         return this.result;
     }
@@ -311,6 +328,7 @@ public class Job implements Serializable {
             ", discordChannel='" + getDiscordChannel() + "'" +
             ", discordToken='" + getDiscordToken() + "'" +
             ", source='" + getSource() + "'" +
+            ", total='" + getTotal() + "'" +
             ", result='" + getResult() + "'" +
             "}";
     }

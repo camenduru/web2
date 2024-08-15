@@ -48,6 +48,7 @@ entity App {
     isDefault Boolean required
     isActive Boolean required
     isFree Boolean required
+    cooldown String required
 }
 
 entity Job {
@@ -64,6 +65,7 @@ entity Job {
     discordChannel String required
     discordToken String required
     source JobSource required
+    total String required
     result String required
 }
 

@@ -438,12 +438,7 @@ class SettingResourceIT {
         Setting partialUpdatedSetting = new Setting();
         partialUpdatedSetting.setId(setting.getId());
 
-        partialUpdatedSetting
-            .login(UPDATED_LOGIN)
-            .notifyUri(UPDATED_NOTIFY_URI)
-            .discordId(UPDATED_DISCORD_ID)
-            .discordChannel(UPDATED_DISCORD_CHANNEL)
-            .discordToken(UPDATED_DISCORD_TOKEN);
+        partialUpdatedSetting.discordId(UPDATED_DISCORD_ID);
 
         restSettingMockMvc
             .perform(

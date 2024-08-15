@@ -33,6 +33,7 @@ describe('Job Form Service', () => {
             discordChannel: expect.any(Object),
             discordToken: expect.any(Object),
             source: expect.any(Object),
+            total: expect.any(Object),
             result: expect.any(Object),
           }),
         );
@@ -57,6 +58,7 @@ describe('Job Form Service', () => {
             discordChannel: expect.any(Object),
             discordToken: expect.any(Object),
             source: expect.any(Object),
+            total: expect.any(Object),
             result: expect.any(Object),
           }),
         );

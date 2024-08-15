@@ -60,6 +60,7 @@ public class JobAsserts {
             .satisfies(e -> assertThat(e.getDiscordChannel()).as("check discordChannel").isEqualTo(actual.getDiscordChannel()))
             .satisfies(e -> assertThat(e.getDiscordToken()).as("check discordToken").isEqualTo(actual.getDiscordToken()))
             .satisfies(e -> assertThat(e.getSource()).as("check source").isEqualTo(actual.getSource()))
+            .satisfies(e -> assertThat(e.getTotal()).as("check total").isEqualTo(actual.getTotal()))
             .satisfies(e -> assertThat(e.getResult()).as("check result").isEqualTo(actual.getResult()));
     }
 
