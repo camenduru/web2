@@ -57,14 +57,14 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
-            <th *jhiHasAnyAuthority="'ROLE_ADMIN'" scope="col" jhiSortBy="notifyUri">
+            <th *jhiHasAnyAuthority="['ROLE_ADMIN', 'ROLE_PAID']" scope="col" jhiSortBy="notifyUri">
               <div class="d-flex">
                 <span jhiTranslate="web2App.setting.notifyUri">Notify Uri</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
-            <th *jhiHasAnyAuthority="'ROLE_ADMIN'" scope="col" jhiSortBy="notifyToken">
+            <th *jhiHasAnyAuthority="['ROLE_ADMIN', 'ROLE_PAID']" scope="col" jhiSortBy="notifyToken">
               <div class="d-flex">
                 <span jhiTranslate="web2App.setting.notifyToken">Notify Token</span>
 
@@ -92,7 +92,7 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
-            <th *jhiHasAnyAuthority="'ROLE_ADMIN'" scope="col" jhiSortBy="discordToken">
+            <th *jhiHasAnyAuthority="['ROLE_ADMIN', 'ROLE_PAID']" scope="col" jhiSortBy="discordToken">
               <div class="d-flex">
                 <span jhiTranslate="web2App.setting.discordToken">Discord Token</span>
 
@@ -110,12 +110,12 @@
               <td [jhiTranslate]="'web2App.Membership.' + (setting.membership ?? 'null')">
                 {{ { null: '', FREE: 'FREE', PAID: 'PAID' }[setting.membership ?? 'null'] }}
               </td>
-              <td *jhiHasAnyAuthority="'ROLE_ADMIN'">{{ setting.notifyUri }}</td>
-              <td *jhiHasAnyAuthority="'ROLE_ADMIN'">{{ setting.notifyToken }}</td>
+              <td *jhiHasAnyAuthority="['ROLE_ADMIN', 'ROLE_PAID']">{{ setting.notifyUri }}</td>
+              <td *jhiHasAnyAuthority="['ROLE_ADMIN', 'ROLE_PAID']">{{ setting.notifyToken }}</td>
               <td>{{ setting.discordUsername }}</td>
               <td>{{ setting.discordId }}</td>
               <td>{{ setting.discordChannel }}</td>
-              <td *jhiHasAnyAuthority="'ROLE_ADMIN'">{{ setting.discordToken }}</td>
+              <td *jhiHasAnyAuthority="['ROLE_ADMIN', 'ROLE_PAID']">{{ setting.discordToken }}</td>
               <td class="text-end">
                 <div class="btn-group">
                   <a

@@ -238,9 +238,11 @@ public class AccountResource {
         job.setStatus(JobStatus.WAITING);
         job.setLogin(login);
         job.setSource(JobSource.WEB);
-        job.setDiscordChannel(setting.getDiscordChannel());
-        job.setDiscordId(setting.getDiscordId());
+        job.setNotifyUri(setting.getNotifyUri());
+        job.setNotifyToken(setting.getNotifyToken());
         job.setDiscordUsername(setting.getDiscordUsername());
+        job.setDiscordId(setting.getDiscordId());
+        job.setDiscordChannel(setting.getDiscordChannel());
         job.setDiscordToken(setting.getDiscordToken());
         job.setTotal(setting.getTotal());
         job.setType(app.getType());

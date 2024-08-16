@@ -178,9 +178,11 @@ public class JobResource {
                     job.setResult(camenduruWebResult + width + "x" + height + camenduruWebResultSuffix);
                     job.setType(app.getType());
                     job.setAmount(app.getAmount());
-                    job.setDiscordChannel(setting.getDiscordChannel());
-                    job.setDiscordId(setting.getDiscordId());
+                    job.setNotifyUri(setting.getNotifyUri());
+                    job.setNotifyToken(setting.getNotifyToken());
                     job.setDiscordUsername(setting.getDiscordUsername());
+                    job.setDiscordId(setting.getDiscordId());
+                    job.setDiscordChannel(setting.getDiscordChannel());
                     job.setDiscordToken(setting.getDiscordToken());
                     job.setDate(Instant.now());
                     job.setStatus(JobStatus.WAITING);

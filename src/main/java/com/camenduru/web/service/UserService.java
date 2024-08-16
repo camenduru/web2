@@ -45,6 +45,12 @@ public class UserService {
 
     private final SettingRepository settingRepository;
 
+    @Value("${camenduru.web2.default.notify.uri}")
+    private String defaultNotifyUri;
+
+    @Value("${camenduru.web2.default.notify.token}")
+    private String defaultNotifyToken;
+
     @Value("${camenduru.web2.default.discord.username}")
     private String defaultDiscordUsername;
 
@@ -87,10 +93,12 @@ public class UserService {
                 log.debug("Activated user: {}", user);
                 if (user != null && user.getLogin() != null && !user.getLogin().isEmpty()) {
                     Setting setting = new Setting();
+                    setting.setNotifyUri(defaultNotifyUri);
+                    setting.setNotifyToken(defaultNotifyToken);
                     setting.setDiscordUsername(defaultDiscordUsername);
                     setting.setDiscordId(defaultDiscordId);
                     setting.setDiscordChannel(defaultDiscordChannel);
-                    setting.discordToken(defaultDiscordToken);
+                    setting.setDiscordToken(defaultDiscordToken);
                     setting.setLogin(user.getLogin());
                     setting.setTotal(defaultFreeTotal);
                     setting.setMembership(Membership.FREE);

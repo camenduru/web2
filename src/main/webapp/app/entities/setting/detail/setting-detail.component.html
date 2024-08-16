@@ -29,11 +29,11 @@
               { null: '', FREE: 'FREE', PAID: 'PAID' }[setting()!.membership ?? 'null']
             }}</span>
           </dd>
-          <dt *jhiHasAnyAuthority="'ROLE_ADMIN'"><span jhiTranslate="web2App.setting.notifyUri">Notify Uri</span></dt>
+          <dt *jhiHasAnyAuthority="['ROLE_ADMIN', 'ROLE_PAID']"><span jhiTranslate="web2App.setting.notifyUri">Notify Uri</span></dt>
           <dd *jhiHasAnyAuthority="'ROLE_ADMIN'">
             <span>{{ setting()!.notifyUri }}</span>
           </dd>
-          <dt *jhiHasAnyAuthority="'ROLE_ADMIN'"><span jhiTranslate="web2App.setting.notifyToken">Notify Token</span></dt>
+          <dt *jhiHasAnyAuthority="['ROLE_ADMIN', 'ROLE_PAID']"><span jhiTranslate="web2App.setting.notifyToken">Notify Token</span></dt>
           <dd *jhiHasAnyAuthority="'ROLE_ADMIN'">
             <span>{{ setting()!.notifyToken }}</span>
           </dd>
@@ -49,7 +49,7 @@
           <dd>
             <span>{{ setting()!.discordChannel }}</span>
           </dd>
-          <dt *jhiHasAnyAuthority="'ROLE_ADMIN'"><span jhiTranslate="web2App.setting.discordToken">Discord Token</span></dt>
+          <dt *jhiHasAnyAuthority="['ROLE_ADMIN', 'ROLE_PAID']"><span jhiTranslate="web2App.setting.discordToken">Discord Token</span></dt>
           <dd *jhiHasAnyAuthority="'ROLE_ADMIN'">
             <span>{{ setting()!.discordToken }}</span>
           </dd>

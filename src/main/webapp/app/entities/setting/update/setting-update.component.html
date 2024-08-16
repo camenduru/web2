@@ -56,7 +56,7 @@
           }
         </div>
 
-        <div *jhiHasAnyAuthority="'ROLE_ADMIN'" class="mb-3">
+        <div *jhiHasAnyAuthority="['ROLE_ADMIN', 'ROLE_PAID']" class="mb-3">
           <label class="form-label" for="field_notifyUri" jhiTranslate="web2App.setting.notifyUri">Notify Uri</label>
           <input type="text" class="form-control" name="notifyUri" id="field_notifyUri" data-cy="notifyUri" formControlName="notifyUri" />
           @if (editForm.get('notifyUri')!.invalid && (editForm.get('notifyUri')!.dirty || editForm.get('notifyUri')!.touched)) {
@@ -68,7 +68,7 @@
           }
         </div>
 
-        <div *jhiHasAnyAuthority="'ROLE_ADMIN'" class="mb-3">
+        <div *jhiHasAnyAuthority="['ROLE_ADMIN', 'ROLE_PAID']" class="mb-3">
           <label class="form-label" for="field_notifyToken" jhiTranslate="web2App.setting.notifyToken">Notify Token</label>
           <input
             type="text"
@@ -141,7 +141,7 @@
           }
         </div>
 
-        <div *jhiHasAnyAuthority="'ROLE_ADMIN'" class="mb-3">
+        <div *jhiHasAnyAuthority="['ROLE_ADMIN', 'ROLE_PAID']" class="mb-3">
           <label class="form-label" for="field_discordToken" jhiTranslate="web2App.setting.discordToken">Discord Token</label>
           <input
             type="text"
