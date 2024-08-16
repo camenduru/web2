@@ -155,38 +155,47 @@ public class AccountResource {
         if (token.equals(webToken)) {
             String result = notify.getResult();
             String jobId = notify.getJobId();
+            String status = notify.getStatus();
             Job job = jobRepository.findById(jobId).orElseThrow();
             String login = job.getLogin();
-            job.setStatus(JobStatus.DONE);
-            job.setResult(result);
-            Setting setting = settingRepository.findAllByUserIsCurrentUser(login).orElseThrow();
-            int total = Integer.parseInt(setting.getTotal()) - Integer.parseInt(job.getAmount());
-            job.setTotal(Integer.toString(total));
-            setting.setTotal(Integer.toString(total));
-            jobRepository.save(job);
-            settingRepository.save(setting);
-            if (job.getType().startsWith("chat")) {
-                String destination = String.format("/chat/%s", login);
-                StringBuilder content = new StringBuilder();
-                try {
-                    URL url = new URL(result);
-                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                    connection.setRequestMethod("GET");
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        content.append(line);
-                        content.append(System.lineSeparator());
+            if (status.equals("DONE")) {
+                job.setStatus(JobStatus.DONE);
+                job.setResult(result);
+                Setting setting = settingRepository.findAllByUserIsCurrentUser(login).orElseThrow();
+                int total = Integer.parseInt(setting.getTotal()) - Integer.parseInt(job.getAmount());
+                job.setTotal(Integer.toString(total));
+                setting.setTotal(Integer.toString(total));
+                jobRepository.save(job);
+                settingRepository.save(setting);
+                if (job.getType().startsWith("chat")) {
+                    String destination = String.format("/chat/%s", login);
+                    StringBuilder content = new StringBuilder();
+                    try {
+                        URL url = new URL(result);
+                        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                        connection.setRequestMethod("GET");
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                        String line;
+                        while ((line = reader.readLine()) != null) {
+                            content.append(line);
+                            content.append(System.lineSeparator());
+                        }
+                        reader.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                    reader.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    String payload = String.format("%s", content.toString());
+                    simpMessageSendingOperations.convertAndSend(destination, payload);
+                } else {
+                    String destination = String.format("/notify/%s", login);
+                    String payload = String.format("%s", "DONE");
+                    simpMessageSendingOperations.convertAndSend(destination, payload);
                 }
-                String payload = String.format("%s", content.toString());
-                simpMessageSendingOperations.convertAndSend(destination, payload);
             } else {
+                job.setStatus(JobStatus.FAILED);
+                jobRepository.save(job);
                 String destination = String.format("/notify/%s", login);
-                String payload = String.format("%s", "DONE");
+                String payload = String.format("%s", "FAILED");
                 simpMessageSendingOperations.convertAndSend(destination, payload);
             }
             return new ResponseEntity<String>("✔ Valid", HttpStatus.OK);

@@ -14,19 +14,19 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface JobRepository extends MongoRepository<Job, String> {
-    @Query(value = "{'login': ?0, 'status': {$nin: ['EXPIRED', 'FAILED']}}", sort = "{date: -1}")
+    @Query(value = "{'login': ?0, 'status': {$nin: ['EXPIRED', 'FAILED', 'CANCELED']}}", sort = "{date: -1}")
     Page<Job> findAllByUserIsCurrentUser(Pageable pageable, String login);
 
-    @Query(value = "{'login': ?0, 'type': ?1, 'status': {$nin: ['EXPIRED', 'FAILED']}}", sort = "{date: -1}")
+    @Query(value = "{'login': ?0, 'type': ?1, 'status': {$nin: ['EXPIRED', 'FAILED', 'CANCELED']}}", sort = "{date: -1}")
     Page<Job> findAllByTypeByUserIsCurrentUser(Pageable pageable, String login, String type);
 
-    @Query(value = "{status: {$nin: ['EXPIRED', 'FAILED']}}", sort = "{date: -1}")
+    @Query(value = "{status: {$nin: ['EXPIRED', 'FAILED', 'CANCELED']}}", sort = "{date: -1}")
     Page<Job> findAll(Pageable pageable);
 
     @Query(value = "{}", sort = "{date: -1}")
     List<Job> findAll();
 
-    @Query(value = "{'type': ?0, status: {$nin: ['EXPIRED', 'FAILED']}}", sort = "{date: -1}")
+    @Query(value = "{'type': ?0, status: {$nin: ['EXPIRED', 'FAILED', 'CANCELED']}}", sort = "{date: -1}")
     Page<Job> findAllByType(Pageable pageable, String type);
 
     @Query(value = "{'type': ?0}", sort = "{date: -1}")
