@@ -5,7 +5,7 @@
 
     <groupId>com.camenduru.web</groupId>
     <artifactId>web-2</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <packaging>jar</packaging>
     <name>Web 2</name>
     <description>Description for Web 2</description>
@@ -922,6 +922,9 @@
                                 <goals>
                                     <goal>npm</goal>
                                 </goals>
+                                <configuration>
+                                    <arguments>install --force</arguments>
+                                </configuration>
                             </execution>
                             <execution>
                                 <id>webapp build test</id>
@@ -1072,6 +1075,9 @@
                                 <goals>
                                     <goal>npm</goal>
                                 </goals>
+                                <configuration>
+                                    <arguments>install --force</arguments>
+                                </configuration>
                             </execution>
                             <execution>
                                 <id>webapp build dev</id>

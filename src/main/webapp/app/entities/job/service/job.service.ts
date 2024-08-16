@@ -30,6 +30,7 @@ export class JobService {
   protected applicationConfigService = inject(ApplicationConfigService);
 
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/jobs');
+  protected homeUrl = this.applicationConfigService.getEndpointFor('api/home');
 
   create(job: NewJob): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(job);
@@ -63,6 +64,20 @@ export class JobService {
       .pipe(map(res => this.convertResponseArrayFromServer(res)));
   }
 
+  home(req?: any): Observable<EntityArrayResponseType> {
+    const options = createRequestOption(req);
+    return this.http
+      .get<RestJob[]>(this.homeUrl, { params: options, observe: 'response' })
+      .pipe(map(res => this.convertResponseArrayFromServer(res)));
+  }
+
+  type(type: string, req?: any): Observable<EntityArrayResponseType> {
+    const options = createRequestOption(req);
+    return this.http
+      .get<RestJob[]>(`${this.resourceUrl}/type/${type}`, { params: options, observe: 'response' })
+      .pipe(map(res => this.convertResponseArrayFromServer(res)));
+  }
+
   delete(id: string): Observable<HttpResponse<{}>> {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
@@ -75,8 +90,8 @@ export class JobService {
     return o1 && o2 ? this.getJobIdentifier(o1) === this.getJobIdentifier(o2) : o1 === o2;
   }
 
-  addJobToCollectionIfMissing<Type extends Pick<IJob, 'id'>>(jobCollection: Type[], ...jobsToCheck: (Type | null | undefined)[]): Type[] {
-    const jobs: Type[] = jobsToCheck.filter(isPresent);
+  addJobToCollectionIfMissing<App extends Pick<IJob, 'id'>>(jobCollection: App[], ...jobsToCheck: (App | null | undefined)[]): App[] {
+    const jobs: App[] = jobsToCheck.filter(isPresent);
     if (jobs.length > 0) {
       const jobCollectionIdentifiers = jobCollection.map(jobItem => this.getJobIdentifier(jobItem));
       const jobsToAdd = jobs.filter(jobItem => {

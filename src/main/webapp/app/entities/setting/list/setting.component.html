@@ -9,6 +9,7 @@
       </button>
 
       <button
+        *jhiHasAnyAuthority="'ROLE_ADMIN'"
         id="jh-create-entity"
         data-cy="entityCreateButton"
         class="btn btn-primary jh-create-entity create-setting"
@@ -35,14 +36,7 @@
       <table class="table table-striped" aria-describedby="page-heading">
         <thead>
           <tr jhiSort [sortState]="sortState" (sortChange)="navigateToWithComponentValues($event)">
-            <th scope="col" jhiSortBy="id">
-              <div class="d-flex">
-                <span jhiTranslate="global.field.id">ID</span>
-
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="login">
+            <th *jhiHasAnyAuthority="'ROLE_ADMIN'" scope="col" jhiSortBy="login">
               <div class="d-flex">
                 <span jhiTranslate="web2App.setting.login">Login</span>
 
@@ -63,14 +57,14 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
-            <th scope="col" jhiSortBy="notifyUri">
+            <th *jhiHasAnyAuthority="'ROLE_ADMIN'" scope="col" jhiSortBy="notifyUri">
               <div class="d-flex">
                 <span jhiTranslate="web2App.setting.notifyUri">Notify Uri</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
-            <th scope="col" jhiSortBy="notifyToken">
+            <th *jhiHasAnyAuthority="'ROLE_ADMIN'" scope="col" jhiSortBy="notifyToken">
               <div class="d-flex">
                 <span jhiTranslate="web2App.setting.notifyToken">Notify Token</span>
 
@@ -98,7 +92,7 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
-            <th scope="col" jhiSortBy="discordToken">
+            <th *jhiHasAnyAuthority="'ROLE_ADMIN'" scope="col" jhiSortBy="discordToken">
               <div class="d-flex">
                 <span jhiTranslate="web2App.setting.discordToken">Discord Token</span>
 
@@ -111,23 +105,25 @@
         <tbody>
           @for (setting of settings; track trackId) {
             <tr data-cy="entityTable">
-              <td>
-                <a [routerLink]="['/setting', setting.id, 'view']">{{ setting.id }}</a>
-              </td>
-              <td>{{ setting.login }}</td>
+              <td *jhiHasAnyAuthority="'ROLE_ADMIN'">{{ setting.login }}</td>
               <td>{{ setting.total }}</td>
               <td [jhiTranslate]="'web2App.Membership.' + (setting.membership ?? 'null')">
                 {{ { null: '', FREE: 'FREE', PAID: 'PAID' }[setting.membership ?? 'null'] }}
               </td>
-              <td>{{ setting.notifyUri }}</td>
-              <td>{{ setting.notifyToken }}</td>
+              <td *jhiHasAnyAuthority="'ROLE_ADMIN'">{{ setting.notifyUri }}</td>
+              <td *jhiHasAnyAuthority="'ROLE_ADMIN'">{{ setting.notifyToken }}</td>
               <td>{{ setting.discordUsername }}</td>
               <td>{{ setting.discordId }}</td>
               <td>{{ setting.discordChannel }}</td>
-              <td>{{ setting.discordToken }}</td>
+              <td *jhiHasAnyAuthority="'ROLE_ADMIN'">{{ setting.discordToken }}</td>
               <td class="text-end">
                 <div class="btn-group">
-                  <a [routerLink]="['/setting', setting.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                  <a
+                    *jhiHasAnyAuthority="'ROLE_ADMIN'"
+                    [routerLink]="['/setting', setting.id, 'view']"
+                    class="btn btn-info btn-sm"
+                    data-cy="entityDetailsButton"
+                  >
                     <fa-icon icon="eye"></fa-icon>
                     <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
                   </a>
@@ -137,7 +133,13 @@
                     <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
                   </a>
 
-                  <button type="submit" (click)="delete(setting)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                  <button
+                    *jhiHasAnyAuthority="'ROLE_ADMIN'"
+                    type="submit"
+                    (click)="delete(setting)"
+                    class="btn btn-danger btn-sm"
+                    data-cy="entityDeleteButton"
+                  >
                     <fa-icon icon="times"></fa-icon>
                     <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
                   </button>

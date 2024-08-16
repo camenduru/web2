@@ -52,8 +52,8 @@ export class AppService {
     return o1 && o2 ? this.getAppIdentifier(o1) === this.getAppIdentifier(o2) : o1 === o2;
   }
 
-  addAppToCollectionIfMissing<Type extends Pick<IApp, 'id'>>(appCollection: Type[], ...appsToCheck: (Type | null | undefined)[]): Type[] {
-    const apps: Type[] = appsToCheck.filter(isPresent);
+  addAppToCollectionIfMissing<App extends Pick<IApp, 'id'>>(appCollection: App[], ...appsToCheck: (App | null | undefined)[]): App[] {
+    const apps: App[] = appsToCheck.filter(isPresent);
     if (apps.length > 0) {
       const appCollectionIdentifiers = appCollection.map(appItem => this.getAppIdentifier(appItem));
       const appsToAdd = apps.filter(appItem => {

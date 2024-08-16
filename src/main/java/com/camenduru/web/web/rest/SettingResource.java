@@ -2,6 +2,8 @@ package com.camenduru.web.web.rest;
 
 import com.camenduru.web.domain.Setting;
 import com.camenduru.web.repository.SettingRepository;
+import com.camenduru.web.security.AuthoritiesConstants;
+import com.camenduru.web.security.SecurityUtils;
 import com.camenduru.web.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -75,7 +77,7 @@ public class SettingResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<Setting> updateSetting(
         @PathVariable(value = "id", required = false) final String id,
         @Valid @RequestBody Setting setting
@@ -91,8 +93,20 @@ public class SettingResource {
         if (!settingRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-
-        setting = settingRepository.save(setting);
+        if (SecurityUtils.hasCurrentUserThisAuthority(AuthoritiesConstants.ADMIN)) {
+            setting = settingRepository.save(setting);
+        } else {
+            Setting currentSetting = settingRepository
+                .findOneByUserIsCurrentUser(id, SecurityUtils.getCurrentUserLogin().orElseThrow())
+                .orElseThrow();
+            setting.login(currentSetting.getLogin());
+            setting.total(currentSetting.getTotal());
+            setting.membership(currentSetting.getMembership());
+            setting.notifyUri(currentSetting.getNotifyUri());
+            setting.notifyToken(currentSetting.getNotifyToken());
+            setting.discordToken(currentSetting.getDiscordToken());
+            setting = settingRepository.save(setting);
+        }
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, setting.getId()))
             .body(setting);
@@ -110,7 +124,7 @@ public class SettingResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<Setting> partialUpdateSetting(
         @PathVariable(value = "id", required = false) final String id,
         @NotNull @RequestBody Setting setting
@@ -126,42 +140,69 @@ public class SettingResource {
         if (!settingRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
+        Optional<Setting> result;
+        if (SecurityUtils.hasCurrentUserThisAuthority(AuthoritiesConstants.ADMIN)) {
+            result = settingRepository
+                .findById(setting.getId())
+                .map(existingSetting -> {
+                    if (setting.getLogin() != null) {
+                        existingSetting.setLogin(setting.getLogin());
+                    }
+                    if (setting.getTotal() != null) {
+                        existingSetting.setTotal(setting.getTotal());
+                    }
+                    if (setting.getMembership() != null) {
+                        existingSetting.setMembership(setting.getMembership());
+                    }
+                    if (setting.getNotifyUri() != null) {
+                        existingSetting.setNotifyUri(setting.getNotifyUri());
+                    }
+                    if (setting.getNotifyToken() != null) {
+                        existingSetting.setNotifyToken(setting.getNotifyToken());
+                    }
+                    if (setting.getDiscordUsername() != null) {
+                        existingSetting.setDiscordUsername(setting.getDiscordUsername());
+                    }
+                    if (setting.getDiscordId() != null) {
+                        existingSetting.setDiscordId(setting.getDiscordId());
+                    }
+                    if (setting.getDiscordChannel() != null) {
+                        existingSetting.setDiscordChannel(setting.getDiscordChannel());
+                    }
+                    if (setting.getDiscordToken() != null) {
+                        existingSetting.setDiscordToken(setting.getDiscordToken());
+                    }
 
-        Optional<Setting> result = settingRepository
-            .findById(setting.getId())
-            .map(existingSetting -> {
-                if (setting.getLogin() != null) {
-                    existingSetting.setLogin(setting.getLogin());
-                }
-                if (setting.getTotal() != null) {
-                    existingSetting.setTotal(setting.getTotal());
-                }
-                if (setting.getMembership() != null) {
-                    existingSetting.setMembership(setting.getMembership());
-                }
-                if (setting.getNotifyUri() != null) {
-                    existingSetting.setNotifyUri(setting.getNotifyUri());
-                }
-                if (setting.getNotifyToken() != null) {
-                    existingSetting.setNotifyToken(setting.getNotifyToken());
-                }
-                if (setting.getDiscordUsername() != null) {
-                    existingSetting.setDiscordUsername(setting.getDiscordUsername());
-                }
-                if (setting.getDiscordId() != null) {
-                    existingSetting.setDiscordId(setting.getDiscordId());
-                }
-                if (setting.getDiscordChannel() != null) {
-                    existingSetting.setDiscordChannel(setting.getDiscordChannel());
-                }
-                if (setting.getDiscordToken() != null) {
-                    existingSetting.setDiscordToken(setting.getDiscordToken());
-                }
+                    return existingSetting;
+                })
+                .map(settingRepository::save);
+        } else {
+            Setting currentSetting = settingRepository
+                .findOneByUserIsCurrentUser(id, SecurityUtils.getCurrentUserLogin().orElseThrow())
+                .orElseThrow();
+            setting.login(currentSetting.getLogin());
+            setting.total(currentSetting.getTotal());
+            setting.membership(currentSetting.getMembership());
+            setting.notifyUri(currentSetting.getNotifyUri());
+            setting.notifyToken(currentSetting.getNotifyToken());
+            setting.discordToken(currentSetting.getDiscordToken());
+            result = settingRepository
+                .findById(setting.getId())
+                .map(existingSetting -> {
+                    if (setting.getDiscordUsername() != null) {
+                        existingSetting.setDiscordUsername(setting.getDiscordUsername());
+                    }
+                    if (setting.getDiscordId() != null) {
+                        existingSetting.setDiscordId(setting.getDiscordId());
+                    }
+                    if (setting.getDiscordChannel() != null) {
+                        existingSetting.setDiscordChannel(setting.getDiscordChannel());
+                    }
 
-                return existingSetting;
-            })
-            .map(settingRepository::save);
-
+                    return existingSetting;
+                })
+                .map(settingRepository::save);
+        }
         return ResponseUtil.wrapOrNotFound(result, HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, setting.getId()));
     }
 
@@ -175,7 +216,12 @@ public class SettingResource {
     @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<List<Setting>> getAllSettings(@org.springdoc.core.annotations.ParameterObject Pageable pageable) {
         log.debug("REST request to get a page of Settings");
-        Page<Setting> page = settingRepository.findAll(pageable);
+        Page<Setting> page;
+        if (SecurityUtils.hasCurrentUserThisAuthority(AuthoritiesConstants.ADMIN)) {
+            page = settingRepository.findAll(pageable);
+        } else {
+            page = settingRepository.findAllByUserIsCurrentUser(pageable, SecurityUtils.getCurrentUserLogin().orElseThrow());
+        }
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
@@ -190,7 +236,12 @@ public class SettingResource {
     @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<Setting> getSetting(@PathVariable("id") String id) {
         log.debug("REST request to get Setting : {}", id);
-        Optional<Setting> setting = settingRepository.findById(id);
+        Optional<Setting> setting;
+        if (SecurityUtils.hasCurrentUserThisAuthority(AuthoritiesConstants.ADMIN)) {
+            setting = settingRepository.findById(id);
+        } else {
+            setting = settingRepository.findOneByUserIsCurrentUser(id, SecurityUtils.getCurrentUserLogin().orElseThrow());
+        }
         return ResponseUtil.wrapOrNotFound(setting);
     }
 

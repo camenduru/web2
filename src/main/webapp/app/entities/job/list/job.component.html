@@ -9,6 +9,7 @@
       </button>
 
       <button
+        *jhiHasAnyAuthority="'ROLE_ADMIN'"
         id="jh-create-entity"
         data-cy="entityCreateButton"
         class="btn btn-primary jh-create-entity create-job"
@@ -35,14 +36,8 @@
       <table class="table table-striped" aria-describedby="page-heading">
         <thead>
           <tr jhiSort [sortState]="sortState" (sortChange)="navigateToWithComponentValues($event)">
-            <th scope="col" jhiSortBy="id">
-              <div class="d-flex">
-                <span jhiTranslate="global.field.id">ID</span>
-
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="login">
+            <th *jhiHasAnyAuthority="'ROLE_ADMIN'" scope="col"></th>
+            <th *jhiHasAnyAuthority="'ROLE_ADMIN'" scope="col" jhiSortBy="login">
               <div class="d-flex">
                 <span jhiTranslate="web2App.job.login">Login</span>
 
@@ -70,13 +65,6 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
-            <th scope="col" jhiSortBy="command">
-              <div class="d-flex">
-                <span jhiTranslate="web2App.job.command">Command</span>
-
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
             <th scope="col" jhiSortBy="amount">
               <div class="d-flex">
                 <span jhiTranslate="web2App.job.amount">Amount</span>
@@ -84,56 +72,14 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
-            <th scope="col" jhiSortBy="notifyUri">
+            <th scope="col" jhiSortBy="command">
               <div class="d-flex">
-                <span jhiTranslate="web2App.job.notifyUri">Notify Uri</span>
+                <span jhiTranslate="web2App.job.command">Command</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
-            <th scope="col" jhiSortBy="notifyToken">
-              <div class="d-flex">
-                <span jhiTranslate="web2App.job.notifyToken">Notify Token</span>
-
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="discordUsername">
-              <div class="d-flex">
-                <span jhiTranslate="web2App.job.discordUsername">Discord Username</span>
-
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="discordId">
-              <div class="d-flex">
-                <span jhiTranslate="web2App.job.discordId">Discord Id</span>
-
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="discordChannel">
-              <div class="d-flex">
-                <span jhiTranslate="web2App.job.discordChannel">Discord Channel</span>
-
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="discordToken">
-              <div class="d-flex">
-                <span jhiTranslate="web2App.job.discordToken">Discord Token</span>
-
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="source">
-              <div class="d-flex">
-                <span jhiTranslate="web2App.job.source">Source</span>
-
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="total">
+            <th *jhiHasAnyAuthority="'ROLE_ADMIN'" scope="col" jhiSortBy="total">
               <div class="d-flex">
                 <span jhiTranslate="web2App.job.total">Total</span>
 
@@ -147,45 +93,12 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
-            <th scope="col"></th>
           </tr>
         </thead>
         <tbody>
           @for (job of jobs; track trackId) {
             <tr data-cy="entityTable">
-              <td>
-                <a [routerLink]="['/job', job.id, 'view']">{{ job.id }}</a>
-              </td>
-              <td>{{ job.login }}</td>
-              <td>{{ job.date | formatMediumDatetime }}</td>
-              <td [jhiTranslate]="'web2App.JobStatus.' + (job.status ?? 'null')">
-                {{
-                  {
-                    null: '',
-                    WAITING: 'WAITING',
-                    WORKING: 'WORKING',
-                    DONE: 'DONE',
-                    FAILED: 'FAILED',
-                    CANCELED: 'CANCELED',
-                    EXPIRED: 'EXPIRED',
-                  }[job.status ?? 'null']
-                }}
-              </td>
-              <td>{{ job.type }}</td>
-              <td>{{ job.command }}</td>
-              <td>{{ job.amount }}</td>
-              <td>{{ job.notifyUri }}</td>
-              <td>{{ job.notifyToken }}</td>
-              <td>{{ job.discordUsername }}</td>
-              <td>{{ job.discordId }}</td>
-              <td>{{ job.discordChannel }}</td>
-              <td>{{ job.discordToken }}</td>
-              <td [jhiTranslate]="'web2App.JobSource.' + (job.source ?? 'null')">
-                {{ { null: '', WEB: 'WEB', IOS: 'IOS', ANDROID: 'ANDROID', DISCORD: 'DISCORD' }[job.source ?? 'null'] }}
-              </td>
-              <td>{{ job.total }}</td>
-              <td>{{ job.result }}</td>
-              <td class="text-end">
+              <td *jhiHasAnyAuthority="'ROLE_ADMIN'" class="text-end">
                 <div class="btn-group">
                   <a [routerLink]="['/job', job.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
                     <fa-icon icon="eye"></fa-icon>
@@ -203,6 +116,26 @@
                   </button>
                 </div>
               </td>
+              <td *jhiHasAnyAuthority="'ROLE_ADMIN'">{{ job.login }}</td>
+              <td>{{ job.date | formatMediumDatetime }}</td>
+              <td [jhiTranslate]="'web2App.JobStatus.' + (job.status ?? 'null')">
+                {{
+                  {
+                    null: '',
+                    WAITING: 'WAITING',
+                    WORKING: 'WORKING',
+                    DONE: 'DONE',
+                    FAILED: 'FAILED',
+                    CANCELED: 'CANCELED',
+                    EXPIRED: 'EXPIRED',
+                  }[job.status ?? 'null']
+                }}
+              </td>
+              <td>{{ job.type }}</td>
+              <td>{{ job.amount }}</td>
+              <td>{{ job.command }}</td>
+              <td *jhiHasAnyAuthority="'ROLE_ADMIN'">{{ job.total }}</td>
+              <td>{{ job.result }}</td>
             </tr>
           }
         </tbody>

@@ -19,11 +19,14 @@ import { SORT, DEFAULT_SORT_DATA } from 'app/config/navigation.constants';
 import { IJob } from '../entities/job/job.model';
 import { EntityArrayResponseType as JobEntityArrayResponseType, JobService } from '../entities/job/service/job.service';
 import { IApp } from '../entities/app/app.model';
-import { EntityArrayResponseType as TypeEntityArrayResponseType, AppService } from '../entities/app/service/app.service';
+import { EntityArrayResponseType as AppEntityArrayResponseType, AppService } from '../entities/app/service/app.service';
 import { JobFormService, JobFormGroup } from '../entities/job/update/job-form.service';
 import { UserService } from '../entities/user/service/user.service';
 import { ISchema, TemplateSchemaModule } from 'ngx-schema-form';
 import { TrackerService } from 'app/core/tracker/tracker.service';
+import { JobStatus } from '../entities/enumerations/job-status.model';
+import { JobSource } from '../entities/enumerations/job-source.model';
+import dayjs from 'dayjs/esm';
 
 @Component({
   standalone: true,
@@ -44,8 +47,7 @@ import { TrackerService } from 'app/core/tracker/tracker.service';
     HasAnyAuthorityDirective,
     TemplateSchemaModule,
   ],
-  template:
-    '<sf-form [schema]="activeSchema" [model]="activeModel" [actions]="activeActions"></sf-form><sf-form [schema]="passiveSchema" [model]="passiveModel"></sf-form>',
+  template: '<sf-form [schema]="activeSchema" [model]="activeModel" [actions]="activeActions"></sf-form>',
 })
 export default class HomeComponent implements OnInit, OnDestroy {
   isSaving = false;
@@ -53,20 +55,17 @@ export default class HomeComponent implements OnInit, OnDestroy {
   account = signal<Account | null>(null);
   user: Account = {} as Account;
   apps?: IApp[];
-  passiveTypes?: IApp[];
-  passiveObjects?: any = [];
   jobs?: IJob[];
   itemsPerPage = ITEMS_PER_PAGE;
   totalItems = 0;
   page = 1;
-  isLoading = signal(false);
+  isLoading = false;
   sortState = sortStateSignal({});
 
   isActive = true;
   activeSchema: ISchema = {};
   activeModel: any = {};
-  default_type: any = {};
-  default_type_type: any = {};
+  default_app_type: any = {};
 
   horizontal = false;
   percentage = false;
@@ -94,23 +93,12 @@ export default class HomeComponent implements OnInit, OnDestroy {
   contentAlign = 'masonry' as const;
   columnCalculationThreshold = 1;
   maxStretchColumnSize = Infinity;
-  // [column]="column"
-  // [columnSize]="columnSize"
-  // [columnSizeRatio]="columnSizeRatio"
-  // [contentAlign]="contentAlign"
-  // [columnCalculationThreshold]="columnCalculationThreshold"
-  // [maxStretchColumnSize]="maxStretchColumnSize"
 
   columnRange = [3, 3];
   rowRange = [1, Infinity];
   sizeRange = [0, Infinity];
   displayedRow = -1;
   isCroppedSize = true;
-  // [columnRange]="columnRange"
-  // [rowRange]="rowRange"
-  // [sizeRange]="sizeRange"
-  // [displayedRow]="displayedRow"
-  // [isCroppedSize]="isCroppedSize"
 
   aspectRatio = 1;
   sizeWeight = 1;
@@ -134,6 +122,19 @@ export default class HomeComponent implements OnInit, OnDestroy {
       this.isSaving = true;
       const job = this.jobFormService.getJob(this.editForm);
       job.command = JSON.stringify(property.value);
+      job.login = 'login';
+      job.date = dayjs();
+      job.status = JobStatus.WAITING;
+      job.amount = 'amount';
+      job.notifyUri = 'notifyUri';
+      job.notifyToken = 'notifyToken';
+      job.discordUsername = 'discordUsername';
+      job.discordChannel = 'discordChannel';
+      job.discordId = 'discordId';
+      job.discordToken = 'discordToken';
+      job.source = JobSource.WEB;
+      job.total = 'total';
+      job.result = 'result';
       if (job.id === null) {
         this.subscribeToSaveResponse(this.jobService.create(job));
       }
@@ -172,9 +173,9 @@ export default class HomeComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.accountService.identity().subscribe(() => {
       if (this.accountService.isAuthenticated()) {
-        this.queryTypeBackend().subscribe({
-          next: (res: TypeEntityArrayResponseType) => {
-            this.onTypeResponseSuccess(res);
+        this.queryAppBackend().subscribe({
+          next: (res: AppEntityArrayResponseType) => {
+            this.onAppResponseSuccess(res);
           },
         });
 
@@ -289,34 +290,32 @@ export default class HomeComponent implements OnInit, OnDestroy {
   protected queryJobBackend(): Observable<JobEntityArrayResponseType> {
     const { page } = this;
 
-    this.isLoading.set(true);
+    this.isLoading = true;
     const pageToLoad: number = page;
     const queryObject: any = {
       page: pageToLoad - 1,
       size: this.itemsPerPage,
-      eagerload: true,
       sort: this.sortService.buildSortParam(this.sortState()),
     };
-    return this.jobService.query(queryObject).pipe(tap(() => this.isLoading.set(false)));
+    return this.jobService.query(queryObject).pipe(tap(() => (this.isLoading = false)));
   }
 
   protected queryHomeBackend(): Observable<JobEntityArrayResponseType> {
     const { page } = this;
 
-    this.isLoading.set(true);
+    this.isLoading = true;
     const pageToLoad: number = page;
     const queryObject: any = {
       page: pageToLoad - 1,
       size: this.itemsPerPage,
-      eagerload: true,
       sort: this.sortService.buildSortParam(this.sortState()),
     };
-    return this.jobService.home(queryObject).pipe(tap(() => this.isLoading.set(false)));
+    return this.jobService.home(queryObject).pipe(tap(() => (this.isLoading = false)));
   }
 
-  protected onTypeResponseSuccess(response: TypeEntityArrayResponseType): void {
-    this.fillComponentAttributesFromTypeResponseHeader(response.headers);
-    const dataFromBody = this.fillComponentAttributesFromTypeResponseBody(response.body);
+  protected onAppResponseSuccess(response: AppEntityArrayResponseType): void {
+    this.fillComponentAttributesFromAppResponseHeader(response.headers);
+    const dataFromBody = this.fillComponentAttributesFromAppResponseBody(response.body);
 
     if (this.accountService.hasAnyAuthority('ROLE_PAID')) {
       this.apps = dataFromBody.filter(item => item.isActive === true).reverse();
@@ -328,42 +327,28 @@ export default class HomeComponent implements OnInit, OnDestroy {
     this.activeSchema = jsonSchema as unknown as ISchema;
     const jsonModel = app?.model ? JSON.parse(app.model) : null;
     this.activeModel = jsonModel;
-    this.default_type_type = app?.type;
-
-    this.passiveTypes = dataFromBody.reverse();
-    this.passiveTypes.forEach(item => {
-      const passiveJsonSchema = item.schema ? JSON.parse(item.schema) : null;
-      const passiveSchema = passiveJsonSchema as unknown as ISchema;
-      const passiveJsonModel = item.model ? JSON.parse(item.model) : null;
-      this.passiveObjects.push({ schema: passiveSchema, model: passiveJsonModel });
-      this.passiveObjects.sort((a: PassiveObject, b: PassiveObject) => {
-        const tagA = a.schema.properties.readme.tags[0];
-        const tagB = b.schema.properties.readme.tags[0];
-        return tagA.localeCompare(tagB);
-      });
-    });
+    this.default_app_type = app?.type;
   }
 
-  protected fillComponentAttributesFromTypeResponseBody(data: IApp[] | null): IApp[] {
+  protected fillComponentAttributesFromAppResponseBody(data: IApp[] | null): IApp[] {
     return data ?? [];
   }
 
-  protected fillComponentAttributesFromTypeResponseHeader(headers: HttpHeaders): void {
+  protected fillComponentAttributesFromAppResponseHeader(headers: HttpHeaders): void {
     this.totalItems = Number(headers.get(TOTAL_COUNT_RESPONSE_HEADER));
   }
 
-  protected queryTypeBackend(): Observable<TypeEntityArrayResponseType> {
+  protected queryAppBackend(): Observable<AppEntityArrayResponseType> {
     const { page } = this;
 
-    this.isLoading.set(true);
+    this.isLoading = true;
     const pageToLoad: number = page;
     const queryObject: any = {
       page: pageToLoad - 1,
       size: 40,
-      eagerload: true,
       sort: this.sortService.buildSortParam(this.sortState()),
     };
-    return this.appService.query(queryObject).pipe(tap(() => this.isLoading.set(false)));
+    return this.appService.query(queryObject).pipe(tap(() => (this.isLoading = false)));
   }
 
   protected handleNavigation(page: number, sortState: SortState): void {
@@ -404,16 +389,6 @@ export default class HomeComponent implements OnInit, OnDestroy {
     const url = `${link}`;
     window.open(url);
   }
-}
-
-interface PassiveObject {
-  schema: {
-    properties: {
-      readme: {
-        tags: string[];
-      };
-    };
-  };
 }
 
 function notifyDivRemove(): void {

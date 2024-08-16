@@ -34,7 +34,7 @@
           <jhi-alert-error></jhi-alert-error>
           @if (jobs?.length === 0) {
             <div class="alert alert-warning" id="no-result">
-              <span jhiTranslate="webApp.job.home.notFound">No Jobs found</span>
+              <span jhiTranslate="web2App.job.home.notFound">No Jobs found</span>
             </div>
           }
           @if (jobs && jobs.length > 0) {
@@ -144,8 +144,8 @@
                 width: 2000px;
                 font-size: 18px;
               "
-              formControlName="app"
-              [(ngModel)]="default_type_type"
+              formControlName="type"
+              [(ngModel)]="default_app_type"
             >
               <option *ngFor="let app of apps" [value]="app.type">
                 {{ app.title }}
@@ -156,7 +156,7 @@
           <sf-form [schema]="activeSchema" [model]="activeModel" [actions]="activeActions"></sf-form>
           <form name="editForm" role="form" novalidate [formGroup]="editForm">
             <button class="btn btn-secondary me-2 float-end" (click)="load()" [disabled]="isLoading">
-              <fa-icon icon="sync" [animation]="isLoading() ? 'spin' : undefined"></fa-icon> Refresh
+              <fa-icon icon="sync" [animation]="isLoading ? 'spin' : undefined"></fa-icon> Refresh
             </button>
           </form>
           <br /><br /><br />
@@ -166,7 +166,7 @@
           <jhi-alert-error></jhi-alert-error>
           @if (jobs?.length === 0) {
             <div class="alert alert-warning" id="no-result">
-              <span jhiTranslate="webApp.job.home.notFound">No Jobs found</span>
+              <span jhiTranslate="web2App.job.home.notFound">No Jobs found</span>
             </div>
           }
           @if (jobs && jobs.length > 0) {

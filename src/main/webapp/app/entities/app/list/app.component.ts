@@ -1,14 +1,17 @@
-import { Component, NgZone, inject, OnInit } from '@angular/core';
+import { Component, NgZone, inject, signal, OnInit } from '@angular/core';
 import { HttpHeaders } from '@angular/common/http';
 import { ActivatedRoute, Data, ParamMap, Router, RouterModule } from '@angular/router';
 import { combineLatest, filter, Observable, Subscription, tap } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import SharedModule from 'app/shared/shared.module';
+import HasAnyAuthorityDirective from 'app/shared/auth/has-any-authority.directive';
 import { sortStateSignal, SortDirective, SortByDirective, type SortState, SortService } from 'app/shared/sort';
 import { DurationPipe, FormatMediumDatetimePipe, FormatMediumDatePipe } from 'app/shared/date';
 import { ItemCountComponent } from 'app/shared/pagination';
 import { FormsModule } from '@angular/forms';
+import { AccountService } from 'app/core/auth/account.service';
+import { Account } from 'app/core/auth/account.model';
 
 import { ITEMS_PER_PAGE, PAGE_HEADER, TOTAL_COUNT_RESPONSE_HEADER } from 'app/config/pagination.constants';
 import { SORT, ITEM_DELETED_EVENT, DEFAULT_SORT_DATA } from 'app/config/navigation.constants';
@@ -30,9 +33,11 @@ import { AppDeleteDialogComponent } from '../delete/app-delete-dialog.component'
     FormatMediumDatetimePipe,
     FormatMediumDatePipe,
     ItemCountComponent,
+    HasAnyAuthorityDirective,
   ],
 })
 export class AppComponent implements OnInit {
+  account = signal<Account | null>(null);
   subscription: Subscription | null = null;
   apps?: IApp[];
   isLoading = false;
@@ -49,6 +54,7 @@ export class AppComponent implements OnInit {
   protected sortService = inject(SortService);
   protected modalService = inject(NgbModal);
   protected ngZone = inject(NgZone);
+  protected accountService = inject(AccountService);
 
   trackId = (_index: number, item: IApp): string => this.appService.getAppIdentifier(item);
 
@@ -59,6 +65,8 @@ export class AppComponent implements OnInit {
         tap(() => this.load()),
       )
       .subscribe();
+
+    this.accountService.getAuthenticationState().subscribe(account => this.account.set(account));
   }
 
   delete(app: IApp): void {
@@ -98,7 +106,11 @@ export class AppComponent implements OnInit {
   protected onResponseSuccess(response: EntityArrayResponseType): void {
     this.fillComponentAttributesFromResponseHeader(response.headers);
     const dataFromBody = this.fillComponentAttributesFromResponseBody(response.body);
-    this.apps = dataFromBody;
+    if (this.accountService.hasAnyAuthority('ROLE_ADMIN')) {
+      this.apps = dataFromBody;
+    } else {
+      this.apps = dataFromBody.filter(item => item.isActive === true);
+    }
   }
 
   protected fillComponentAttributesFromResponseBody(data: IApp[] | null): IApp[] {

@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 
 import SharedModule from 'app/shared/shared.module';
+import HasAnyAuthorityDirective from 'app/shared/auth/has-any-authority.directive';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { Membership } from 'app/entities/enumerations/membership.model';
@@ -16,7 +17,7 @@ import { SettingFormService, SettingFormGroup } from './setting-form.service';
   standalone: true,
   selector: 'jhi-setting-update',
   templateUrl: './setting-update.component.html',
-  imports: [SharedModule, FormsModule, ReactiveFormsModule],
+  imports: [SharedModule, FormsModule, ReactiveFormsModule, HasAnyAuthorityDirective],
 })
 export class SettingUpdateComponent implements OnInit {
   isSaving = false;

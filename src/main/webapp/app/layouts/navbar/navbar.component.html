@@ -39,8 +39,8 @@
           >
             <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="entity-menu" data-cy="entity">
               <span>
-                <fa-icon icon="th-list"></fa-icon>
-                <span jhiTranslate="global.menu.entities.main">Entities</span>
+                <fa-icon icon="book"></fa-icon>
+                <span>Tost</span>
               </span>
             </a>
             <ul class="dropdown-menu" ngbDropdownMenu aria-labelledby="entity-menu">
@@ -52,8 +52,8 @@
                   [routerLinkActiveOptions]="{ exact: true }"
                   (click)="collapseNavbar()"
                 >
-                  <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
-                  <span jhiTranslate="global.menu.entities.setting">Setting</span>
+                  <fa-icon icon="wrench" [fixedWidth]="true"></fa-icon>
+                  <span>Settings</span>
                 </a>
               </li>
               <li>
@@ -64,8 +64,8 @@
                   [routerLinkActiveOptions]="{ exact: true }"
                   (click)="collapseNavbar()"
                 >
-                  <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
-                  <span jhiTranslate="global.menu.entities.app">App</span>
+                  <fa-icon icon="th-list" [fixedWidth]="true"></fa-icon>
+                  <span>Apps</span>
                 </a>
               </li>
               <li>
@@ -76,8 +76,8 @@
                   [routerLinkActiveOptions]="{ exact: true }"
                   (click)="collapseNavbar()"
                 >
-                  <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
-                  <span jhiTranslate="global.menu.entities.job">Job</span>
+                  <fa-icon icon="list-check" [fixedWidth]="true"></fa-icon>
+                  <span>Jobs</span>
                 </a>
               </li>
               <li *jhiHasAnyAuthority="'ROLE_ADMIN'">

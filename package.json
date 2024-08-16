@@ -1,6 +1,6 @@
 {
   "name": "web-2",
-  "version": "0.0.1-SNAPSHOT",
+  "version": "0.0.1",
   "private": true,
   "description": "Description for Web 2",
   "license": "UNLICENSED",
@@ -96,7 +96,6 @@
     "rxjs": "7.8.1",
     "sockjs-client": "1.6.1",
     "tslib": "2.6.3",
-    "web-2": "file:",
     "zone.js": "0.14.7"
   },
   "devDependencies": {
