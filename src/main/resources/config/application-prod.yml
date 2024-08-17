@@ -83,7 +83,7 @@ server:
 
 jhipster:
   cors:
-    allowed-origins: 'https://tost.ai'
+    allowed-origins: 'https://tost.ai,https://dev.tost.ai'
     allowed-methods: '*'
     allowed-headers: '*'
     allow-credentials: true
