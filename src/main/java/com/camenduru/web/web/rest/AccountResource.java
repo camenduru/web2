@@ -314,7 +314,7 @@ public class AccountResource {
         job.setDate(Instant.now());
         job.setStatus(JobStatus.WAITING);
         job.setLogin(setting.getLogin());
-        job.setSource(JobSource.WEB);
+        job.setSource(JobSource.API);
         job.setNotifyUri(setting.getNotifyUri());
         job.setNotifyToken(setting.getNotifyToken());
         job.setDiscordUsername(setting.getDiscordUsername());
