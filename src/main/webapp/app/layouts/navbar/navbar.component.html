@@ -1,11 +1,11 @@
 <nav data-cy="navbar" class="navbar navbar-dark navbar-expand-md bg-dark">
   <div class="container-fluid">
-    <a class="navbar-brand logo" routerLink="/" (click)="collapseNavbar()">
-      <span class="logo-img"></span>
-      <span class="navbar-title">Tost AI</span>
-      <span class="navbar-version"><a href="https://twitter.com/camenduru">by camenduru</a></span>
+    <span class="navbar-brand logo">
+      <a class="logo-img" routerLink="/" (click)="collapseNavbar()"></a>
+      <a class="navbar-brand" style="margin-right: 0px" routerLink="/" (click)="collapseNavbar()">Tost AI</a>
+      <span class="navbar-version"><a href="https://x.com/camenduru" target="_blank">by camenduru</a></span>
       <span class="navbar-version" style="display: none">{{ version }}</span>
-    </a>
+    </span>
     <a
       class="navbar-toggler d-lg-none"
       href="javascript:void(0);"
