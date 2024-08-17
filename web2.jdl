@@ -37,6 +37,7 @@ entity Setting {
     discordId String required
     discordChannel String required
     discordToken String required
+    apiKey String required
 }
 
 entity App {

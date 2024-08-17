@@ -11,6 +11,7 @@ export interface ISetting {
   discordId?: string | null;
   discordChannel?: string | null;
   discordToken?: string | null;
+  apiKey?: string | null;
 }
 
 export type NewSetting = Omit<ISetting, 'id'> & { id: null };

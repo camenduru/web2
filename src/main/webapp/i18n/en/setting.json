@@ -26,7 +26,8 @@
       "discordUsername": "Discord Username",
       "discordId": "Discord Id",
       "discordChannel": "Discord Channel",
-      "discordToken": "Discord Token"
+      "discordToken": "Discord Token",
+      "apiKey": "Api Key"
     }
   }
 }

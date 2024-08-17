@@ -29,6 +29,7 @@ describe('Setting Form Service', () => {
             discordId: expect.any(Object),
             discordChannel: expect.any(Object),
             discordToken: expect.any(Object),
+            apiKey: expect.any(Object),
           }),
         );
       });
@@ -48,6 +49,7 @@ describe('Setting Form Service', () => {
             discordId: expect.any(Object),
             discordChannel: expect.any(Object),
             discordToken: expect.any(Object),
+            apiKey: expect.any(Object),
           }),
         );
       });

@@ -14,7 +14,8 @@ public class SettingTestSamples {
             .discordUsername("discordUsername1")
             .discordId("discordId1")
             .discordChannel("discordChannel1")
-            .discordToken("discordToken1");
+            .discordToken("discordToken1")
+            .apiKey("apiKey1");
     }
 
     public static Setting getSettingSample2() {
@@ -27,7 +28,8 @@ public class SettingTestSamples {
             .discordUsername("discordUsername2")
             .discordId("discordId2")
             .discordChannel("discordChannel2")
-            .discordToken("discordToken2");
+            .discordToken("discordToken2")
+            .apiKey("apiKey2");
     }
 
     public static Setting getSettingRandomSampleGenerator() {
@@ -40,6 +42,7 @@ public class SettingTestSamples {
             .discordUsername(UUID.randomUUID().toString())
             .discordId(UUID.randomUUID().toString())
             .discordChannel(UUID.randomUUID().toString())
-            .discordToken(UUID.randomUUID().toString());
+            .discordToken(UUID.randomUUID().toString())
+            .apiKey(UUID.randomUUID().toString());
     }
 }

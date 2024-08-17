@@ -27,6 +27,7 @@ type SettingFormGroupContent = {
   discordId: FormControl<ISetting['discordId']>;
   discordChannel: FormControl<ISetting['discordChannel']>;
   discordToken: FormControl<ISetting['discordToken']>;
+  apiKey: FormControl<ISetting['apiKey']>;
 };
 
 export type SettingFormGroup = FormGroup<SettingFormGroupContent>;
@@ -71,6 +72,9 @@ export class SettingFormService {
         validators: [Validators.required],
       }),
       discordToken: new FormControl(settingRawValue.discordToken, {
+        validators: [Validators.required],
+      }),
+      apiKey: new FormControl(settingRawValue.apiKey, {
         validators: [Validators.required],
       }),
     });

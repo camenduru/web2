@@ -57,6 +57,9 @@ class SettingResourceIT {
     private static final String DEFAULT_DISCORD_TOKEN = "AAAAAAAAAA";
     private static final String UPDATED_DISCORD_TOKEN = "BBBBBBBBBB";
 
+    private static final String DEFAULT_API_KEY = "AAAAAAAAAA";
+    private static final String UPDATED_API_KEY = "BBBBBBBBBB";
+
     private static final String ENTITY_API_URL = "/api/settings";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
 
@@ -89,7 +92,8 @@ class SettingResourceIT {
             .discordUsername(DEFAULT_DISCORD_USERNAME)
             .discordId(DEFAULT_DISCORD_ID)
             .discordChannel(DEFAULT_DISCORD_CHANNEL)
-            .discordToken(DEFAULT_DISCORD_TOKEN);
+            .discordToken(DEFAULT_DISCORD_TOKEN)
+            .apiKey(DEFAULT_API_KEY);
         return setting;
     }
 
@@ -109,7 +113,8 @@ class SettingResourceIT {
             .discordUsername(UPDATED_DISCORD_USERNAME)
             .discordId(UPDATED_DISCORD_ID)
             .discordChannel(UPDATED_DISCORD_CHANNEL)
-            .discordToken(UPDATED_DISCORD_TOKEN);
+            .discordToken(UPDATED_DISCORD_TOKEN)
+            .apiKey(UPDATED_API_KEY);
         return setting;
     }
 
@@ -299,6 +304,21 @@ class SettingResourceIT {
     }
 
     @Test
+    void checkApiKeyIsRequired() throws Exception {
+        long databaseSizeBeforeTest = getRepositoryCount();
+        // set the field null
+        setting.setApiKey(null);
+
+        // Create the Setting, which fails.
+
+        restSettingMockMvc
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(setting)))
+            .andExpect(status().isBadRequest());
+
+        assertSameRepositoryCount(databaseSizeBeforeTest);
+    }
+
+    @Test
     void getAllSettings() throws Exception {
         // Initialize the database
         insertedSetting = settingRepository.save(setting);
@@ -317,7 +337,8 @@ class SettingResourceIT {
             .andExpect(jsonPath("$.[*].discordUsername").value(hasItem(DEFAULT_DISCORD_USERNAME)))
             .andExpect(jsonPath("$.[*].discordId").value(hasItem(DEFAULT_DISCORD_ID)))
             .andExpect(jsonPath("$.[*].discordChannel").value(hasItem(DEFAULT_DISCORD_CHANNEL)))
-            .andExpect(jsonPath("$.[*].discordToken").value(hasItem(DEFAULT_DISCORD_TOKEN)));
+            .andExpect(jsonPath("$.[*].discordToken").value(hasItem(DEFAULT_DISCORD_TOKEN)))
+            .andExpect(jsonPath("$.[*].apiKey").value(hasItem(DEFAULT_API_KEY)));
     }
 
     @Test
@@ -339,7 +360,8 @@ class SettingResourceIT {
             .andExpect(jsonPath("$.discordUsername").value(DEFAULT_DISCORD_USERNAME))
             .andExpect(jsonPath("$.discordId").value(DEFAULT_DISCORD_ID))
             .andExpect(jsonPath("$.discordChannel").value(DEFAULT_DISCORD_CHANNEL))
-            .andExpect(jsonPath("$.discordToken").value(DEFAULT_DISCORD_TOKEN));
+            .andExpect(jsonPath("$.discordToken").value(DEFAULT_DISCORD_TOKEN))
+            .andExpect(jsonPath("$.apiKey").value(DEFAULT_API_KEY));
     }
 
     @Test
@@ -366,7 +388,8 @@ class SettingResourceIT {
             .discordUsername(UPDATED_DISCORD_USERNAME)
             .discordId(UPDATED_DISCORD_ID)
             .discordChannel(UPDATED_DISCORD_CHANNEL)
-            .discordToken(UPDATED_DISCORD_TOKEN);
+            .discordToken(UPDATED_DISCORD_TOKEN)
+            .apiKey(UPDATED_API_KEY);
 
         restSettingMockMvc
             .perform(
@@ -474,7 +497,8 @@ class SettingResourceIT {
             .discordUsername(UPDATED_DISCORD_USERNAME)
             .discordId(UPDATED_DISCORD_ID)
             .discordChannel(UPDATED_DISCORD_CHANNEL)
-            .discordToken(UPDATED_DISCORD_TOKEN);
+            .discordToken(UPDATED_DISCORD_TOKEN)
+            .apiKey(UPDATED_API_KEY);
 
         restSettingMockMvc
             .perform(

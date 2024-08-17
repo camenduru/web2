@@ -31,4 +31,7 @@ public interface SettingRepository extends MongoRepository<Setting, String> {
 
     @Query("{'login': ?0}")
     Optional<Setting> findOneByLogin(String login);
+
+    @Query("{'api_key': ?0}")
+    Optional<Setting> findOneByApiKey(String api_key);
 }

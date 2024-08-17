@@ -63,6 +63,9 @@ public class UserService {
     @Value("${camenduru.web2.default.discord.token}")
     private String defaultDiscordToken;
 
+    @Value("${com_camenduru_web2_default_api_key}")
+    private String defaultApiKey;
+
     @Value("${camenduru.web2.default.free.total}")
     private String defaultFreeTotal;
 
@@ -99,6 +102,7 @@ public class UserService {
                     setting.setDiscordId(defaultDiscordId);
                     setting.setDiscordChannel(defaultDiscordChannel);
                     setting.setDiscordToken(defaultDiscordToken);
+                    setting.setApiKey(defaultApiKey);
                     setting.setLogin(user.getLogin());
                     setting.setTotal(defaultFreeTotal);
                     setting.setMembership(Membership.FREE);

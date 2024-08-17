@@ -202,6 +202,7 @@ camenduru:
   web2.default.discord.id: ${com_camenduru_web2_default_discord_id}
   web2.default.discord.channel: ${com_camenduru_web2_default_discord_channel}
   web2.default.discord.token: ${com_camenduru_web2_default_discord_token}
+  web2.default.api.key: ${com_camenduru_web2_default_api_key}
   web2.default.free.total: ${com_camenduru_web2_default_free_total}
   web2.default.paid.total: ${com_camenduru_web2_default_paid_total}
   web2.default.min.total: ${com_camenduru_web2_default_min_total}

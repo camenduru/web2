@@ -19,8 +19,8 @@ import com.camenduru.web.service.MailService;
 import com.camenduru.web.service.UserService;
 import com.camenduru.web.service.chat.ChatRequestBody;
 import com.camenduru.web.service.dto.AdminUserDTO;
-import com.camenduru.web.service.dto.NotifyDTO;
 import com.camenduru.web.service.dto.PasswordChangeDTO;
+import com.camenduru.web.service.notify.NotifyRequestBody;
 import com.camenduru.web.web.rest.errors.*;
 import com.camenduru.web.web.rest.vm.KeyAndPasswordVM;
 import com.camenduru.web.web.rest.vm.ManagedUserVM;
@@ -149,7 +149,7 @@ public class AccountResource {
      */
     @PostMapping("/notify")
     public ResponseEntity<String> notifyAccount(
-        @RequestBody NotifyDTO notify,
+        @RequestBody NotifyRequestBody notify,
         @RequestHeader(value = "Authorization", required = true) String token
     ) {
         if (token.equals(webToken)) {
@@ -256,7 +256,7 @@ public class AccountResource {
         job.setTotal(setting.getTotal());
         job.setType(app.getType());
         job.setAmount(app.getAmount());
-        job.setResult(combinedJsonChat.get("messages").toString());
+        // job.setResult(combinedJsonChat.get("messages").toString());
         job.setResult(camenduruWebResult + "512x512" + camenduruWebResultSuffix);
         job.setCommand(combinedJsonChat.toString());
         job = jobRepository.save(job);
@@ -292,6 +292,52 @@ public class AccountResource {
         } else {
             return new ResponseEntity<String>("❌ Code Invalid", HttpStatus.OK);
         }
+    }
+
+    /**
+     * {@code POST  /v1} : API v1.
+     *
+     * @param key the activation key.
+     * @throws RuntimeException {@code 500 (Internal Server Error)} if the user couldn't be activated.
+     */
+    @PostMapping("/v1")
+    public ResponseEntity<String> apiV1(
+        @RequestBody String api_v1,
+        @RequestHeader(value = "Authorization", required = true) String api_key
+    ) {
+        Setting setting = settingRepository.findOneByApiKey(api_key).orElseThrow();
+        JsonObject jsonObject = JsonParser.parseString(api_v1).getAsJsonObject();
+        App app = appRepository.findOneByType(jsonObject.get("app").getAsString()).orElseThrow();
+        JsonObject command = jsonObject.getAsJsonObject("command");
+
+        int total = Integer.parseInt(setting.getTotal()) - Integer.parseInt(app.getAmount());
+
+        Job job = new Job();
+        job.setDate(Instant.now());
+        job.setStatus(JobStatus.WAITING);
+        job.setLogin(setting.getLogin());
+        job.setSource(JobSource.WEB);
+        job.setNotifyUri(setting.getNotifyUri());
+        job.setNotifyToken(setting.getNotifyToken());
+        job.setDiscordUsername(setting.getDiscordUsername());
+        job.setDiscordId(setting.getDiscordId());
+        job.setDiscordChannel(setting.getDiscordChannel());
+        job.setDiscordToken(setting.getDiscordToken());
+        job.setTotal(Integer.toString(total));
+        job.setType(app.getType());
+        job.setAmount(app.getAmount());
+        job.setResult(camenduruWebResult + "512x512" + camenduruWebResultSuffix);
+        job.setCommand(command.toString());
+        job = jobRepository.save(job);
+
+        setting.setTotal(Integer.toString(total));
+        settingRepository.save(setting);
+
+        JsonObject jsonResponse = new JsonObject();
+        jsonResponse.addProperty("jobId", job.getId());
+        jsonResponse.addProperty("status", "QUEUED");
+
+        return new ResponseEntity<String>(jsonResponse.toString(), HttpStatus.OK);
     }
 
     /**

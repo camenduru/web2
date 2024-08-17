@@ -1,6 +1,6 @@
-package com.camenduru.web.service.dto;
+package com.camenduru.web.service.notify;
 
-public class NotifyDTO {
+public class NotifyRequestBody {
 
     private String jobId;
     private String result;

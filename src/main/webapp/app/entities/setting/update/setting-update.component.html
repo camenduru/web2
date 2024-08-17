@@ -161,6 +161,18 @@
         </div>
       </div>
 
+      <div *jhiHasAnyAuthority="['ROLE_ADMIN', 'ROLE_PAID']" class="mb-3">
+        <label class="form-label" for="field_apiKey" jhiTranslate="web2App.setting.apiKey">Api Key</label>
+        <input type="text" class="form-control" name="apiKey" id="field_apiKey" data-cy="apiKey" formControlName="apiKey" />
+        @if (editForm.get('apiKey')!.invalid && (editForm.get('apiKey')!.dirty || editForm.get('apiKey')!.touched)) {
+          <div>
+            @if (editForm.get('apiKey')?.errors?.required) {
+              <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+            }
+          </div>
+        }
+      </div>
+
       <div>
         <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
           <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>

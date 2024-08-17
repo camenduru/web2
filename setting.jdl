@@ -1,0 +1,19 @@
+enum Membership {
+    FREE,
+    PAID
+}
+
+entity Setting {
+    login String required
+    total String required
+    membership Membership required
+    notifyUri String required
+    notifyToken String required
+    discordUsername String required
+    discordId String required
+    discordChannel String required
+    discordToken String required
+    apiKey String required
+}
+
+paginate all with pagination

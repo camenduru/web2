@@ -113,6 +113,7 @@ public class SettingResource {
             setting.notifyUri(currentSetting.getNotifyUri());
             setting.notifyToken(currentSetting.getNotifyToken());
             setting.discordToken(currentSetting.getDiscordToken());
+            setting.apiKey(currentSetting.getApiKey());
             setting = settingRepository.save(setting);
         }
         return ResponseEntity.ok()
@@ -180,6 +181,9 @@ public class SettingResource {
                     if (setting.getDiscordToken() != null) {
                         existingSetting.setDiscordToken(setting.getDiscordToken());
                     }
+                    if (setting.getApiKey() != null) {
+                        existingSetting.setApiKey(setting.getApiKey());
+                    }
 
                     return existingSetting;
                 })
@@ -212,6 +216,9 @@ public class SettingResource {
                     if (setting.getDiscordToken() != null) {
                         existingSetting.setDiscordToken(setting.getDiscordToken());
                     }
+                    if (setting.getApiKey() != null) {
+                        existingSetting.setApiKey(setting.getApiKey());
+                    }
 
                     return existingSetting;
                 })
@@ -226,6 +233,7 @@ public class SettingResource {
             setting.notifyUri(currentSetting.getNotifyUri());
             setting.notifyToken(currentSetting.getNotifyToken());
             setting.discordToken(currentSetting.getDiscordToken());
+            setting.apiKey(currentSetting.getApiKey());
             result = settingRepository
                 .findById(setting.getId())
                 .map(existingSetting -> {

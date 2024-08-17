@@ -55,7 +55,8 @@ public class SettingAsserts {
             .satisfies(e -> assertThat(e.getDiscordUsername()).as("check discordUsername").isEqualTo(actual.getDiscordUsername()))
             .satisfies(e -> assertThat(e.getDiscordId()).as("check discordId").isEqualTo(actual.getDiscordId()))
             .satisfies(e -> assertThat(e.getDiscordChannel()).as("check discordChannel").isEqualTo(actual.getDiscordChannel()))
-            .satisfies(e -> assertThat(e.getDiscordToken()).as("check discordToken").isEqualTo(actual.getDiscordToken()));
+            .satisfies(e -> assertThat(e.getDiscordToken()).as("check discordToken").isEqualTo(actual.getDiscordToken()))
+            .satisfies(e -> assertThat(e.getApiKey()).as("check apiKey").isEqualTo(actual.getApiKey()));
     }
 
     /**

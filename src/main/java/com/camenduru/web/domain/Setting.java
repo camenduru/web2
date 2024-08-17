@@ -55,6 +55,10 @@ public class Setting implements Serializable {
     @Field("discord_token")
     private String discordToken;
 
+    @NotNull
+    @Field("api_key")
+    private String apiKey;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public String getId() {
@@ -187,6 +191,19 @@ public class Setting implements Serializable {
         this.discordToken = discordToken;
     }
 
+    public String getApiKey() {
+        return this.apiKey;
+    }
+
+    public Setting apiKey(String apiKey) {
+        this.setApiKey(apiKey);
+        return this;
+    }
+
+    public void setApiKey(String apiKey) {
+        this.apiKey = apiKey;
+    }
+
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
@@ -220,6 +237,7 @@ public class Setting implements Serializable {
             ", discordId='" + getDiscordId() + "'" +
             ", discordChannel='" + getDiscordChannel() + "'" +
             ", discordToken='" + getDiscordToken() + "'" +
+            ", apiKey='" + getApiKey() + "'" +
             "}";
     }
 }
