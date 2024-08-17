@@ -1,0 +1,36 @@
+enum JobStatus {
+    WAITING,
+    WORKING,
+    DONE,
+    FAILED,
+    CANCELED,
+    EXPIRED
+}
+
+enum JobSource {
+    WEB,
+    IOS,
+    ANDROID,
+    DISCORD,
+    API
+}
+
+entity Job {
+    login String required
+    date Instant required
+    status JobStatus required
+    type String required
+    command String required
+    amount String required
+    notifyUri String required
+    notifyToken String required
+    discordUsername String required
+    discordId String required
+    discordChannel String required
+    discordToken String required
+    source JobSource required
+    total String required
+    result String required
+}
+
+paginate all with pagination

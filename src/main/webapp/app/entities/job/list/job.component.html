@@ -126,7 +126,7 @@
               <td *jhiHasAnyAuthority="'ROLE_ADMIN'">{{ job.login }}</td>
               <td>{{ job.date | formatMediumDatetime }}</td>
               <td [jhiTranslate]="'web2App.JobSource.' + (job.source ?? 'null')">
-                {{ { null: '', WEB: 'WEB', IOS: 'IOS', ANDROID: 'ANDROID', DISCORD: 'DISCORD' }[job.source ?? 'null'] }}
+                {{ { null: '', WEB: 'WEB', IOS: 'IOS', ANDROID: 'ANDROID', DISCORD: 'DISCORD', API: 'API' }[job.source ?? 'null'] }}
               </td>
               <td [jhiTranslate]="'web2App.JobStatus.' + (job.status ?? 'null')">
                 {{

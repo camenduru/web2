@@ -90,8 +90,8 @@ export class JobService {
     return o1 && o2 ? this.getJobIdentifier(o1) === this.getJobIdentifier(o2) : o1 === o2;
   }
 
-  addJobToCollectionIfMissing<App extends Pick<IJob, 'id'>>(jobCollection: App[], ...jobsToCheck: (App | null | undefined)[]): App[] {
-    const jobs: App[] = jobsToCheck.filter(isPresent);
+  addJobToCollectionIfMissing<Type extends Pick<IJob, 'id'>>(jobCollection: Type[], ...jobsToCheck: (Type | null | undefined)[]): Type[] {
+    const jobs: Type[] = jobsToCheck.filter(isPresent);
     if (jobs.length > 0) {
       const jobCollectionIdentifiers = jobCollection.map(jobItem => this.getJobIdentifier(jobItem));
       const jobsToAdd = jobs.filter(jobItem => {

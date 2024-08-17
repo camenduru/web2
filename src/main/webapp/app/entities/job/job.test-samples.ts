@@ -16,7 +16,7 @@ export const sampleWithRequiredData: IJob = {
   discordId: 'than concrete',
   discordChannel: 'hence',
   discordToken: 'disguised',
-  source: 'DISCORD',
+  source: 'API',
   total: 'hmph hmph pfft',
   result: 'altruistic',
 };
@@ -35,7 +35,7 @@ export const sampleWithPartialData: IJob = {
   discordId: 'whenever',
   discordChannel: 'emulsify',
   discordToken: 'hm meaningfully',
-  source: 'DISCORD',
+  source: 'API',
   total: 'vast',
   result: 'wassail',
 };
@@ -54,7 +54,7 @@ export const sampleWithFullData: IJob = {
   discordId: 'winner short-term',
   discordChannel: 'extremely coffee even',
   discordToken: 'able',
-  source: 'DISCORD',
+  source: 'API',
   total: 'unaccountably',
   result: 'disinherit pitcher',
 };

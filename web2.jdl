@@ -11,7 +11,8 @@ enum JobSource {
     WEB,
     IOS,
     ANDROID,
-    DISCORD
+    DISCORD,
+    API
 }
 
 enum Membership {

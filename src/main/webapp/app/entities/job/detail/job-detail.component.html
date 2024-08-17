@@ -76,7 +76,7 @@
           <dt><span jhiTranslate="web2App.job.source">Source</span></dt>
           <dd>
             <span [jhiTranslate]="'web2App.JobSource.' + (job()!.source ?? 'null')">{{
-              { null: '', WEB: 'WEB', IOS: 'IOS', ANDROID: 'ANDROID', DISCORD: 'DISCORD' }[job()!.source ?? 'null']
+              { null: '', WEB: 'WEB', IOS: 'IOS', ANDROID: 'ANDROID', DISCORD: 'DISCORD', API: 'API' }[job()!.source ?? 'null']
             }}</span>
           </dd>
           <dt><span jhiTranslate="web2App.job.total">Total</span></dt>

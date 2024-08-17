@@ -6,4 +6,6 @@ export enum JobSource {
   ANDROID = 'ANDROID',
 
   DISCORD = 'DISCORD',
+
+  API = 'API',
 }

@@ -8,4 +8,5 @@ public enum JobSource {
     IOS,
     ANDROID,
     DISCORD,
+    API,
 }

@@ -69,7 +69,7 @@
       "fieldName": "source",
       "fieldType": "JobSource",
       "fieldValidateRules": ["required"],
-      "fieldValues": "WEB,IOS,ANDROID,DISCORD"
+      "fieldValues": "WEB,IOS,ANDROID,DISCORD,API"
     },
     {
       "fieldName": "total",

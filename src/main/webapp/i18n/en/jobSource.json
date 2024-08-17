@@ -5,7 +5,8 @@
       "WEB": "WEB",
       "IOS": "IOS",
       "ANDROID": "ANDROID",
-      "DISCORD": "DISCORD"
+      "DISCORD": "DISCORD",
+      "API": "API"
     }
   }
 }
