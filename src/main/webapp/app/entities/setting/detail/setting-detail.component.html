@@ -53,8 +53,8 @@
           <dd *jhiHasAnyAuthority="['ROLE_ADMIN', 'ROLE_PAID']">
             <span>{{ setting()!.discordToken }}</span>
           </dd>
-          <dt *jhiHasAnyAuthority="['ROLE_ADMIN', 'ROLE_PAID']"><span jhiTranslate="web2App.setting.apiKey">Api Key</span></dt>
-          <dd *jhiHasAnyAuthority="['ROLE_ADMIN', 'ROLE_PAID']">
+          <dt *jhiHasAnyAuthority="'ROLE_ADMIN'"><span jhiTranslate="web2App.setting.apiKey">Api Key</span></dt>
+          <dd *jhiHasAnyAuthority="'ROLE_ADMIN'">
             <span>{{ setting()!.apiKey }}</span>
           </dd>
         </dl>

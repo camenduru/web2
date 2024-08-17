@@ -102,6 +102,7 @@ public class SettingResource {
             setting.login(currentSetting.getLogin());
             setting.total(currentSetting.getTotal());
             setting.membership(currentSetting.getMembership());
+            setting.apiKey(currentSetting.getApiKey());
             setting = settingRepository.save(setting);
         } else {
             Setting currentSetting = settingRepository
@@ -195,6 +196,7 @@ public class SettingResource {
             setting.login(currentSetting.getLogin());
             setting.total(currentSetting.getTotal());
             setting.membership(currentSetting.getMembership());
+            setting.apiKey(currentSetting.getApiKey());
             result = settingRepository
                 .findById(setting.getId())
                 .map(existingSetting -> {
@@ -215,9 +217,6 @@ public class SettingResource {
                     }
                     if (setting.getDiscordToken() != null) {
                         existingSetting.setDiscordToken(setting.getDiscordToken());
-                    }
-                    if (setting.getApiKey() != null) {
-                        existingSetting.setApiKey(setting.getApiKey());
                     }
 
                     return existingSetting;

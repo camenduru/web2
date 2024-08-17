@@ -12,6 +12,8 @@ import com.camenduru.web.security.AuthoritiesConstants;
 import com.camenduru.web.security.SecurityUtils;
 import com.camenduru.web.service.dto.AdminUserDTO;
 import com.camenduru.web.service.dto.UserDTO;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -63,9 +65,6 @@ public class UserService {
     @Value("${camenduru.web2.default.discord.token}")
     private String defaultDiscordToken;
 
-    @Value("${com_camenduru_web2_default_api_key}")
-    private String defaultApiKey;
-
     @Value("${camenduru.web2.default.free.total}")
     private String defaultFreeTotal;
 
@@ -102,7 +101,7 @@ public class UserService {
                     setting.setDiscordId(defaultDiscordId);
                     setting.setDiscordChannel(defaultDiscordChannel);
                     setting.setDiscordToken(defaultDiscordToken);
-                    setting.setApiKey(defaultApiKey);
+                    setting.setApiKey(generateRandomMD5Hash(64));
                     setting.setLogin(user.getLogin());
                     setting.setTotal(defaultFreeTotal);
                     setting.setMembership(Membership.FREE);
@@ -398,6 +397,25 @@ public class UserService {
         Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE)).evict(user.getLogin());
         if (user.getEmail() != null) {
             Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE)).evict(user.getEmail());
+        }
+    }
+
+    private static String generateRandomMD5Hash(int length) {
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        Random random = new Random();
+        StringBuilder sb = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            sb.append(characters.charAt(random.nextInt(characters.length())));
+        }
+
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] digest = md.digest(sb.toString().getBytes());
+            StringBuilder hashString = new StringBuilder();
+            for (byte b : digest) hashString.append(String.format("%02x", b));
+            return hashString.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
         }
     }
 }
