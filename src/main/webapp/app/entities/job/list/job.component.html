@@ -51,6 +51,13 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
+            <th scope="col" jhiSortBy="source">
+              <div class="d-flex">
+                <span jhiTranslate="web2App.job.source">Source</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
             <th scope="col" jhiSortBy="status">
               <div class="d-flex">
                 <span jhiTranslate="web2App.job.status">Status</span>
@@ -118,6 +125,9 @@
               </td>
               <td *jhiHasAnyAuthority="'ROLE_ADMIN'">{{ job.login }}</td>
               <td>{{ job.date | formatMediumDatetime }}</td>
+              <td [jhiTranslate]="'web2App.JobSource.' + (job.source ?? 'null')">
+                {{ { null: '', WEB: 'WEB', IOS: 'IOS', ANDROID: 'ANDROID', DISCORD: 'DISCORD' }[job.source ?? 'null'] }}
+              </td>
               <td [jhiTranslate]="'web2App.JobStatus.' + (job.status ?? 'null')">
                 {{
                   {

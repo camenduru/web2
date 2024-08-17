@@ -75,12 +75,6 @@ public class JobResource {
     @Value("${camenduru.web2.default.min.total}")
     private String camenduruWebMinTotal;
 
-    @Value("${camenduru.web2.default.notify.uri}")
-    private String defaultNotifyUri;
-
-    @Value("${camenduru.web2.default.notify.token}")
-    private String defaultNotifyToken;
-
     private final JobRepository jobRepository;
     private final SettingRepository settingRepository;
     private final UserRepository userRepository;
@@ -112,132 +106,114 @@ public class JobResource {
     @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<Job> createJob(@Valid @RequestBody Job job) throws URISyntaxException {
         Setting setting = settingRepository.findAllByUserIsCurrentUser(SecurityUtils.getCurrentUserLogin().orElseThrow()).orElseThrow();
+        int total = Integer.parseInt(setting.getTotal());
+        App app = appRepository.findOneByType(job.getType()).orElseThrow();
+        int amount = Integer.parseInt(app.getAmount());
         String destination = String.format("/notify/%s", setting.getLogin());
+        int cooldown = Integer.parseInt(app.getCooldown());
+        Date date = new Date(System.currentTimeMillis() - (cooldown * 1000));
 
-        if (!setting.getNotifyUri().equals(defaultNotifyUri)) {
-            String result = String.format(
-                """
-                    Oops! It looks like Tost is currently set to API mode. To use Tost with this webpage, please update your Tost settings as follows: <br>
-                    <span class='text-info' style='font-weight: bold;'>- Notify Uri:</span> <span class='text-danger' style='font-weight: bold;'>%s</span> <br>
-                    <span class='text-info' style='font-weight: bold;'>- Notify Token:</span> <span class='text-danger' style='font-weight: bold;'>%s</span> <br>
-                """,
-                defaultNotifyUri,
-                defaultNotifyToken
-            );
-            String payload = String.format("%s", result);
-            simpMessageSendingOperations.convertAndSend(destination, payload);
-            return ResponseEntity.ok().body(null);
-        } else {
-            int total = Integer.parseInt(setting.getTotal());
-            App app = appRepository.findOneByType(job.getType()).orElseThrow();
-            int amount = Integer.parseInt(app.getAmount());
-            int cooldown = Integer.parseInt(app.getCooldown());
-            Date date = new Date(System.currentTimeMillis() - (cooldown * 1000));
-
-            if (SecurityUtils.hasCurrentUserThisAuthority(AuthoritiesConstants.ADMIN)) {
+        if (SecurityUtils.hasCurrentUserThisAuthority(AuthoritiesConstants.ADMIN)) {
+            log.debug("REST request to save Job : {}", job);
+            if (job.getId() != null) {
+                throw new BadRequestAlertException("A new job cannot already have an ID", ENTITY_NAME, "idexists");
+            }
+            job = jobRepository.save(job);
+            return ResponseEntity.created(new URI("/api/jobs/" + job.getId()))
+                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, job.getId()))
+                .body(job);
+        } else if (total >= amount) {
+            if (
+                jobRepository.findAllByUserNonExpiredJobsNewerThanTheDate(SecurityUtils.getCurrentUserLogin().orElseThrow(), date).size() >
+                0
+            ) {
+                String result = String.format("Oops! Cooldown is %s seconds.", cooldown);
+                String payload = String.format("%s", result);
+                simpMessageSendingOperations.convertAndSend(destination, payload);
+                // throw new BadRequestAlertException("User in cooldown state.", ENTITY_NAME, "Cooldown State");
+                return ResponseEntity.ok().body(null);
+            } else {
                 log.debug("REST request to save Job : {}", job);
                 if (job.getId() != null) {
                     throw new BadRequestAlertException("A new job cannot already have an ID", ENTITY_NAME, "idexists");
                 }
-                job = jobRepository.save(job);
-                return ResponseEntity.created(new URI("/api/jobs/" + job.getId()))
-                    .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, job.getId()))
-                    .body(job);
-            } else if (total >= amount) {
+                User user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin().orElseThrow()).orElseThrow();
                 if (
-                    jobRepository
-                        .findAllByUserNonExpiredJobsNewerThanTheDate(SecurityUtils.getCurrentUserLogin().orElseThrow(), date)
-                        .size() >
-                    0
+                    (!user.getAuthorities().contains(new Authority().name("ROLE_PAID")) && app.getIsFree()) ||
+                    user.getAuthorities().contains(new Authority().name("ROLE_PAID"))
                 ) {
-                    String result = String.format("Oops! Cooldown is %s seconds.", cooldown);
-                    String payload = String.format("%s", result);
-                    simpMessageSendingOperations.convertAndSend(destination, payload);
-                    // throw new BadRequestAlertException("User in cooldown state.", ENTITY_NAME, "Cooldown State");
-                    return ResponseEntity.ok().body(null);
-                } else {
-                    log.debug("REST request to save Job : {}", job);
-                    if (job.getId() != null) {
-                        throw new BadRequestAlertException("A new job cannot already have an ID", ENTITY_NAME, "idexists");
-                    }
-                    User user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin().orElseThrow()).orElseThrow();
-                    if (
-                        (!user.getAuthorities().contains(new Authority().name("ROLE_PAID")) && app.getIsFree()) ||
-                        user.getAuthorities().contains(new Authority().name("ROLE_PAID"))
-                    ) {
-                        int width = 512;
-                        int height = 512;
-                        String jsonString = job.getCommand();
-                        try {
-                            JsonElement jsonElement = JsonParser.parseString(jsonString);
-                            if (jsonElement.isJsonObject()) {
-                                JsonObject jsonObject = jsonElement.getAsJsonObject();
-                                if (jsonObject.has("input_image_check")) {
-                                    String input_image = jsonObject.get("input_image_check").getAsString();
-                                    URL image_url;
-                                    BufferedImage image;
-                                    try {
-                                        image_url = new URL(input_image);
-                                        image = ImageIO.read(image_url);
-                                        width = image.getWidth();
-                                        height = image.getHeight();
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
+                    int width = 512;
+                    int height = 512;
+                    String jsonString = job.getCommand();
+                    try {
+                        JsonElement jsonElement = JsonParser.parseString(jsonString);
+                        if (jsonElement.isJsonObject()) {
+                            JsonObject jsonObject = jsonElement.getAsJsonObject();
+                            if (jsonObject.has("input_image_check")) {
+                                String input_image = jsonObject.get("input_image_check").getAsString();
+                                URL image_url;
+                                BufferedImage image;
+                                try {
+                                    image_url = new URL(input_image);
+                                    image = ImageIO.read(image_url);
+                                    width = image.getWidth();
+                                    height = image.getHeight();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            } else {
+                                for (String key : jsonObject.keySet()) {
+                                    if (key.startsWith("width")) {
+                                        width = jsonObject.get(key).getAsInt();
                                     }
-                                } else {
-                                    for (String key : jsonObject.keySet()) {
-                                        if (key.startsWith("width")) {
-                                            width = jsonObject.get(key).getAsInt();
-                                        }
-                                        if (key.startsWith("height")) {
-                                            height = jsonObject.get(key).getAsInt();
-                                        }
+                                    if (key.startsWith("height")) {
+                                        height = jsonObject.get(key).getAsInt();
                                     }
                                 }
                             }
-                        } catch (JsonSyntaxException e) {
-                            System.err.println("Invalid JSON syntax: " + e.getMessage());
                         }
-                        job.setResult(camenduruWebResult + width + "x" + height + camenduruWebResultSuffix);
-                        job.setType(app.getType());
-                        job.setAmount(app.getAmount());
-                        job.setNotifyUri(setting.getNotifyUri());
-                        job.setNotifyToken(setting.getNotifyToken());
-                        job.setDiscordUsername(setting.getDiscordUsername());
-                        job.setDiscordId(setting.getDiscordId());
-                        job.setDiscordChannel(setting.getDiscordChannel());
-                        job.setDiscordToken(setting.getDiscordToken());
-                        job.setDate(Instant.now());
-                        job.setStatus(JobStatus.WAITING);
-                        job.setLogin(SecurityUtils.getCurrentUserLogin().orElseThrow());
-                        job.setSource(JobSource.WEB);
-                        job.setTotal(setting.getTotal());
-                        job = jobRepository.save(job);
-                        return ResponseEntity.created(new URI("/api/jobs/" + job.getId()))
-                            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, job.getId()))
-                            .body(job);
-                    } else {
-                        throw new BadRequestAlertException("User authority and job authority mismatch.", ENTITY_NAME, "Invalid Authority");
+                    } catch (JsonSyntaxException e) {
+                        System.err.println("Invalid JSON syntax: " + e.getMessage());
                     }
+                    job.setResult(camenduruWebResult + width + "x" + height + camenduruWebResultSuffix);
+                    job.setType(app.getType());
+                    job.setAmount(app.getAmount());
+                    job.setNotifyUri(setting.getNotifyUri());
+                    job.setNotifyToken(setting.getNotifyToken());
+                    job.setDiscordUsername(setting.getDiscordUsername());
+                    job.setDiscordId(setting.getDiscordId());
+                    job.setDiscordChannel(setting.getDiscordChannel());
+                    job.setDiscordToken(setting.getDiscordToken());
+                    job.setDate(Instant.now());
+                    job.setStatus(JobStatus.WAITING);
+                    job.setLogin(SecurityUtils.getCurrentUserLogin().orElseThrow());
+                    job.setSource(JobSource.WEB);
+                    job.setTotal(setting.getTotal());
+                    job = jobRepository.save(job);
+                    return ResponseEntity.created(new URI("/api/jobs/" + job.getId()))
+                        .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, job.getId()))
+                        .body(job);
+                } else {
+                    throw new BadRequestAlertException("User authority and job authority mismatch.", ENTITY_NAME, "Invalid Authority");
                 }
-            } else {
-                String result = String.format(
-                    """
-                        Oops! Your balance is insufficient. If you want a daily wallet balance of
-                        <span class='text-info' style='font-weight: bold;'>%s</span> ($%s/month), please subscribe to
-                        <a class='text-info' style='font-weight: bold;' href='https://github.com/sponsors/camenduru'>GitHub Sponsors</a> or
-                        <a class='text-info' style='font-weight: bold;' href='https://www.patreon.com/camenduru'>Patreon</a>,
-                        or wait for the daily free <span class='text-info' style='font-weight: bold;'>%s</span> Tost wallet balance.
-                    """,
-                    camenduruWebPaidTotal,
-                    camenduruWebMinTotal,
-                    camenduruWebFreeTotal
-                );
-                String payload = String.format("%s", result);
-                simpMessageSendingOperations.convertAndSend(destination, payload);
-                // throw new BadRequestAlertException("User balance is insufficient.", ENTITY_NAME, "Insufficient Balance");
-                return ResponseEntity.ok().body(null);
             }
+        } else {
+            String result = String.format(
+                """
+                    Oops! Your balance is insufficient. If you want a daily wallet balance of
+                    <span class='text-info' style='font-weight: bold;'>%s</span> ($%s/month), please subscribe to
+                    <a class='text-info' style='font-weight: bold;' href='https://github.com/sponsors/camenduru'>GitHub Sponsors</a> or
+                    <a class='text-info' style='font-weight: bold;' href='https://www.patreon.com/camenduru'>Patreon</a>,
+                    or wait for the daily free <span class='text-info' style='font-weight: bold;'>%s</span> Tost wallet balance.
+                """,
+                camenduruWebPaidTotal,
+                camenduruWebMinTotal,
+                camenduruWebFreeTotal
+            );
+            String payload = String.format("%s", result);
+            simpMessageSendingOperations.convertAndSend(destination, payload);
+            // throw new BadRequestAlertException("User balance is insufficient.", ENTITY_NAME, "Insufficient Balance");
+            return ResponseEntity.ok().body(null);
         }
     }
 

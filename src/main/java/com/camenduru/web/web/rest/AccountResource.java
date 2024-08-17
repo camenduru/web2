@@ -88,12 +88,6 @@ public class AccountResource {
     @Value("${camenduru.web2.default.result.suffix}")
     private String camenduruWebResultSuffix;
 
-    @Value("${camenduru.web2.default.notify.uri}")
-    private String defaultNotifyUri;
-
-    @Value("${camenduru.web2.default.notify.token}")
-    private String defaultNotifyToken;
-
     public AccountResource(
         UserRepository userRepository,
         UserService userService,
@@ -234,59 +228,44 @@ public class AccountResource {
     public ResponseEntity<String> chatAccount(@RequestBody ChatRequestBody chat) {
         String login = SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new AccountResourceException("Current user login not found"));
         Setting setting = settingRepository.findAllByUserIsCurrentUser(SecurityUtils.getCurrentUserLogin().orElseThrow()).orElseThrow();
-        String destination = String.format("/notify/%s", login);
-        if (!setting.getNotifyUri().equals(defaultNotifyUri)) {
-            String result = String.format(
-                """
-                    Oops! It looks like Tost is currently set to API mode. To use Tost with this webpage, please update your Tost settings as follows: <br>
-                    <span class='text-info' style='font-weight: bold;'>- Notify Uri:</span> <span class='text-danger' style='font-weight: bold;'>%s</span> <br>
-                    <span class='text-info' style='font-weight: bold;'>- Notify Token:</span> <span class='text-danger' style='font-weight: bold;'>%s</span> <br>
-                """,
-                defaultNotifyUri,
-                defaultNotifyToken
-            );
-            String payload = String.format("%s", result);
-            simpMessageSendingOperations.convertAndSend(destination, payload);
-            return ResponseEntity.ok().body(null);
-        } else {
-            JsonObject jsonModel = JsonParser.parseString(chat.getModel()).getAsJsonObject();
-            App app = appRepository.findOneByType(jsonModel.get("model").getAsString()).orElseThrow();
+        JsonObject jsonModel = JsonParser.parseString(chat.getModel()).getAsJsonObject();
+        App app = appRepository.findOneByType(jsonModel.get("model").getAsString()).orElseThrow();
 
-            JsonObject combinedJsonChat = new JsonObject();
-            try {
-                JsonObject jsonChat = JsonParser.parseString(new ObjectMapper().writeValueAsString(chat)).getAsJsonObject();
-                JsonArray jsonChatMessages = jsonChat.get("messages").getAsJsonArray();
-                JsonObject jsonChatModel = JsonParser.parseString(jsonChat.get("model").getAsString()).getAsJsonObject();
-                combinedJsonChat.add("messages", jsonChatMessages);
-                combinedJsonChat.add("model", jsonChatModel);
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
-
-            Job job = new Job();
-            job.setDate(Instant.now());
-            job.setStatus(JobStatus.WAITING);
-            job.setLogin(login);
-            job.setSource(JobSource.WEB);
-            job.setNotifyUri(setting.getNotifyUri());
-            job.setNotifyToken(setting.getNotifyToken());
-            job.setDiscordUsername(setting.getDiscordUsername());
-            job.setDiscordId(setting.getDiscordId());
-            job.setDiscordChannel(setting.getDiscordChannel());
-            job.setDiscordToken(setting.getDiscordToken());
-            job.setTotal(setting.getTotal());
-            job.setType(app.getType());
-            job.setAmount(app.getAmount());
-            // job.setResult(combinedJsonChat.get("messages").toString());
-            job.setResult(camenduruWebResult + "512x512" + camenduruWebResultSuffix);
-            job.setCommand(combinedJsonChat.toString());
-            job = jobRepository.save(job);
-
-            String payload = String.format("%s", "DONE");
-            simpMessageSendingOperations.convertAndSend(destination, payload);
-
-            return new ResponseEntity<String>("✔ Valid", HttpStatus.OK);
+        JsonObject combinedJsonChat = new JsonObject();
+        try {
+            JsonObject jsonChat = JsonParser.parseString(new ObjectMapper().writeValueAsString(chat)).getAsJsonObject();
+            JsonArray jsonChatMessages = jsonChat.get("messages").getAsJsonArray();
+            JsonObject jsonChatModel = JsonParser.parseString(jsonChat.get("model").getAsString()).getAsJsonObject();
+            combinedJsonChat.add("messages", jsonChatMessages);
+            combinedJsonChat.add("model", jsonChatModel);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
         }
+
+        Job job = new Job();
+        job.setDate(Instant.now());
+        job.setStatus(JobStatus.WAITING);
+        job.setLogin(login);
+        job.setSource(JobSource.WEB);
+        job.setNotifyUri(setting.getNotifyUri());
+        job.setNotifyToken(setting.getNotifyToken());
+        job.setDiscordUsername(setting.getDiscordUsername());
+        job.setDiscordId(setting.getDiscordId());
+        job.setDiscordChannel(setting.getDiscordChannel());
+        job.setDiscordToken(setting.getDiscordToken());
+        job.setTotal(setting.getTotal());
+        job.setType(app.getType());
+        job.setAmount(app.getAmount());
+        // job.setResult(combinedJsonChat.get("messages").toString());
+        job.setResult(camenduruWebResult + "512x512" + camenduruWebResultSuffix);
+        job.setCommand(combinedJsonChat.toString());
+        job = jobRepository.save(job);
+
+        String destination = String.format("/notify/%s", login);
+        String payload = String.format("%s", "DONE");
+        simpMessageSendingOperations.convertAndSend(destination, payload);
+
+        return new ResponseEntity<String>("✔ Valid", HttpStatus.OK);
     }
 
     /**
@@ -331,8 +310,6 @@ public class AccountResource {
         App app = appRepository.findOneByType(jsonObject.get("app").getAsString()).orElseThrow();
         JsonObject command = jsonObject.getAsJsonObject("command");
 
-        int total = Integer.parseInt(setting.getTotal()) - Integer.parseInt(app.getAmount());
-
         Job job = new Job();
         job.setDate(Instant.now());
         job.setStatus(JobStatus.WAITING);
@@ -344,20 +321,16 @@ public class AccountResource {
         job.setDiscordId(setting.getDiscordId());
         job.setDiscordChannel(setting.getDiscordChannel());
         job.setDiscordToken(setting.getDiscordToken());
-        job.setTotal(Integer.toString(total));
+        job.setTotal(setting.getTotal());
         job.setType(app.getType());
         job.setAmount(app.getAmount());
         job.setResult(camenduruWebResult + "512x512" + camenduruWebResultSuffix);
         job.setCommand(command.toString());
         job = jobRepository.save(job);
 
-        setting.setTotal(Integer.toString(total));
-        settingRepository.save(setting);
-
         JsonObject jsonResponse = new JsonObject();
         jsonResponse.addProperty("jobId", job.getId());
         jsonResponse.addProperty("status", "QUEUED");
-
         return new ResponseEntity<String>(jsonResponse.toString(), HttpStatus.OK);
     }
 

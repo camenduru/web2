@@ -99,7 +99,7 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
-            <th *jhiHasAnyAuthority="['ROLE_ADMIN', 'ROLE_PAID']" scope="col" jhiSortBy="apiKey">
+            <th scope="col" jhiSortBy="apiKey">
               <div class="d-flex">
                 <span jhiTranslate="web2App.setting.apiKey">Api Key</span>
 
@@ -123,7 +123,7 @@
               <td>{{ setting.discordId }}</td>
               <td>{{ setting.discordChannel }}</td>
               <td *jhiHasAnyAuthority="['ROLE_ADMIN', 'ROLE_PAID']">{{ setting.discordToken }}</td>
-              <td *jhiHasAnyAuthority="['ROLE_ADMIN', 'ROLE_PAID']">{{ setting.apiKey }}</td>
+              <td>{{ setting.apiKey }}</td>
               <td class="text-end">
                 <div class="btn-group">
                   <a
