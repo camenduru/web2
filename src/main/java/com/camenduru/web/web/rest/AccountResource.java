@@ -88,6 +88,15 @@ public class AccountResource {
     @Value("${camenduru.web2.default.result.suffix}")
     private String camenduruWebResultSuffix;
 
+    @Value("${camenduru.web2.default.free.total}")
+    private String camenduruWebFreeTotal;
+
+    @Value("${camenduru.web2.default.paid.total}")
+    private String camenduruWebPaidTotal;
+
+    @Value("${camenduru.web2.default.min.total}")
+    private String camenduruWebMinTotal;
+
     public AccountResource(
         UserRepository userRepository,
         UserService userService,
@@ -309,29 +318,60 @@ public class AccountResource {
         JsonObject jsonObject = JsonParser.parseString(api_v1).getAsJsonObject();
         App app = appRepository.findOneByType(jsonObject.get("app").getAsString()).orElseThrow();
         JsonObject command = jsonObject.getAsJsonObject("command");
+        int cooldown = Integer.parseInt(app.getCooldown());
+        int amount = Integer.parseInt(app.getAmount());
+        int total = Integer.parseInt(setting.getTotal());
+        Date date = new Date(System.currentTimeMillis() - (cooldown * 1000));
 
-        Job job = new Job();
-        job.setDate(Instant.now());
-        job.setStatus(JobStatus.WAITING);
-        job.setLogin(setting.getLogin());
-        job.setSource(JobSource.API);
-        job.setNotifyUri(setting.getNotifyUri());
-        job.setNotifyToken(setting.getNotifyToken());
-        job.setDiscordUsername(setting.getDiscordUsername());
-        job.setDiscordId(setting.getDiscordId());
-        job.setDiscordChannel(setting.getDiscordChannel());
-        job.setDiscordToken(setting.getDiscordToken());
-        job.setTotal(setting.getTotal());
-        job.setType(app.getType());
-        job.setAmount(app.getAmount());
-        job.setResult(camenduruWebResult + "512x512" + camenduruWebResultSuffix);
-        job.setCommand(command.toString());
-        job = jobRepository.save(job);
+        if (total >= amount) {
+            if (jobRepository.findAllByUserNonExpiredJobsNewerThanTheDate(setting.getLogin(), date).size() > 0) {
+                String message = String.format("Oops! Cooldown is %s seconds.", cooldown);
+                JsonObject jsonResponse = new JsonObject();
+                jsonResponse.addProperty("message", message);
+                jsonResponse.addProperty("status", "COOLDOWN");
+                return new ResponseEntity<String>(jsonResponse.toString(), HttpStatus.OK);
+            } else {
+                Job job = new Job();
+                job.setDate(Instant.now());
+                job.setStatus(JobStatus.WAITING);
+                job.setLogin(setting.getLogin());
+                job.setSource(JobSource.API);
+                job.setNotifyUri(setting.getNotifyUri());
+                job.setNotifyToken(setting.getNotifyToken());
+                job.setDiscordUsername(setting.getDiscordUsername());
+                job.setDiscordId(setting.getDiscordId());
+                job.setDiscordChannel(setting.getDiscordChannel());
+                job.setDiscordToken(setting.getDiscordToken());
+                job.setTotal(setting.getTotal());
+                job.setType(app.getType());
+                job.setAmount(app.getAmount());
+                job.setResult(camenduruWebResult + "512x512" + camenduruWebResultSuffix);
+                job.setCommand(command.toString());
+                job = jobRepository.save(job);
 
-        JsonObject jsonResponse = new JsonObject();
-        jsonResponse.addProperty("jobId", job.getId());
-        jsonResponse.addProperty("status", "QUEUED");
-        return new ResponseEntity<String>(jsonResponse.toString(), HttpStatus.OK);
+                JsonObject jsonResponse = new JsonObject();
+                jsonResponse.addProperty("jobId", job.getId());
+                jsonResponse.addProperty("status", "QUEUED");
+                return new ResponseEntity<String>(jsonResponse.toString(), HttpStatus.OK);
+            }
+        } else {
+            String message = String.format(
+                """
+                    Oops! Your balance is insufficient. If you want a daily wallet balance of
+                    <span class='text-info' style='font-weight: bold;'>%s</span> ($%s/month), please subscribe to
+                    <a class='text-info' style='font-weight: bold;' href='https://github.com/sponsors/camenduru'>GitHub Sponsors</a> or
+                    <a class='text-info' style='font-weight: bold;' href='https://www.patreon.com/camenduru'>Patreon</a>,
+                    or wait for the daily free <span class='text-info' style='font-weight: bold;'>%s</span> Tost wallet balance.
+                """,
+                camenduruWebPaidTotal,
+                camenduruWebMinTotal,
+                camenduruWebFreeTotal
+            );
+            JsonObject jsonResponse = new JsonObject();
+            jsonResponse.addProperty("message", message);
+            jsonResponse.addProperty("status", "BALANCE");
+            return new ResponseEntity<String>(jsonResponse.toString(), HttpStatus.OK);
+        }
     }
 
     /**
