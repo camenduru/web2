@@ -88,15 +88,6 @@ public class AccountResource {
     @Value("${camenduru.web2.default.result.suffix}")
     private String camenduruWebResultSuffix;
 
-    @Value("${camenduru.web2.default.free.total}")
-    private String camenduruWebFreeTotal;
-
-    @Value("${camenduru.web2.default.paid.total}")
-    private String camenduruWebPaidTotal;
-
-    @Value("${camenduru.web2.default.min.total}")
-    private String camenduruWebMinTotal;
-
     public AccountResource(
         UserRepository userRepository,
         UserService userService,
@@ -355,14 +346,7 @@ public class AccountResource {
                 return new ResponseEntity<String>(jsonResponse.toString(), HttpStatus.OK);
             }
         } else {
-            String message = String.format(
-                """
-                    Oops! Your balance is insufficient.
-                """,
-                camenduruWebPaidTotal,
-                camenduruWebMinTotal,
-                camenduruWebFreeTotal
-            );
+            String message = "Oops! Your balance is insufficient.";
             JsonObject jsonResponse = new JsonObject();
             jsonResponse.addProperty("message", message);
             jsonResponse.addProperty("status", "BALANCE");
