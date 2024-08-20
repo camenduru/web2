@@ -57,7 +57,8 @@ export class AppDetailComponent implements OnInit, OnDestroy {
   apps?: IApp[];
   jobs?: IJob[];
   itemsPerPage = ITEMS_PER_PAGE;
-  totalItems = 0;
+  totalJobItems = 0;
+  totalAppItems = 0;
   page = 1;
   isLoading = false;
   sortState = sortStateSignal({});
@@ -268,7 +269,7 @@ export class AppDetailComponent implements OnInit, OnDestroy {
   }
 
   protected fillComponentAttributesFromJobResponseHeader(headers: HttpHeaders): void {
-    this.totalItems = Number(headers.get(TOTAL_COUNT_RESPONSE_HEADER));
+    this.totalJobItems = Number(headers.get(TOTAL_COUNT_RESPONSE_HEADER));
   }
 
   protected queryJobBackend(): Observable<JobEntityArrayResponseType> {
@@ -306,7 +307,7 @@ export class AppDetailComponent implements OnInit, OnDestroy {
   }
 
   protected fillComponentAttributesFromAppResponseHeader(headers: HttpHeaders): void {
-    this.totalItems = Number(headers.get(TOTAL_COUNT_RESPONSE_HEADER));
+    this.totalAppItems = Number(headers.get(TOTAL_COUNT_RESPONSE_HEADER));
   }
 
   protected queryAppBackend(): Observable<AppEntityArrayResponseType> {
