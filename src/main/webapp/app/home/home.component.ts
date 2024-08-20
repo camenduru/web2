@@ -317,12 +317,7 @@ export default class HomeComponent implements OnInit, OnDestroy {
   protected onAppResponseSuccess(response: AppEntityArrayResponseType): void {
     this.fillComponentAttributesFromAppResponseHeader(response.headers);
     const dataFromBody = this.fillComponentAttributesFromAppResponseBody(response.body);
-
-    if (this.accountService.hasAnyAuthority('ROLE_PAID')) {
-      this.apps = dataFromBody.filter(item => item.isActive === true).reverse();
-    } else {
-      this.apps = dataFromBody.filter(item => item.isActive === true && item.isFree === true).reverse();
-    }
+    this.apps = dataFromBody.filter(item => item.isActive === true).reverse();
     const app = this.apps.find(item => item.isDefault === true);
     const jsonSchema = app?.schema ? JSON.parse(app.schema) : null;
     this.activeSchema = jsonSchema as unknown as ISchema;

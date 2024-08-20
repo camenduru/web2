@@ -147,7 +147,7 @@
               formControlName="type"
               [(ngModel)]="default_app_type"
             >
-              <option *ngFor="let app of apps" [value]="app.type">
+              <option *ngFor="let app of apps" [value]="app.type" [disabled]="!app.isFree">
                 {{ app.title }}
               </option>
             </select>
