@@ -175,6 +175,9 @@ public class UserService {
                 break;
             }
         }
+        if (userDTO.getEmail().contains("+")) {
+            isAllowed = false;
+        }
         if (!isAllowed) {
             throw new EmailServiceNotAllowedException();
         }
