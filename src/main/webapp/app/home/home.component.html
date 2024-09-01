@@ -359,6 +359,11 @@
                   width="445"
                 />
               </ng-container>
+              <ng-container *ngIf="job.result && job.result.includes('.mp4')">
+                <video width="445" height="445" controls loop autoplay>
+                  <source class="item rounded" [src]="job.result" type="video/mp4" />
+                </video>
+              </ng-container>
             </ng-container>
           </div>
         }
