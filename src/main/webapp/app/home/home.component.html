@@ -341,7 +341,61 @@
             [displayedRow]="displayedRow"
             [isCroppedSize]="isCroppedSize"
           >
-            <ng-container *ngFor="let job of jobs; trackBy: trackId">
+            <ng-container *ngFor="let job of jobs | slice: -6; trackBy: trackId">
+              <ng-container
+                *ngIf="
+                  job.result &&
+                  (job.result.includes('.png') ||
+                    job.result.includes('.jpg') ||
+                    job.result.includes('.webp') ||
+                    job.result.includes('.gif'))
+                "
+              >
+                <img
+                  class="item rounded"
+                  [src]="job.result"
+                  (click)="homeRegister('/account/register')"
+                  style="cursor: pointer"
+                  width="445"
+                />
+              </ng-container>
+              <ng-container *ngIf="job.result && job.result.includes('.mp4')">
+                <video width="445" height="445" controls loop autoplay>
+                  <source class="item rounded" [src]="job.result" type="video/mp4" />
+                </video>
+              </ng-container>
+            </ng-container>
+          </div>
+
+          <br /><br />
+          <div
+            NgxJustifiedGrid
+            [horizontal]="horizontal"
+            [percentage]="percentage"
+            [isEqualSize]="isEqualSize"
+            [isConstantSize]="isConstantSize"
+            [gap]="gap"
+            [resizeDebounce]="resizeDebounce"
+            [maxResizeDebounce]="maxResizeDebounce"
+            [autoResize]="autoResize"
+            [useFit]="useFit"
+            [useTransform]="useTransform"
+            [renderOnPropertyChange]="renderOnPropertyChange"
+            [preserveUIOnDestroy]="preserveUIOnDestroy"
+            [defaultDirection]="defaultDirection"
+            [outlineLength]="outlineLength"
+            [outlineSize]="outlineSize"
+            [useRoundedSize]="useRoundedSize"
+            [useResizeObserver]="useResizeObserver"
+            [observeChildren]="observeChildren"
+            [align]="align"
+            [columnRange]="[4, 4]"
+            [rowRange]="rowRange"
+            [sizeRange]="sizeRange"
+            [displayedRow]="displayedRow"
+            [isCroppedSize]="isCroppedSize"
+          >
+            <ng-container *ngFor="let job of jobs | slice: 0 : -6; trackBy: trackId">
               <ng-container
                 *ngIf="
                   job.result &&
