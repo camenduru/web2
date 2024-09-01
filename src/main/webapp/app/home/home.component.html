@@ -1,29 +1,31 @@
-@if (!account()?.authorities?.includes('ROLE_ADMIN')) {
-  <div class="row">
-    <div class="col-sm-5 col-md-5 col-lg-5 col-xl-5" style="padding-left: 2%">
-      🥳 Please consider donation to help us maintain this project. <a href="https://github.com/sponsors/camenduru">GitHub Sponsors</a> |
-      <a href="https://www.patreon.com/camenduru">Patreon </a> <br />
-      ❤ Patrons helped cover 13.71% of the server bills this month! <br />
-      <div class="progress" style="width: 100%; --bs-progress-height: 1.25rem; --bs-progress-font-size: 0.9rem">
-        <div
-          class="progress-bar bg-danger"
-          role="progressbar"
-          style="width: 13.71%"
-          aria-valuenow="13.71"
-          aria-valuemin="0"
-          aria-valuemax="100"
-        ></div>
-        <div style="padding-left: 30%">$159.8/$1164.98</div>
+@if (account() !== null) {
+  @if (!account()?.authorities?.includes('ROLE_ADMIN')) {
+    <div class="row">
+      <div class="col-sm-5 col-md-5 col-lg-5 col-xl-5" style="padding-left: 2%">
+        🥳 Please consider donation to help us maintain this project. <a href="https://github.com/sponsors/camenduru">GitHub Sponsors</a> |
+        <a href="https://www.patreon.com/camenduru">Patreon </a> <br />
+        ❤ Patrons helped cover 13.71% of the server bills this month! <br />
+        <div class="progress" style="width: 100%; --bs-progress-height: 1.25rem; --bs-progress-font-size: 0.9rem">
+          <div
+            class="progress-bar bg-danger"
+            role="progressbar"
+            style="width: 13.71%"
+            aria-valuenow="13.71"
+            aria-valuemin="0"
+            aria-valuemax="100"
+          ></div>
+          <div style="padding-left: 30%">$159.8/$1164.98</div>
+        </div>
+      </div>
+      <div class="col-sm-7 col-md-7 col-lg-7 col-xl-7">
+        🥪 TOST is under heavy development, so things might break at any time. 😋 <br />
+        📂 Because of our limited budget, we don't have a file upload service. 😐 Please use alternatives like
+        <a href="https://litterbox.catbox.moe" target="_blank">litterbox.catbox.moe</a> |
+        <a href="https://www.youtube.com/watch?v=FDPIjW7vWpI" target="_blank">tutorial</a> <br />
+        🐣 Please follow me for new updates. <a href="https://x.com/camenduru">x.com/camenduru</a>
       </div>
     </div>
-    <div class="col-sm-7 col-md-7 col-lg-7 col-xl-7">
-      🥪 TOST is under heavy development, so things might break at any time. 😋 <br />
-      📂 Because of our limited budget, we don't have a file upload service. 😐 Please use alternatives like
-      <a href="https://litterbox.catbox.moe" target="_blank">litterbox.catbox.moe</a> |
-      <a href="https://www.youtube.com/watch?v=FDPIjW7vWpI" target="_blank">tutorial</a> <br />
-      🐣 Please follow me for new updates. <a href="https://x.com/camenduru">x.com/camenduru</a>
-    </div>
-  </div>
+  }
 }
 <div class="card jh-card">
   <div class="row">
@@ -307,121 +309,166 @@
         </div>
       }
     } @else {
-      <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
-        <div class="alert alert-warning">
-          <span jhiTranslate="global.messages.info.register.noaccount">You don&apos;t have an account yet?</span>&nbsp;
-          <a class="alert-link" routerLink="/account/register" jhiTranslate="global.messages.info.register.link">Register a new account</a>
-        </div>
-        @if (jobs && jobs.length > 0) {
-          <br /><br />
-          <div
-            NgxJustifiedGrid
-            [horizontal]="horizontal"
-            [percentage]="percentage"
-            [isEqualSize]="isEqualSize"
-            [isConstantSize]="isConstantSize"
-            [gap]="gap"
-            [resizeDebounce]="resizeDebounce"
-            [maxResizeDebounce]="maxResizeDebounce"
-            [autoResize]="autoResize"
-            [useFit]="useFit"
-            [useTransform]="useTransform"
-            [renderOnPropertyChange]="renderOnPropertyChange"
-            [preserveUIOnDestroy]="preserveUIOnDestroy"
-            [defaultDirection]="defaultDirection"
-            [outlineLength]="outlineLength"
-            [outlineSize]="outlineSize"
-            [useRoundedSize]="useRoundedSize"
-            [useResizeObserver]="useResizeObserver"
-            [observeChildren]="observeChildren"
-            [align]="align"
-            [columnRange]="[3, 3]"
-            [rowRange]="rowRange"
-            [sizeRange]="sizeRange"
-            [displayedRow]="displayedRow"
-            [isCroppedSize]="isCroppedSize"
-          >
-            <ng-container *ngFor="let job of jobs.slice(-6).reverse(); trackBy: trackId">
-              <ng-container
-                *ngIf="
-                  job.result &&
-                  (job.result.includes('.png') ||
-                    job.result.includes('.jpg') ||
-                    job.result.includes('.webp') ||
-                    job.result.includes('.gif'))
+      <main class="flex-grow-1">
+        <section class="py-5 bg-dark">
+          <div class="container-fluid text-center">
+            <img src="/content/images/logo.png" alt="Tost Logo" class="mb-4" style="max-width: 100px; height: auto" />
+            <h1 class="display-4 fw-bold mb-4">Welcome to Tost</h1>
+            <p class="lead mb-4">
+              <span class="text-warning">Tost</span> is a non-profit,
+              <a class="text-info" href="https://github.com/camenduru/web">open-source</a> service that serves inference for the latest AI
+              papers using the <a class="text-info" href="https://github.com/camenduru/non-profit-gpu-cluster">Non Profit GPU Cluster</a>.
+              <span class="text-warning">Tost</span> does not store any inference data; all data expires within 12 hours. However,
+              <span class="text-warning">Tost</span> offers the option to
+              <a class="text-info" href="https://www.youtube.com/watch?v=dtMStkmWKJY">send data to your Discord channel</a>.
+              <span class="text-warning">Tost</span> provides <span class="text-success">100</span> free wallet balance to each account
+              every day. If you want <span class="text-success">1100</span> wallet balance a day ($22/month), please subscribe to
+              <a class="text-success" href="https://github.com/sponsors/camenduru">GitHub Sponsors</a> or
+              <a class="text-success" href="https://www.patreon.com/camenduru">Patreon</a>. <span class="text-warning">Tost</span> sends all
+              profits from apps to the paper's first author. <span class="text-warning">Tost</span>'s budget is supported by companies and
+              individual sponsors. Please consider sponsoring ❤.
+            </p>
+            <div class="d-flex justify-content-center">
+              <a
+                href="account/register"
+                class="btn btn-outline-light w-80"
+                style="
+                  padding: 1rem 2rem;
+                  font-size: 1.25rem;
+                  color: #000000;
+                  border-color: #ffdd57;
+                  background-color: #ffdd57;
+                  border-width: 2px;
+                  box-shadow: 0 4px 10px rgba(255, 221, 87, 0.4);
+                  transition:
+                    transform 0.2s ease,
+                    box-shadow 0.2s ease;
+                  max-width: 600px;
                 "
+                onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 6px 15px rgba(255, 221, 87, 0.6)';"
+                onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 10px rgba(255, 221, 87, 0.4)';"
               >
-                <img
-                  class="item rounded"
-                  [src]="job.result"
-                  (click)="homeRegister('/account/register')"
-                  style="cursor: pointer"
-                  width="445"
-                />
-              </ng-container>
-              <ng-container *ngIf="job.result && job.result.includes('.mp4')">
-                <video width="445" height="445" controls loop autoplay>
-                  <source class="item rounded" [src]="job.result" type="video/mp4" />
-                </video>
-              </ng-container>
-            </ng-container>
+                Register Now
+              </a>
+            </div>
           </div>
+        </section>
+        <section class="py-5 bg-dark">
+          <div class="container-fluid">
+            <div class="row g-4">
+              @if (jobs && jobs.length > 0) {
+                <br /><br />
+                <div
+                  NgxJustifiedGrid
+                  [horizontal]="horizontal"
+                  [percentage]="percentage"
+                  [isEqualSize]="isEqualSize"
+                  [isConstantSize]="isConstantSize"
+                  [gap]="25"
+                  [resizeDebounce]="resizeDebounce"
+                  [maxResizeDebounce]="maxResizeDebounce"
+                  [autoResize]="autoResize"
+                  [useFit]="useFit"
+                  [useTransform]="useTransform"
+                  [renderOnPropertyChange]="renderOnPropertyChange"
+                  [preserveUIOnDestroy]="preserveUIOnDestroy"
+                  [defaultDirection]="defaultDirection"
+                  [outlineLength]="outlineLength"
+                  [outlineSize]="outlineSize"
+                  [useRoundedSize]="useRoundedSize"
+                  [useResizeObserver]="useResizeObserver"
+                  [observeChildren]="observeChildren"
+                  [align]="align"
+                  [columnRange]="[3, 3]"
+                  [rowRange]="rowRange"
+                  [sizeRange]="sizeRange"
+                  [displayedRow]="displayedRow"
+                  [isCroppedSize]="isCroppedSize"
+                >
+                  <ng-container *ngFor="let job of jobs.slice(-6).reverse(); trackBy: trackId">
+                    <ng-container
+                      *ngIf="
+                        job.result &&
+                        (job.result.includes('.png') ||
+                          job.result.includes('.jpg') ||
+                          job.result.includes('.webp') ||
+                          job.result.includes('.gif'))
+                      "
+                    >
+                      <img
+                        class="item rounded"
+                        [src]="job.result"
+                        (click)="homeRegister('/account/register')"
+                        style="cursor: pointer"
+                        width="445"
+                      />
+                    </ng-container>
+                    <ng-container *ngIf="job.result && job.result.includes('.mp4')">
+                      <video width="445" height="445" controls loop autoplay>
+                        <source class="item rounded" [src]="job.result" type="video/mp4" />
+                      </video>
+                    </ng-container>
+                  </ng-container>
+                </div>
 
-          <br /><br />
-          <div
-            NgxJustifiedGrid
-            [horizontal]="horizontal"
-            [percentage]="percentage"
-            [isEqualSize]="isEqualSize"
-            [isConstantSize]="isConstantSize"
-            [gap]="gap"
-            [resizeDebounce]="resizeDebounce"
-            [maxResizeDebounce]="maxResizeDebounce"
-            [autoResize]="autoResize"
-            [useFit]="useFit"
-            [useTransform]="useTransform"
-            [renderOnPropertyChange]="renderOnPropertyChange"
-            [preserveUIOnDestroy]="preserveUIOnDestroy"
-            [defaultDirection]="defaultDirection"
-            [outlineLength]="outlineLength"
-            [outlineSize]="outlineSize"
-            [useRoundedSize]="useRoundedSize"
-            [useResizeObserver]="useResizeObserver"
-            [observeChildren]="observeChildren"
-            [align]="align"
-            [columnRange]="[4, 4]"
-            [rowRange]="rowRange"
-            [sizeRange]="sizeRange"
-            [displayedRow]="displayedRow"
-            [isCroppedSize]="isCroppedSize"
-          >
-            <ng-container *ngFor="let job of jobs.slice(0, -6).reverse(); trackBy: trackId">
-              <ng-container
-                *ngIf="
-                  job.result &&
-                  (job.result.includes('.png') ||
-                    job.result.includes('.jpg') ||
-                    job.result.includes('.webp') ||
-                    job.result.includes('.gif'))
-                "
-              >
-                <img
-                  class="item rounded"
-                  [src]="job.result"
-                  (click)="homeRegister('/account/register')"
-                  style="cursor: pointer"
-                  width="445"
-                />
-              </ng-container>
-              <ng-container *ngIf="job.result && job.result.includes('.mp4')">
-                <video width="445" height="445" controls loop autoplay>
-                  <source class="item rounded" [src]="job.result" type="video/mp4" />
-                </video>
-              </ng-container>
-            </ng-container>
+                <br /><br />
+                <div
+                  NgxJustifiedGrid
+                  [horizontal]="horizontal"
+                  [percentage]="percentage"
+                  [isEqualSize]="isEqualSize"
+                  [isConstantSize]="isConstantSize"
+                  [gap]="25"
+                  [resizeDebounce]="resizeDebounce"
+                  [maxResizeDebounce]="maxResizeDebounce"
+                  [autoResize]="autoResize"
+                  [useFit]="useFit"
+                  [useTransform]="useTransform"
+                  [renderOnPropertyChange]="renderOnPropertyChange"
+                  [preserveUIOnDestroy]="preserveUIOnDestroy"
+                  [defaultDirection]="defaultDirection"
+                  [outlineLength]="outlineLength"
+                  [outlineSize]="outlineSize"
+                  [useRoundedSize]="useRoundedSize"
+                  [useResizeObserver]="useResizeObserver"
+                  [observeChildren]="observeChildren"
+                  [align]="align"
+                  [columnRange]="[4, 4]"
+                  [rowRange]="rowRange"
+                  [sizeRange]="sizeRange"
+                  [displayedRow]="displayedRow"
+                  [isCroppedSize]="isCroppedSize"
+                >
+                  <ng-container *ngFor="let job of jobs.slice(0, -6).reverse(); trackBy: trackId">
+                    <ng-container
+                      *ngIf="
+                        job.result &&
+                        (job.result.includes('.png') ||
+                          job.result.includes('.jpg') ||
+                          job.result.includes('.webp') ||
+                          job.result.includes('.gif'))
+                      "
+                    >
+                      <img
+                        class="item rounded"
+                        [src]="job.result"
+                        (click)="homeRegister('/account/register')"
+                        style="cursor: pointer"
+                        width="445"
+                      />
+                    </ng-container>
+                    <ng-container *ngIf="job.result && job.result.includes('.mp4')">
+                      <video width="445" height="445" controls loop autoplay>
+                        <source class="item rounded" [src]="job.result" type="video/mp4" />
+                      </video>
+                    </ng-container>
+                  </ng-container>
+                </div>
+              }
+            </div>
           </div>
-        }
-      </div>
+        </section>
+      </main>
     }
   </div>
 </div>
