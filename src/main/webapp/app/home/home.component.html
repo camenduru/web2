@@ -341,7 +341,7 @@
             [displayedRow]="displayedRow"
             [isCroppedSize]="isCroppedSize"
           >
-            <ng-container *ngFor="let job of jobs | slice: -6; trackBy: trackId">
+            <ng-container *ngFor="let job of jobs.slice(-6).reverse(); trackBy: trackId">
               <ng-container
                 *ngIf="
                   job.result &&
@@ -395,7 +395,7 @@
             [displayedRow]="displayedRow"
             [isCroppedSize]="isCroppedSize"
           >
-            <ng-container *ngFor="let job of jobs | slice: 0 : -6; trackBy: trackId">
+            <ng-container *ngFor="let job of jobs.slice(0, -6).reverse(); trackBy: trackId">
               <ng-container
                 *ngIf="
                   job.result &&
