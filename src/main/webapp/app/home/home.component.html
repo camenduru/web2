@@ -310,7 +310,7 @@
       }
     } @else {
       <main class="flex-grow-1">
-        <section class="pt-4 pb-5 bg-dark">
+        <section class="pt-5 pb-5 bg-dark">
           <div class="container-fluid text-center">
             <img src="/content/images/logo.png" alt="Tost Logo" class="mb-4" style="max-width: 100px; height: auto" />
             <h1 class="display-4 fw-bold mb-4">Welcome to Tost</h1>
@@ -353,7 +353,7 @@
             </div>
           </div>
         </section>
-        <section class="py-5 bg-dark">
+        <section class="pt-5 py-5 bg-dark">
           <div class="container-fluid">
             <div class="row g-4">
               @if (jobs && jobs.length > 0) {
@@ -410,8 +410,20 @@
                     </ng-container>
                   </ng-container>
                 </div>
-
-                <br /><br />
+                <div class="pt-5 container-fluid text-center">
+                  <img
+                    src="/content/images/logo.png"
+                    alt="Tost Logo"
+                    class="mb-4"
+                    style="max-width: 100px; height: auto; display: inline-block"
+                  />
+                  <img
+                    src="/content/images/logo.png"
+                    alt="Tost Logo"
+                    class="mb-4"
+                    style="max-width: 100px; height: auto; display: inline-block"
+                  />
+                </div>
                 <div
                   NgxJustifiedGrid
                   [horizontal]="horizontal"
@@ -468,6 +480,11 @@
             </div>
           </div>
         </section>
+        <div class="pt-5 container-fluid text-center">
+          <img src="/content/images/logo.png" alt="Tost Logo" class="mb-4" style="max-width: 100px; height: auto; display: inline-block" />
+          <img src="/content/images/logo.png" alt="Tost Logo" class="mb-4" style="max-width: 100px; height: auto; display: inline-block" />
+          <img src="/content/images/logo.png" alt="Tost Logo" class="mb-4" style="max-width: 100px; height: auto; display: inline-block" />
+        </div>
       </main>
     }
   </div>
