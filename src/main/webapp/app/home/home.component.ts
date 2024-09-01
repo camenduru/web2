@@ -385,6 +385,11 @@ export default class HomeComponent implements OnInit, OnDestroy {
     const url = `${link}`;
     window.open(url);
   }
+
+  protected homeRegister(link: string): void {
+    const url = `${link}`;
+    window.open(url, '_self');
+  }
 }
 
 function notifyDivRemove(): void {

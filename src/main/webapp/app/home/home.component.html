@@ -351,7 +351,13 @@
                     job.result.includes('.gif'))
                 "
               >
-                <img class="item rounded" [src]="job.result" (click)="download(job.result)" style="cursor: pointer" width="445" />
+                <img
+                  class="item rounded"
+                  [src]="job.result"
+                  (click)="homeRegister('/account/register')"
+                  style="cursor: pointer"
+                  width="445"
+                />
               </ng-container>
             </ng-container>
           </div>
