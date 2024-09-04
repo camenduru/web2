@@ -68,10 +68,28 @@
               <ng-container *ngFor="let job of jobs; trackBy: trackId">
                 <ng-container *ngIf="job.result && job.result.includes(','); else resultNotArray">
                   <ng-container *ngFor="let link of job.result.slice(1, -1).trim().split(',')">
+                    <ng-container *ngIf="link.includes('.png') || link.includes('.jpg') || link.includes('.webp')">
+                      <img
+                        class="item rounded"
+                        src="https://fakeimg.pl/512x512/282828/eae0d0/?text=[IMAGE]#.png"
+                        (click)="download(link.slice(2, -1))"
+                        style="cursor: pointer"
+                        width="445"
+                      />
+                    </ng-container>
                     <ng-container *ngIf="link.includes('.mp4')">
                       <video width="445" height="445" controls>
                         <source class="item rounded" src="{{ link.slice(1, -1) }}" type="video/mp4" />
                       </video>
+                    </ng-container>
+                    <ng-container *ngIf="link.includes('.safetensors')">
+                      <img
+                        class="item rounded"
+                        src="https://fakeimg.pl/512x512/282828/eae0d0/?text=[SAFETENSORS]&font_size=100#.png"
+                        (click)="download(link.slice(2, -1))"
+                        style="cursor: pointer"
+                        width="445"
+                      />
                     </ng-container>
                   </ng-container>
                 </ng-container>
@@ -104,6 +122,15 @@
                     <img
                       class="item rounded"
                       src="https://fakeimg.pl/512x512/282828/eae0d0/?text=[TXT]#.png"
+                      (click)="download(job.result)"
+                      style="cursor: pointer"
+                      width="445"
+                    />
+                  </ng-container>
+                  <ng-container *ngIf="job.result && job.result.includes('.safetensors')">
+                    <img
+                      class="item rounded"
+                      src="https://fakeimg.pl/512x512/282828/eae0d0/?text=[SAFETENSORS]&font_size=100#.png"
                       (click)="download(job.result)"
                       style="cursor: pointer"
                       width="445"
@@ -185,10 +212,10 @@
                         <source class="item rounded" src="{{ link.slice(1, -1) }}" type="video/mp4" />
                       </video>
                     </ng-container>
-                    <ng-container *ngIf="link.includes('.png')">
+                    <ng-container *ngIf="link.includes('.png') || link.includes('.jpg') || link.includes('.webp')">
                       <img
                         class="item rounded"
-                        src="https://fakeimg.pl/512x512/282828/eae0d0/?text=[PNG]#.png"
+                        src="https://fakeimg.pl/512x512/282828/eae0d0/?text=[IMAGE]#.png"
                         (click)="download(link.slice(2, -1))"
                         style="cursor: pointer"
                         width="445"
@@ -216,6 +243,15 @@
                       <img
                         class="item rounded"
                         src="https://fakeimg.pl/512x512/282828/eae0d0/?text=[GLB]#.png"
+                        (click)="download(link.slice(2, -1))"
+                        style="cursor: pointer"
+                        width="445"
+                      />
+                    </ng-container>
+                    <ng-container *ngIf="link.includes('.safetensors')">
+                      <img
+                        class="item rounded"
+                        src="https://fakeimg.pl/512x512/282828/eae0d0/?text=[SAFETENSORS]&font_size=100#.png"
                         (click)="download(link.slice(2, -1))"
                         style="cursor: pointer"
                         width="445"
@@ -252,6 +288,15 @@
                     <img
                       class="item rounded"
                       src="https://fakeimg.pl/512x512/282828/eae0d0/?text=[TXT]#.png"
+                      (click)="download(job.result)"
+                      style="cursor: pointer"
+                      width="445"
+                    />
+                  </ng-container>
+                  <ng-container *ngIf="job.result && job.result.includes('.safetensors')">
+                    <img
+                      class="item rounded"
+                      src="https://fakeimg.pl/512x512/282828/eae0d0/?text=[SAFETENSORS]&font_size=100#.png"
                       (click)="download(job.result)"
                       style="cursor: pointer"
                       width="445"
