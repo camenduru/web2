@@ -19,6 +19,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
+import jakarta.annotation.PostConstruct;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.awt.image.BufferedImage;
@@ -104,7 +105,7 @@ public class JobResource {
     private final UserRepository userRepository;
     private final AppRepository appRepository;
     private final SimpMessageSendingOperations simpMessageSendingOperations;
-    private final S3Client s3Client;
+    private S3Client s3Client;
 
     public JobResource(
         JobRepository jobRepository,
@@ -118,6 +119,10 @@ public class JobResource {
         this.userRepository = userRepository;
         this.appRepository = appRepository;
         this.simpMessageSendingOperations = simpMessageSendingOperations;
+    }
+
+    @PostConstruct
+    public void initializeS3Client() {
         this.s3Client = S3Client.builder()
             .region(Region.of(camenduruWebS3Region))
             .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create(camenduruWebS3Access, camenduruWebS3Secret)))
