@@ -25,6 +25,11 @@ Environment="com_camenduru_web2_mail_from=no-reply@gmail.com"
 Environment="com_camenduru_web2_base_url=base_url"
 Environment="com_camenduru_web2_base64_secret=base64_secret"
 Environment="com_camenduru_web2_token=web2_token"
+Environment="com_camenduru_web2_s3_region=s3_region"
+Environment="com_camenduru_web2_s3_access=s3_access"
+Environment="com_camenduru_web2_s3_secret=s3_secret"
+Environment="com_camenduru_web2_s3_bucket=s3_bucket"
+Environment="com_camenduru_web2_s3_preview=s3_preview"
 WorkingDirectory=/content/com.camenduru/web2
 ExecStart=/bin/bash -c 'java -Dserver.port=4000 -jar target/web2-0.0.1.jar --spring.profiles.active=prod'
 Restart=always

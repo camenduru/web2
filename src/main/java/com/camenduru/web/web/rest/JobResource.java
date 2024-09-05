@@ -14,6 +14,7 @@ import com.camenduru.web.repository.UserRepository;
 import com.camenduru.web.security.AuthoritiesConstants;
 import com.camenduru.web.security.SecurityUtils;
 import com.camenduru.web.web.rest.errors.BadRequestAlertException;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -21,15 +22,18 @@ import com.google.gson.JsonSyntaxException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.Instant;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import javax.imageio.ImageIO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +46,11 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.PaginationUtil;
 import tech.jhipster.web.util.ResponseUtil;
@@ -75,11 +84,27 @@ public class JobResource {
     @Value("${camenduru.web2.default.min.total}")
     private String camenduruWebMinTotal;
 
+    @Value("${camenduru.web2.s3.region}")
+    private String camenduruWebS3Region;
+
+    @Value("${camenduru.web2.s3.access}")
+    private String camenduruWebS3Access;
+
+    @Value("${camenduru.web2.s3.secret}")
+    private String camenduruWebS3Secret;
+
+    @Value("${camenduru.web2.s3.bucket}")
+    private String camenduruWebS3Bucket;
+
+    @Value("${camenduru.web2.s3.preview}")
+    private String camenduruWebS3Preview;
+
     private final JobRepository jobRepository;
     private final SettingRepository settingRepository;
     private final UserRepository userRepository;
     private final AppRepository appRepository;
     private final SimpMessageSendingOperations simpMessageSendingOperations;
+    private final S3Client s3Client;
 
     public JobResource(
         JobRepository jobRepository,
@@ -93,6 +118,10 @@ public class JobResource {
         this.userRepository = userRepository;
         this.appRepository = appRepository;
         this.simpMessageSendingOperations = simpMessageSendingOperations;
+        this.s3Client = S3Client.builder()
+            .region(Region.of(camenduruWebS3Region))
+            .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create(camenduruWebS3Access, camenduruWebS3Secret)))
+            .build();
     }
 
     /**
@@ -149,6 +178,59 @@ public class JobResource {
                         JsonElement jsonElement = JsonParser.parseString(jsonString);
                         if (jsonElement.isJsonObject()) {
                             JsonObject jsonObject = jsonElement.getAsJsonObject();
+                            if (jsonObject.has("input_image_files")) {
+                                JsonArray input_images = jsonObject.getAsJsonArray("input_image_files");
+                                for (JsonElement input_element : input_images) {
+                                    JsonObject image_object = input_element.getAsJsonObject();
+                                    JsonObject input_image = image_object.getAsJsonObject("url");
+                                    String base64Data = input_image.get("data").getAsString();
+                                    byte[] imageBytes = Base64.getDecoder().decode(base64Data);
+                                    String filename = input_image.get("filename").getAsString();
+                                    String fileType = filename.substring(filename.lastIndexOf('.') + 1);
+                                    String uniqueFilename = UUID.randomUUID().toString() + "." + fileType;
+                                    try (ByteArrayInputStream inputStream = new ByteArrayInputStream(imageBytes)) {
+                                        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                                            .bucket(camenduruWebS3Bucket)
+                                            .key(uniqueFilename)
+                                            .build();
+                                        String url = String.format("%s/%s/%s", camenduruWebS3Preview, camenduruWebS3Bucket, uniqueFilename);
+                                        s3Client.putObject(
+                                            putObjectRequest,
+                                            software.amazon.awssdk.core.sync.RequestBody.fromBytes(imageBytes)
+                                        );
+                                        image_object.addProperty("url", url);
+                                    } catch (IOException e) {
+                                        input_image.addProperty("url", "null");
+                                        e.printStackTrace();
+                                    }
+                                }
+                                jsonObject.add("input_image_files", input_images);
+                                job.setCommand(jsonObject.toString());
+                            }
+                            if (jsonObject.has("input_image_file")) {
+                                JsonObject input_image = jsonObject.get("input_image_file").getAsJsonObject();
+                                String base64Data = input_image.get("data").getAsString();
+                                byte[] imageBytes = Base64.getDecoder().decode(base64Data);
+                                String filename = input_image.get("filename").getAsString();
+                                String fileType = filename.substring(filename.lastIndexOf('.') + 1);
+                                String uniqueFilename = UUID.randomUUID().toString() + "." + fileType;
+                                try (ByteArrayInputStream inputStream = new ByteArrayInputStream(imageBytes)) {
+                                    PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                                        .bucket(camenduruWebS3Bucket)
+                                        .key(uniqueFilename)
+                                        .build();
+                                    String url = String.format("%s/%s/%s", camenduruWebS3Preview, camenduruWebS3Bucket, uniqueFilename);
+                                    s3Client.putObject(
+                                        putObjectRequest,
+                                        software.amazon.awssdk.core.sync.RequestBody.fromBytes(imageBytes)
+                                    );
+                                    jsonObject.addProperty("input_image_file", url);
+                                } catch (IOException e) {
+                                    jsonObject.addProperty("input_image_file", "null");
+                                    e.printStackTrace();
+                                }
+                                job.setCommand(jsonObject.toString());
+                            }
                             if (jsonObject.has("input_image_check")) {
                                 String input_image = jsonObject.get("input_image_check").getAsString();
                                 URL image_url;

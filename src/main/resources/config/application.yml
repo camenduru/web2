@@ -206,3 +206,8 @@ camenduru:
   web2.default.paid.total: ${com_camenduru_web2_default_paid_total}
   web2.default.min.total: ${com_camenduru_web2_default_min_total}
   web2.token: ${com_camenduru_web2_token}
+  web2.s3.region: ${com_camenduru_web2_s3_region}
+  web2.s3.access: ${com_camenduru_web2_s3_access}
+  web2.s3.secret: ${com_camenduru_web2_s3_secret}
+  web2.s3.bucket: ${com_camenduru_web2_s3_bucket}
+  web2.s3.preview: ${com_camenduru_web2_s3_preview}
