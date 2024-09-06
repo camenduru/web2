@@ -186,6 +186,7 @@ public class JobResource {
                             if (jsonObject.has("input_image_files")) {
                                 JsonArray input_images = jsonObject.getAsJsonArray("input_image_files");
                                 if (input_images.size() == 0) {
+                                    simpMessageSendingOperations.convertAndSend(destination, "Oops! No input image files were found.");
                                     return ResponseEntity.ok().body(null);
                                 }
                                 for (JsonElement input_element : input_images) {
@@ -222,6 +223,7 @@ public class JobResource {
                                     !input_image.has("filename") ||
                                     input_image.get("data").getAsString().isEmpty()
                                 ) {
+                                    simpMessageSendingOperations.convertAndSend(destination, "Oops! No input image file was found.");
                                     return ResponseEntity.ok().body(null);
                                 }
                                 String base64Data = input_image.get("data").getAsString();
