@@ -185,6 +185,9 @@ public class JobResource {
                             JsonObject jsonObject = jsonElement.getAsJsonObject();
                             if (jsonObject.has("input_image_files")) {
                                 JsonArray input_images = jsonObject.getAsJsonArray("input_image_files");
+                                if (input_images.size() == 0) {
+                                    return ResponseEntity.ok().body(null);
+                                }
                                 for (JsonElement input_element : input_images) {
                                     JsonObject image_object = input_element.getAsJsonObject();
                                     JsonObject input_image = image_object.getAsJsonObject("url");
@@ -214,6 +217,13 @@ public class JobResource {
                             }
                             if (jsonObject.has("input_image_file")) {
                                 JsonObject input_image = jsonObject.get("input_image_file").getAsJsonObject();
+                                if (
+                                    !input_image.has("data") ||
+                                    !input_image.has("filename") ||
+                                    input_image.get("data").getAsString().isEmpty()
+                                ) {
+                                    return ResponseEntity.ok().body(null);
+                                }
                                 String base64Data = input_image.get("data").getAsString();
                                 byte[] imageBytes = Base64.getDecoder().decode(base64Data);
                                 String filename = input_image.get("filename").getAsString();
