@@ -303,12 +303,10 @@ public class JobResource {
                     <span class='text-info' style='font-weight: bold;'>%s</span> ($%s/month), please subscribe via
                     <a class='text-info' style='font-weight: bold;' href='https://github.com/sponsors/camenduru'>GitHub Sponsors</a>,
                     <a class='text-info' style='font-weight: bold;' href='https://www.patreon.com/camenduru'>Patreon</a>, or purchase a
-                    <a class='text-info' style='font-weight: bold;' href='https://camenduru.itch.io'>Tost Wallet Code</a>,
-                    or wait for the daily free <span class='text-info' style='font-weight: bold;'>%s</span> Tost wallet balance.
+                    <a class='text-info' style='font-weight: bold;' href='https://camenduru.itch.io'>Tost Wallet Code</a>.
                 """,
                 camenduruWebPaidTotal,
-                camenduruWebMinTotal,
-                camenduruWebFreeTotal
+                camenduruWebMinTotal
             );
             String payload = String.format("%s", result);
             simpMessageSendingOperations.convertAndSend(destination, payload);
