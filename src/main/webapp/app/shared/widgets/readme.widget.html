@@ -4,6 +4,7 @@
   </div>
   <div class="card-body">
     <p class="card-title" *ngIf="schema.author">{{ schema.author }}</p>
+    <span class="card-link text-info" *ngIf="schema.amount">{{ schema.amount }}</span>
     <a class="card-link" *ngIf="schema.code" href="{{ schema.code }}">Code</a>
     <a class="card-link" *ngIf="schema.paper" href="{{ schema.paper }}">Paper</a>
     <a class="card-link" *ngIf="schema.page" href="{{ schema.page }}">Page</a>
