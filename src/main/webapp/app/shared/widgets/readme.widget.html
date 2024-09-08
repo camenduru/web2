@@ -4,8 +4,6 @@
   </div>
   <div class="card-body">
     <p class="card-title" *ngIf="schema.author">{{ schema.author }}</p>
-    <span class="card-link text-info" *ngIf="schema.amount">Amount: {{ schema.amount }}</span>
-    <span class="card-link text-info" *ngIf="schema.cooldown">Cooldown: {{ schema.cooldown }}</span>
     <a class="card-link" *ngIf="schema.code" href="{{ schema.code }}">Code</a>
     <a class="card-link" *ngIf="schema.paper" href="{{ schema.paper }}">Paper</a>
     <a class="card-link" *ngIf="schema.page" href="{{ schema.page }}">Page</a>
@@ -13,6 +11,11 @@
     <a class="card-link" *ngIf="schema.post" href="{{ schema.post }}">Post</a>
     <a class="card-link" *ngIf="schema.tutorial" href="{{ schema.tutorial }}">Tutorial</a>
     <a class="card-link text-warning" *ngIf="schema.api" href="{{ schema.api }}">API Examples</a>
+    <span class="text-info" *ngIf="schema.l1"><br /><br />{{ schema.l1 }}<br /></span>
+    <span class="text-info" *ngIf="schema.l2">{{ schema.l2 }}<br /></span>
+    <span class="text-info" *ngIf="schema.l3">{{ schema.l3 }}<br /></span>
+    <span class="text-info" *ngIf="schema.l4">{{ schema.l4 }}<br /></span>
+    <span class="text-info" *ngIf="schema.l5">{{ schema.l5 }}<br /></span>
   </div>
 </div>
 <br />
