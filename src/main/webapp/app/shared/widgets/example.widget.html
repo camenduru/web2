@@ -1,0 +1,42 @@
+Examples
+<div class="card mb-6">
+  <div class="row g-0">
+    <div class="card-header">
+      <a class="card-link" *ngIf="schema.link" href="{{ schema.link }}">Link</a>
+      <a class="card-link" *ngIf="schema.model" href="{{ schema.model }}">Model</a>
+      <a class="card-link" *ngIf="schema.author" href="{{ schema.author }}">Author</a>
+    </div>
+    <div class="col-md-3" *ngIf="schema.image1; else noImage1">
+      <img src="{{ schema.image1 }}" class="img-fluid" />
+    </div>
+    <ng-template #noImage1>
+      <div class="col-md-3">
+        <img src="https://fakeimg.pl/450x600/282828/eae0d0/?text=%20#.png" class="img-fluid" />
+      </div>
+    </ng-template>
+    <div class="col-md-3" *ngIf="schema.image2; else noImage2">
+      <img src="{{ schema.image2 }}" class="img-fluid" />
+    </div>
+    <ng-template #noImage2>
+      <div class="col-md-3">
+        <img src="https://fakeimg.pl/450x600/282828/eae0d0/?text=%20#.png" class="img-fluid" />
+      </div>
+    </ng-template>
+    <div class="col-md-3" *ngIf="schema.image3; else noImage3">
+      <img src="{{ schema.image3 }}" class="img-fluid" />
+    </div>
+    <ng-template #noImage3>
+      <div class="col-md-3">
+        <img src="https://fakeimg.pl/450x600/282828/eae0d0/?text=%20#.png" class="img-fluid" />
+      </div>
+    </ng-template>
+    <div class="col-md-3" *ngIf="schema.image4; else noImage4">
+      <img src="{{ schema.image4 }}" class="img-fluid" />
+    </div>
+    <ng-template #noImage4>
+      <div class="col-md-3">
+        <img src="https://fakeimg.pl/450x600/282828/eae0d0/?text=%20#.png" />
+      </div>
+    </ng-template>
+  </div>
+</div>
