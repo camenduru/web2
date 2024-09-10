@@ -302,7 +302,8 @@ public class JobResource {
                     Oops! Your balance is insufficient. If you want a daily wallet balance of
                     <span class='text-info' style='font-weight: bold;'>%s</span> ($%s/month), please subscribe via
                     <a class='text-info' style='font-weight: bold;' href='https://github.com/sponsors/camenduru'>GitHub Sponsors</a>,
-                    <a class='text-info' style='font-weight: bold;' href='https://www.patreon.com/camenduru'>Patreon</a>, or purchase a Tost Wallet Code.
+                    <a class='text-info' style='font-weight: bold;' href='https://www.patreon.com/camenduru'>Patreon</a>, or purchase a
+                    <a class='text-info' style='font-weight: bold;' href='https://ko-fi.com/camenduru/shop'>Tost Wallet Code</a>.
                 """,
                 camenduruWebPaidTotal,
                 camenduruWebMinTotal
