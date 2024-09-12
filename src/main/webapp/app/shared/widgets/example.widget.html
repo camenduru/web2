@@ -6,7 +6,7 @@ Examples
       <a class="card-link" *ngIf="schema.model" href="{{ schema.model }}">Model</a>
       <a class="card-link" *ngIf="schema.author" href="{{ schema.author }}">Author</a>
       <span *ngIf="schema.trigger">
-        | <small class="text-muted">Trigger: <span class="text-warning">{{ schema.trigger }}</span></small></span
+        | <small class="text-muted">Trigger Word: <span class="text-warning">{{ schema.trigger }}</span></small></span
       >
     </div>
     <div class="col-md-3" *ngIf="schema.image1; else noImage1">
