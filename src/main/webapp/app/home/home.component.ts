@@ -341,7 +341,7 @@ export default class HomeComponent implements OnInit, OnDestroy {
     const pageToLoad: number = page;
     const queryObject: any = {
       page: pageToLoad - 1,
-      size: 40,
+      size: 100,
       sort: this.sortService.buildSortParam(this.sortState()),
     };
     return this.appService.query(queryObject).pipe(tap(() => (this.isLoading = false)));
