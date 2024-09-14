@@ -5,9 +5,22 @@ Examples
       <a class="card-link" *ngIf="schema.link" href="{{ schema.link }}">Link</a>
       <a class="card-link" *ngIf="schema.model" href="{{ schema.model }}">Model</a>
       <a class="card-link" *ngIf="schema.author" href="{{ schema.author }}">Author</a>
+      <a class="card-link" *ngIf="schema.tutorial" href="{{ schema.tutorial }}">Tutorial</a>
       <span *ngIf="schema.trigger">
         | <small class="text-muted">Trigger Word: <span class="text-warning">{{ schema.trigger }}</span></small></span
       >
+    </div>
+    <div class="card-body" *ngIf="schema.line1">
+      <ul style="padding-left: 1rem">
+        <small>
+          <li *ngIf="schema.line1">{{ schema.line1 }}</li>
+          <li *ngIf="schema.line2">{{ schema.line2 }}</li>
+          <li *ngIf="schema.line3">{{ schema.line3 }}</li>
+          <li *ngIf="schema.line4">{{ schema.line4 }}</li>
+          <li *ngIf="schema.line5">{{ schema.line5 }}</li>
+          <li *ngIf="schema.line6">{{ schema.line6 }}</li>
+        </small>
+      </ul>
     </div>
     <div class="col-md-3" *ngIf="schema.image1; else noImage1">
       <img src="{{ schema.image1 }}" class="img-fluid" />
