@@ -122,22 +122,38 @@ export default class HomeComponent implements OnInit, OnDestroy {
       }
       this.isSaving = true;
       const job = this.jobFormService.getJob(this.editForm);
-      job.command = JSON.stringify(property.value);
-      job.login = 'login';
-      job.date = dayjs();
-      job.status = JobStatus.WAITING;
-      job.amount = 'amount';
-      job.notifyUri = 'notifyUri';
-      job.notifyToken = 'notifyToken';
-      job.discordUsername = 'discordUsername';
-      job.discordChannel = 'discordChannel';
-      job.discordId = 'discordId';
-      job.discordToken = 'discordToken';
-      job.source = JobSource.WEB;
-      job.total = 'total';
-      job.result = 'result';
-      if (job.id === null) {
-        this.subscribeToSaveResponse(this.jobService.create(job));
+      const updateJob = (command: string) => {
+        job.command = command;
+        job.login = 'login';
+        job.date = dayjs();
+        job.status = JobStatus.WAITING;
+        job.amount = 'amount';
+        job.notifyUri = 'notifyUri';
+        job.notifyToken = 'notifyToken';
+        job.discordUsername = 'discordUsername';
+        job.discordChannel = 'discordChannel';
+        job.discordId = 'discordId';
+        job.discordToken = 'discordToken';
+        job.source = JobSource.WEB;
+        job.total = 'total';
+        job.result = 'result';
+        if (job.id === null) {
+          this.subscribeToSaveResponse(this.jobService.create(job));
+        }
+      };
+      if (property.value.input_image_check) {
+        const img = new Image();
+        img.src = property.value.input_image_check;
+        img.onload = () => {
+          property.value.width = img.width;
+          property.value.height = img.height;
+          updateJob(JSON.stringify(property.value));
+        };
+        img.onerror = () => {
+          updateJob(JSON.stringify(property.value));
+        };
+      } else {
+        updateJob(JSON.stringify(property.value));
       }
     },
   };

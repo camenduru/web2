@@ -249,16 +249,21 @@ public class JobResource {
                                 job.setCommand(jsonObject.toString());
                             }
                             if (jsonObject.has("input_image_check")) {
-                                String input_image = jsonObject.get("input_image_check").getAsString();
-                                URL image_url;
-                                BufferedImage image;
-                                try {
-                                    image_url = new URL(input_image);
-                                    image = ImageIO.read(image_url);
-                                    width = image.getWidth();
-                                    height = image.getHeight();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
+                                if (jsonObject.has("width") && jsonObject.has("height")) {
+                                    width = jsonObject.get("width").getAsInt();
+                                    height = jsonObject.get("height").getAsInt();
+                                } else {
+                                    String input_image = jsonObject.get("input_image_check").getAsString();
+                                    URL image_url;
+                                    BufferedImage image;
+                                    try {
+                                        image_url = new URL(input_image);
+                                        image = ImageIO.read(image_url);
+                                        width = image.getWidth();
+                                        height = image.getHeight();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
                                 }
                             } else {
                                 for (String key : jsonObject.keySet()) {
