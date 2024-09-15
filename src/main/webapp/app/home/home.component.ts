@@ -122,7 +122,7 @@ export default class HomeComponent implements OnInit, OnDestroy {
       }
       this.isSaving = true;
       const job = this.jobFormService.getJob(this.editForm);
-      const updateJob = (command: string) => {
+      const updateJob = (command: string): void => {
         job.command = command;
         job.login = 'login';
         job.date = dayjs();
