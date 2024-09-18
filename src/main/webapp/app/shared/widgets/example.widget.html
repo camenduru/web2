@@ -1,7 +1,7 @@
 Examples
 <div class="card mb-6">
   <div class="row g-0">
-    <div class="card-header">
+    <div class="card-header" *ngIf="schema.link || schema.model || schema.author || schema.tutorial || schema.trigger">
       <a class="card-link" *ngIf="schema.link" href="{{ schema.link }}">Link</a>
       <a class="card-link" *ngIf="schema.model" href="{{ schema.model }}">Model</a>
       <a class="card-link" *ngIf="schema.author" href="{{ schema.author }}">Author</a>
