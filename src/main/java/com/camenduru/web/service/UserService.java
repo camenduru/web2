@@ -184,18 +184,20 @@ public class UserService {
         userRepository
             .findOneByLogin(userDTO.getLogin().toLowerCase())
             .ifPresent(existingUser -> {
-                boolean removed = removeNonActivatedUser(existingUser);
-                if (!removed) {
-                    throw new UsernameAlreadyUsedException();
-                }
+                // boolean removed = removeNonActivatedUser(existingUser);
+                // if (!removed) {
+                //     throw new UsernameAlreadyUsedException();
+                // }
+                throw new UsernameAlreadyUsedException();
             });
         userRepository
             .findOneByEmailIgnoreCase(userDTO.getEmail())
             .ifPresent(existingUser -> {
-                boolean removed = removeNonActivatedUser(existingUser);
-                if (!removed) {
-                    throw new EmailAlreadyUsedException();
-                }
+                // boolean removed = removeNonActivatedUser(existingUser);
+                // if (!removed) {
+                //     throw new EmailAlreadyUsedException();
+                // }
+                throw new EmailAlreadyUsedException();
             });
         User newUser = new User();
         String encryptedPassword = passwordEncoder.encode(password);
@@ -222,14 +224,14 @@ public class UserService {
         return newUser;
     }
 
-    private boolean removeNonActivatedUser(User existingUser) {
-        if (existingUser.isActivated()) {
-            return false;
-        }
-        userRepository.delete(existingUser);
-        this.clearUserCaches(existingUser);
-        return true;
-    }
+    // private boolean removeNonActivatedUser(User existingUser) {
+    //     if (existingUser.isActivated()) {
+    //         return false;
+    //     }
+    //     userRepository.delete(existingUser);
+    //     this.clearUserCaches(existingUser);
+    //     return true;
+    // }
 
     public User createUser(AdminUserDTO userDTO) {
         User user = new User();
