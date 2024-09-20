@@ -356,6 +356,11 @@ export class AppDetailComponent implements OnInit, OnDestroy {
     const url = `${link}`;
     window.open(url);
   }
+
+  protected getUrlsFromString(str: string): string[] {
+    const correctedStr = str.replace(/'/g, '"');
+    return JSON.parse(correctedStr) as string[];
+  }
 }
 
 function notifyDivRemove(): void {

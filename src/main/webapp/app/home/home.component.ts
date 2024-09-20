@@ -407,9 +407,9 @@ export default class HomeComponent implements OnInit, OnDestroy {
     window.open(url, '_self');
   }
 
-  getUrlsFromString(str: string): string[] {
+  protected getUrlsFromString(str: string): string[] {
     const correctedStr = str.replace(/'/g, '"');
-    return JSON.parse(correctedStr);
+    return JSON.parse(correctedStr) as string[];
   }
 }
 
