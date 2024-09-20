@@ -406,6 +406,11 @@ export default class HomeComponent implements OnInit, OnDestroy {
     const url = `${link}`;
     window.open(url, '_self');
   }
+
+  getUrlsFromString(str: string): string[] {
+    const correctedStr = str.replace(/'/g, '"');
+    return JSON.parse(correctedStr);
+  }
 }
 
 function notifyDivRemove(): void {
