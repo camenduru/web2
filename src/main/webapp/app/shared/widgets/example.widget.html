@@ -23,7 +23,7 @@ Examples
       </ul>
     </div>
     <div class="col-md-3" *ngIf="schema.image1; else noImage1">
-      <img src="{{ schema.image1 }}" class="img-fluid" />
+      <img src="{{ schema.image1 }}" class="img-fluid" (click)="download(schema.image1)" style="cursor: pointer" />
     </div>
     <ng-template #noImage1>
       <div class="col-md-3">
@@ -31,7 +31,7 @@ Examples
       </div>
     </ng-template>
     <div class="col-md-3" *ngIf="schema.image2; else noImage2">
-      <img src="{{ schema.image2 }}" class="img-fluid" />
+      <img src="{{ schema.image2 }}" class="img-fluid" (click)="download(schema.image2)" style="cursor: pointer" />
     </div>
     <ng-template #noImage2>
       <div class="col-md-3">
@@ -39,7 +39,7 @@ Examples
       </div>
     </ng-template>
     <div class="col-md-3" *ngIf="schema.image3; else noImage3">
-      <img src="{{ schema.image3 }}" class="img-fluid" />
+      <img src="{{ schema.image3 }}" class="img-fluid" (click)="download(schema.image3)" style="cursor: pointer" />
     </div>
     <ng-template #noImage3>
       <div class="col-md-3">
@@ -47,7 +47,7 @@ Examples
       </div>
     </ng-template>
     <div class="col-md-3" *ngIf="schema.image4; else noImage4">
-      <img src="{{ schema.image4 }}" class="img-fluid" />
+      <img src="{{ schema.image4 }}" class="img-fluid" (click)="download(schema.image4)" style="cursor: pointer" />
     </div>
     <ng-template #noImage4>
       <div class="col-md-3">
