@@ -192,30 +192,53 @@
         </div>
       } @else {
         <div class="col-sm-5 col-md-5 col-lg-5 col-xl-5">
-          <form class="d-flex" name="editForm" role="form" novalidate [formGroup]="editForm">
-            <select
-              (change)="changeSchema($event)"
-              style="
-                color: #adb5bd;
-                background-color: #36363b;
-                border: var(--bs-border-width) solid #555;
-                height: 40px;
-                width: 2000px;
-                font-size: 18px;
-              "
-              formControlName="type"
-              [(ngModel)]="default_app_type"
-            >
-              @if (account()?.authorities?.includes('ROLE_PAID')) {
-                <option *ngFor="let app of apps" [value]="app.type">
+          <form class="d-flex flex-column" name="editForm" role="form" novalidate [formGroup]="editForm">
+            <div class="mb-2">
+              <select
+                (change)="onCategoryChange($event)"
+                style="
+                  color: #adb5bd;
+                  background-color: #36363b;
+                  border: var(--bs-border-width) solid #555;
+                  height: 40px;
+                  width: 100%;
+                  font-size: 18px;
+                "
+                formControlName="command"
+                [(ngModel)]="default_category"
+              >
+                <option
+                  *ngFor="let category of categories"
+                  [value]="category"
+                  [disabled]="category.startsWith('PRO') && !account()?.authorities?.includes('ROLE_PAID')"
+                >
+                  [{{ category }}]
+                </option>
+              </select>
+            </div>
+            <div>
+              <select
+                (change)="changeSchema($event)"
+                style="
+                  color: #adb5bd;
+                  background-color: #36363b;
+                  border: var(--bs-border-width) solid #555;
+                  height: 40px;
+                  width: 100%;
+                  font-size: 18px;
+                "
+                formControlName="type"
+                [(ngModel)]="default_app_type"
+              >
+                <option
+                  *ngFor="let app of filteredApps"
+                  [value]="app.type"
+                  [disabled]="!app.isFree && !account()?.authorities?.includes('ROLE_PAID')"
+                >
                   {{ app.title }}
                 </option>
-              } @else {
-                <option *ngFor="let app of apps" [value]="app.type" [disabled]="!app.isFree">
-                  {{ app.title }}
-                </option>
-              }
-            </select>
+              </select>
+            </div>
           </form>
           <br />
           <sf-form [schema]="activeSchema" [model]="activeModel" [actions]="activeActions"></sf-form>

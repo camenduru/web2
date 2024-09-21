@@ -50,12 +50,15 @@ import dayjs from 'dayjs/esm';
   template: '<sf-form [schema]="activeSchema" [model]="activeModel" [actions]="activeActions"></sf-form>',
 })
 export default class HomeComponent implements OnInit, OnDestroy {
+  isInitialLoad = false;
   isSaving = false;
   subscription: Subscription | null = null;
   account = signal<Account | null>(null);
   user: Account = {} as Account;
   apps?: IApp[];
   jobs?: IJob[];
+  categories?: string[];
+  filteredApps?: IApp[];
   itemsPerPage = ITEMS_PER_PAGE;
   totalJobItems = 0;
   totalAppItems = 0;
@@ -66,6 +69,7 @@ export default class HomeComponent implements OnInit, OnDestroy {
   isActive = true;
   activeSchema: ISchema = {};
   activeModel: any = {};
+  default_category: any = {};
   default_app_type: any = {};
 
   horizontal = false;
@@ -334,12 +338,17 @@ export default class HomeComponent implements OnInit, OnDestroy {
     this.fillComponentAttributesFromAppResponseHeader(response.headers);
     const dataFromBody = this.fillComponentAttributesFromAppResponseBody(response.body);
     this.apps = dataFromBody.filter(item => item.isActive === true);
-    const app = this.apps.find(item => item.isDefault === true);
-    const jsonSchema = app?.schema ? JSON.parse(app.schema) : null;
+    const defaultApp = this.apps.find(item => item.isDefault === true);
+    const jsonSchema = defaultApp?.schema ? JSON.parse(defaultApp.schema) : null;
     this.activeSchema = jsonSchema as unknown as ISchema;
-    const jsonModel = app?.model ? JSON.parse(app.model) : null;
+    const jsonModel = defaultApp?.model ? JSON.parse(defaultApp.model) : null;
     this.activeModel = jsonModel;
-    this.default_app_type = app?.type;
+    this.default_app_type = defaultApp?.type;
+    const titles = this.apps.map(app => app.title).join('\n');
+    this.categories = this.extractCategories(titles);
+    this.default_category = this.extractCategories(defaultApp?.title ?? '');
+    this.isInitialLoad = true;
+    this.onCategoryChange({ target: { value: this.default_category } });
   }
 
   protected fillComponentAttributesFromAppResponseBody(data: IApp[] | null): IApp[] {
@@ -410,6 +419,34 @@ export default class HomeComponent implements OnInit, OnDestroy {
   protected getUrlsFromString(str: string): string[] {
     const correctedStr = str.replace(/'/g, '"');
     return JSON.parse(correctedStr) as string[];
+  }
+
+  protected extractCategories(titles: string): string[] {
+    const correctedTitles = titles.replace(/'/g, '"');
+    const titleArray = correctedTitles.split(/\n/);
+    const categories = titleArray
+      .map(title => {
+        const match = title.match(/\[(.*?)\]/);
+        return match ? match[1] : null;
+      })
+      .filter((category): category is string => category !== null);
+    return Array.from(new Set(categories));
+  }
+
+  protected onCategoryChange(event: any): void {
+    const selectedCategory = event.target.value;
+    this.filteredApps = (this.apps ?? []).filter(app => app.title?.includes(`[${selectedCategory}]`));
+    if (this.isInitialLoad) {
+      this.changeSchema({ target: { value: this.default_app_type } } as unknown as Event);
+      this.isInitialLoad = false;
+    } else {
+      if (this.filteredApps.length > 0) {
+        this.default_app_type = this.filteredApps[0].type;
+        this.changeSchema({ target: { value: this.default_app_type } } as unknown as Event);
+      } else {
+        this.default_app_type = null;
+      }
+    }
   }
 }
 
