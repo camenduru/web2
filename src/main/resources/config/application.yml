@@ -211,3 +211,4 @@ camenduru:
   web2.s3.secret: ${com_camenduru_web2_s3_secret}
   web2.s3.bucket: ${com_camenduru_web2_s3_bucket}
   web2.s3.preview: ${com_camenduru_web2_s3_preview}
+  web2.s3.endpoint: ${com_camenduru_web2_s3_endpoint}

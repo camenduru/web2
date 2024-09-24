@@ -51,6 +51,7 @@ import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.PaginationUtil;
@@ -100,6 +101,9 @@ public class JobResource {
     @Value("${camenduru.web2.s3.preview}")
     private String camenduruWebS3Preview;
 
+    @Value("${camenduru.web2.s3.endpoint}")
+    private String camenduruWebS3Endpoint;
+
     private final JobRepository jobRepository;
     private final SettingRepository settingRepository;
     private final UserRepository userRepository;
@@ -126,6 +130,7 @@ public class JobResource {
         this.s3Client = S3Client.builder()
             .region(Region.of(camenduruWebS3Region))
             .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create(camenduruWebS3Access, camenduruWebS3Secret)))
+            .endpointOverride(URI.create(camenduruWebS3Endpoint))
             .build();
     }
 
@@ -201,6 +206,7 @@ public class JobResource {
                                         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                                             .bucket(camenduruWebS3Bucket)
                                             .key(uniqueFilename)
+                                            .acl(ObjectCannedACL.PUBLIC_READ)
                                             .build();
                                         String url = String.format("%s/%s/%s", camenduruWebS3Preview, camenduruWebS3Bucket, uniqueFilename);
                                         s3Client.putObject(
@@ -235,6 +241,7 @@ public class JobResource {
                                     PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                                         .bucket(camenduruWebS3Bucket)
                                         .key(uniqueFilename)
+                                        .acl(ObjectCannedACL.PUBLIC_READ)
                                         .build();
                                     String url = String.format("%s/%s/%s", camenduruWebS3Preview, camenduruWebS3Bucket, uniqueFilename);
                                     s3Client.putObject(
