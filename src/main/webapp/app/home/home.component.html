@@ -129,7 +129,13 @@
                   <ng-container
                     *ngIf="job.result && (job.result.includes('.png') || job.result.includes('.jpg') || job.result.includes('.webp'))"
                   >
-                    <img class="item rounded" [src]="job.result" (click)="download(job.result)" style="cursor: pointer" width="445" />
+                    <img
+                      class="object-fit-cover item rounded"
+                      [src]="job.result"
+                      (click)="download(job.result)"
+                      style="cursor: pointer"
+                      width="445"
+                    />
                   </ng-container>
                   <ng-container *ngIf="job.result && job.result.includes('.mp4')">
                     <video width="445" height="445" controls>
@@ -344,7 +350,13 @@
                   <ng-container
                     *ngIf="job.result && (job.result.includes('.png') || job.result.includes('.jpg') || job.result.includes('.webp'))"
                   >
-                    <img class="item rounded" [src]="job.result" (click)="download(job.result)" style="cursor: pointer" width="445" />
+                    <img
+                      class="object-fit-cover item rounded"
+                      [src]="job.result"
+                      (click)="download(job.result)"
+                      style="cursor: pointer"
+                      width="445"
+                    />
                   </ng-container>
                   <ng-container *ngIf="job.result && job.result.includes('.mp4')">
                     <video width="445" height="445" controls>
