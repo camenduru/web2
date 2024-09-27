@@ -25,11 +25,15 @@ export class UploadWidget extends ControlWidget {
     const file = event.target.files[0];
     if (file) {
       this.selectedFile = file;
-      this.uploadFile();
+      if (this.schema.upload_url.includes('uguu')) {
+        this.uploadFileToUguu();
+      } else if (this.schema.upload_url.includes('catbox')) {
+        this.uploadFileToLitterbox();
+      }
     }
   }
 
-  uploadFile(): void {
+  uploadFileToUguu(): void {
     if (!this.selectedFile) {
       return;
     }
@@ -53,6 +57,38 @@ export class UploadWidget extends ControlWidget {
             }
           } else {
             this.errorMessage = 'Upload failed, no files returned.';
+          }
+        },
+        error => {
+          this.uploadResponse = null;
+          this.uploadSuccess = false;
+          this.errorMessage = error.message || 'An error occurred during upload.';
+        },
+      );
+  }
+
+  uploadFileToLitterbox(): void {
+    if (!this.selectedFile) {
+      return;
+    }
+    const formData = new FormData();
+    formData.append('reqtype', 'fileupload');
+    formData.append('time', '72h');
+    formData.append('fileToUpload', this.selectedFile, this.selectedFile.name);
+    const uploadUrl = this.schema.upload_url;
+    this.http
+      .post(uploadUrl, formData, {
+        headers: new HttpHeaders({
+          Accept: `text/plain`,
+        }),
+        responseType: 'text',
+      })
+      .subscribe(
+        (response: string) => {
+          this.uploadSuccess = true;
+          this.fileUrl = response;
+          if (this.fileUrl) {
+            this.updateTextarea(this.fileUrl);
           }
         },
         error => {
