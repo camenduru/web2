@@ -100,9 +100,24 @@ export class UploadWidget extends ControlWidget {
   }
 
   private updateTextarea(url: string): void {
-    const inputImageControl = this.formProperty.findRoot().getProperty(this.schema.property);
-    if (inputImageControl) {
-      inputImageControl.setValue(url, false);
+    const path = this.formProperty.__canonicalPath;
+    const match = path.match(/\/([^\/]+)\/(\d+)\/([^\/]+)/);
+    if (match) {
+      const arrayPropertyName = match[1];
+      const index = parseInt(match[2], 10);
+      const arrayProperty = this.formProperty.findRoot().getProperty(arrayPropertyName);
+      if (arrayProperty && arrayProperty._properties.length > index) {
+        const currentItem = arrayProperty._properties[index];
+        const inputImageControl = currentItem.getProperty(this.schema.property);
+        if (inputImageControl) {
+          inputImageControl.setValue(url, false);
+        }
+      }
+    } else {
+      const inputImageControl = this.formProperty.findRoot().getProperty(this.schema.property);
+      if (inputImageControl) {
+        inputImageControl.setValue(url, false);
+      }
     }
   }
 }
