@@ -35,8 +35,7 @@ export class UploadWidget extends ControlWidget {
     }
     const formData = new FormData();
     formData.append('files[]', this.selectedFile, this.selectedFile.name);
-    const uploadUrl = `https://uguu.se/upload?output=json`;
-    // const uploadUrl = `https://cors-anywhere.herokuapp.com/https://uguu.se/upload?output=json`;
+    const uploadUrl = this.schema.upload_url;
     this.http
       .post(uploadUrl, formData, {
         headers: new HttpHeaders({
