@@ -23,6 +23,33 @@ export class UploadWidget extends ControlWidget {
 
   onFileChange(event: any): void {
     const file = event.target.files[0];
+
+    const path = this.formProperty.__canonicalPath;
+    const match = path.match(/\/([^\/]+)\/(\d+)\/([^\/]+)/);
+    if (match) {
+      const arrayPropertyName = match[1];
+      const index = parseInt(match[2], 10);
+      const arrayProperty = this.formProperty.findRoot().getProperty(arrayPropertyName);
+      if (arrayProperty && arrayProperty._properties.length > index) {
+        const currentItem = arrayProperty._properties[index];
+        const inputImageControl = currentItem.getProperty(this.schema.property);
+        if (inputImageControl) {
+          const element = document.getElementById(inputImageControl.__canonicalPathNotation);
+          if (element) {
+            element.classList.remove('text-info');
+          }
+        }
+      }
+    } else {
+      const inputImageControl = this.formProperty.findRoot().getProperty(this.schema.property);
+      if (inputImageControl) {
+        const element = document.getElementById(inputImageControl.__canonicalPathNotation);
+        if (element) {
+          element.classList.remove('text-info');
+        }
+      }
+    }
+
     if (file) {
       this.selectedFile = file;
       if (this.schema.upload_url.includes('uguu')) {
@@ -111,12 +138,20 @@ export class UploadWidget extends ControlWidget {
         const inputImageControl = currentItem.getProperty(this.schema.property);
         if (inputImageControl) {
           inputImageControl.setValue(url, false);
+          const element = document.getElementById(inputImageControl.__canonicalPathNotation);
+          if (element) {
+            element.classList.add('text-info');
+          }
         }
       }
     } else {
       const inputImageControl = this.formProperty.findRoot().getProperty(this.schema.property);
       if (inputImageControl) {
         inputImageControl.setValue(url, false);
+        const element = document.getElementById(inputImageControl.__canonicalPathNotation);
+        if (element) {
+          element.classList.add('text-info');
+        }
       }
     }
   }
