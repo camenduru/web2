@@ -22,61 +22,73 @@ Examples
         </small>
       </ul>
     </div>
-    <div class="col-md-3" *ngIf="schema.image1;">
-      <ng-container
-        *ngIf="schema.image1.includes('.png') || schema.image1.includes('.jpg') || schema.image1.includes('.webp') || schema.image1.includes('.gif')"
-      >
-        <img src="{{ schema.image1 }}" class="img-fluid" (click)="download(schema.image1)" style="cursor: pointer" />
-      </ng-container>
-      <ng-container *ngIf="schema.image1.includes('.mp4')">
+    <div class="col-md-3" *ngIf="schema.image1; else noImage1">
+      <ng-container *ngIf="schema.image1.includes('.mp4') else imageTemplate1">
         <div class="ratio" style="--bs-aspect-ratio: {{ schema.video_aspect_ratio }};">
           <video controls class="w-100 h-100 object-fit-cover rounded-end-1">
             <source src="{{ schema.image1 }}" type="video/mp4" />
           </video>
         </div>
       </ng-container>
+      <ng-template #imageTemplate1>
+        <img src="{{ schema.image1 }}" class="img-fluid" (click)="download(schema.image1)" style="cursor: pointer" />
+      </ng-template>
     </div>
-    <div class="col-md-3" *ngIf="schema.image2;">
-      <ng-container
-        *ngIf="schema.image2.includes('.png') || schema.image2.includes('.jpg') || schema.image2.includes('.webp') || schema.image2.includes('.gif')"
-      >
-        <img src="{{ schema.image2 }}" class="img-fluid" (click)="download(schema.image2)" style="cursor: pointer" />
-      </ng-container>
-      <ng-container *ngIf="schema.image2.includes('.mp4')">
+    <ng-template #noImage1>
+      <div class="col-md-3">
+        <img src="https://fakeimg.pl/450x600/282828/eae0d0/?text=%20#.png" class="img-fluid" />
+      </div>
+    </ng-template>
+    <div class="col-md-3" *ngIf="schema.image2; else noImage2">
+      <ng-container *ngIf="schema.image2.includes('.mp4') else imageTemplate2">
         <div class="ratio" style="--bs-aspect-ratio: {{ schema.video_aspect_ratio }};">
           <video controls class="w-100 h-100 object-fit-cover rounded-end-1">
             <source src="{{ schema.image2 }}" type="video/mp4" />
           </video>
         </div>
       </ng-container>
+      <ng-template #imageTemplate2>
+        <img src="{{ schema.image2 }}" class="img-fluid" (click)="download(schema.image2)" style="cursor: pointer" />
+      </ng-template>
     </div>
-    <div class="col-md-3" *ngIf="schema.image3;">
-      <ng-container
-        *ngIf="schema.image3.includes('.png') || schema.image3.includes('.jpg') || schema.image3.includes('.webp') || schema.image3.includes('.gif')"
-      >
-        <img src="{{ schema.image3 }}" class="img-fluid" (click)="download(schema.image3)" style="cursor: pointer" />
-      </ng-container>
-      <ng-container *ngIf="schema.image3.includes('.mp4')">
+    <ng-template #noImage2>
+      <div class="col-md-3">
+        <img src="https://fakeimg.pl/450x600/282828/eae0d0/?text=%20#.png" class="img-fluid" />
+      </div>
+    </ng-template>
+    <div class="col-md-3" *ngIf="schema.image3; else noImage3">
+      <ng-container *ngIf="schema.image3.includes('.mp4') else imageTemplate3">
         <div class="ratio" style="--bs-aspect-ratio: {{ schema.video_aspect_ratio }};">
           <video controls class="w-100 h-100 object-fit-cover rounded-end-1">
             <source src="{{ schema.image3 }}" type="video/mp4" />
           </video>
         </div>
       </ng-container>
+      <ng-template #imageTemplate3>
+        <img src="{{ schema.image3 }}" class="img-fluid" (click)="download(schema.image3)" style="cursor: pointer" />
+      </ng-template>
     </div>
-    <div class="col-md-3" *ngIf="schema.image4;">
-      <ng-container
-        *ngIf="schema.image4.includes('.png') || schema.image4.includes('.jpg') || schema.image4.includes('.webp') || schema.image4.includes('.gif')"
-      >
-        <img src="{{ schema.image4 }}" class="img-fluid" (click)="download(schema.image4)" style="cursor: pointer" />
-      </ng-container>
-      <ng-container *ngIf="schema.image4.includes('.mp4')">
+    <ng-template #noImage3>
+      <div class="col-md-3">
+        <img src="https://fakeimg.pl/450x600/282828/eae0d0/?text=%20#.png" class="img-fluid" />
+      </div>
+    </ng-template>
+    <div class="col-md-3" *ngIf="schema.image4; else noImage4">
+      <ng-container *ngIf="schema.image4.includes('.mp4') else imageTemplate4">
         <div class="ratio" style="--bs-aspect-ratio: {{ schema.video_aspect_ratio }};">
           <video controls class="w-100 h-100 object-fit-cover rounded-end-1">
             <source src="{{ schema.image4 }}" type="video/mp4" />
           </video>
         </div>
       </ng-container>
+      <ng-template #imageTemplate4>
+        <img src="{{ schema.image4 }}" class="img-fluid" (click)="download(schema.image4)" style="cursor: pointer" />
+      </ng-template>
     </div>
+    <ng-template #noImage4>
+      <div class="col-md-3">
+        <img src="https://fakeimg.pl/450x600/282828/eae0d0/?text=%20#.png" />
+      </div>
+    </ng-template>
   </div>
 </div>
