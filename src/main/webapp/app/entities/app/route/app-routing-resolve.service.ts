@@ -9,7 +9,7 @@ import { AppService } from '../service/app.service';
 
 const appResolve = (route: ActivatedRouteSnapshot): Observable<null | IApp> => {
   const id = route.params['id'];
-  const isId = (value: string) => /^[a-f0-9]{24}$/i.test(value);
+  const isId = (value: string): boolean => /^[a-f0-9]{24}$/i.test(value);
   if (id) {
     if (isId(id)) {
       return inject(AppService)
