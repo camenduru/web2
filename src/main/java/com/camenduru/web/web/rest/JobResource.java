@@ -22,12 +22,10 @@ import com.google.gson.JsonSyntaxException;
 import jakarta.annotation.PostConstruct;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.time.Instant;
 import java.util.Base64;
 import java.util.Date;
@@ -35,7 +33,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
-import javax.imageio.ImageIO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -260,17 +257,8 @@ public class JobResource {
                                     width = jsonObject.get("width").getAsInt();
                                     height = jsonObject.get("height").getAsInt();
                                 } else {
-                                    String input_image = jsonObject.get("input_image_check").getAsString();
-                                    URL image_url;
-                                    BufferedImage image;
-                                    try {
-                                        image_url = new URL(input_image);
-                                        image = ImageIO.read(image_url);
-                                        width = image.getWidth();
-                                        height = image.getHeight();
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
+                                    width = 512;
+                                    height = 512;
                                 }
                             } else {
                                 for (String key : jsonObject.keySet()) {
