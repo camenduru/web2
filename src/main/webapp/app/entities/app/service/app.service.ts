@@ -35,6 +35,10 @@ export class AppService {
     return this.http.get<IApp>(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
+  findByType(type: string): Observable<HttpResponse<IApp>> {
+    return this.http.get<IApp>(`${this.resourceUrl}/type/${type}`, { observe: 'response' });
+  }
+
   query(req?: any): Observable<EntityArrayResponseType> {
     const options = createRequestOption(req);
     return this.http.get<IApp[]>(this.resourceUrl, { params: options, observe: 'response' });

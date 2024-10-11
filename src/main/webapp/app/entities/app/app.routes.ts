@@ -22,6 +22,14 @@ const appRoute: Routes = [
     canActivate: [UserRouteAccessService],
   },
   {
+    path: ':id',
+    component: AppDetailComponent,
+    resolve: {
+      app: AppResolve,
+    },
+    canActivate: [UserRouteAccessService],
+  },
+  {
     path: 'new',
     component: AppUpdateComponent,
     resolve: {

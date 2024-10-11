@@ -191,6 +191,20 @@ public class AppResource {
     }
 
     /**
+     * {@code GET  /apps/type/:type} : get the "type" app.
+     *
+     * @param type the type of the app to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the app, or with status {@code 404 (Not Found)}.
+     */
+    @GetMapping("/type/{type}")
+    @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
+    public ResponseEntity<App> getAppByType(@PathVariable("type") String type) {
+        log.debug("REST request to get App : {}", type);
+        Optional<App> app = appRepository.findOneByType(type);
+        return ResponseUtil.wrapOrNotFound(app);
+    }
+
+    /**
      * {@code DELETE  /apps/:id} : delete the "id" app.
      *
      * @param id the id of the app to delete.
