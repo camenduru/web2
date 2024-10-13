@@ -36,28 +36,10 @@ describe('App routing resolve service', () => {
   });
 
   describe('resolve', () => {
-    it('should return IApp returned by find for valid MongoDB ObjectId', () => {
+    it('should return IApp returned by find', () => {
       // GIVEN
       service.find = jest.fn(id => of(new HttpResponse({ body: { id } })));
-      mockActivatedRouteSnapshot.params = { id: '123456789012345678901234' };
 
-      // WHEN
-      TestBed.runInInjectionContext(() => {
-        appResolve(mockActivatedRouteSnapshot).subscribe({
-          next(result) {
-            resultApp = result;
-          },
-        });
-      });
-
-      // THEN
-      expect(service.find).toHaveBeenCalledWith('123456789012345678901234');
-      expect(resultApp).toEqual({ id: '123456789012345678901234' });
-    });
-
-    it('should return IApp returned by findByType for non-MongoDB ObjectId', () => {
-      // GIVEN
-      service.findByType = jest.fn(id => of(new HttpResponse({ body: { id } })));
       mockActivatedRouteSnapshot.params = { id: 'ABC' };
 
       // WHEN
@@ -70,7 +52,7 @@ describe('App routing resolve service', () => {
       });
 
       // THEN
-      expect(service.findByType).toHaveBeenCalledWith('ABC');
+      expect(service.find).toHaveBeenCalledWith('ABC');
       expect(resultApp).toEqual({ id: 'ABC' });
     });
 
@@ -93,29 +75,10 @@ describe('App routing resolve service', () => {
       expect(resultApp).toEqual(null);
     });
 
-    it('should route to 404 page if data not found in server for valid MongoDB ObjectId', () => {
+    it('should route to 404 page if data not found in server', () => {
       // GIVEN
       jest.spyOn(service, 'find').mockReturnValue(of(new HttpResponse<IApp>({ body: null })));
-      mockActivatedRouteSnapshot.params = { id: '123456789012345678901234' };
 
-      // WHEN
-      TestBed.runInInjectionContext(() => {
-        appResolve(mockActivatedRouteSnapshot).subscribe({
-          next(result) {
-            resultApp = result;
-          },
-        });
-      });
-
-      // THEN
-      expect(service.find).toHaveBeenCalledWith('123456789012345678901234');
-      expect(resultApp).toEqual(undefined);
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['404']);
-    });
-
-    it('should route to 404 page if data not found in server for non-MongoDB ObjectId', () => {
-      // GIVEN
-      jest.spyOn(service, 'findByType').mockReturnValue(of(new HttpResponse<IApp>({ body: null })));
       mockActivatedRouteSnapshot.params = { id: 'ABC' };
 
       // WHEN
@@ -128,7 +91,7 @@ describe('App routing resolve service', () => {
       });
 
       // THEN
-      expect(service.findByType).toHaveBeenCalledWith('ABC');
+      expect(service.find).toHaveBeenCalledWith('ABC');
       expect(resultApp).toEqual(undefined);
       expect(mockRouter.navigate).toHaveBeenCalledWith(['404']);
     });

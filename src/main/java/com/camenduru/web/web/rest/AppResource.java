@@ -10,6 +10,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -186,21 +187,13 @@ public class AppResource {
     @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<App> getApp(@PathVariable("id") String id) {
         log.debug("REST request to get App : {}", id);
-        Optional<App> app = appRepository.findById(id);
-        return ResponseUtil.wrapOrNotFound(app);
-    }
-
-    /**
-     * {@code GET  /apps/type/:type} : get the "type" app.
-     *
-     * @param type the type of the app to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the app, or with status {@code 404 (Not Found)}.
-     */
-    @GetMapping("/type/{type}")
-    @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
-    public ResponseEntity<App> getAppByType(@PathVariable("type") String type) {
-        log.debug("REST request to get App : {}", type);
-        Optional<App> app = appRepository.findOneByType(type);
+        Optional<App> app;
+        Pattern objectIdPattern = Pattern.compile("^[a-f0-9]{24}$", Pattern.CASE_INSENSITIVE);
+        if (id != null && objectIdPattern.matcher(id).matches()) {
+            app = appRepository.findById(id);
+        } else {
+            app = appRepository.findOneByType(id);
+        }
         return ResponseUtil.wrapOrNotFound(app);
     }
 

@@ -9,35 +9,19 @@ import { AppService } from '../service/app.service';
 
 const appResolve = (route: ActivatedRouteSnapshot): Observable<null | IApp> => {
   const id = route.params['id'];
-  const isId = (value: string): boolean => /^[a-f0-9]{24}$/i.test(value);
   if (id) {
-    if (isId(id)) {
-      return inject(AppService)
-        .find(id)
-        .pipe(
-          mergeMap((app: HttpResponse<IApp>) => {
-            if (app.body) {
-              return of(app.body);
-            } else {
-              inject(Router).navigate(['404']);
-              return EMPTY;
-            }
-          }),
-        );
-    } else {
-      return inject(AppService)
-        .findByType(id)
-        .pipe(
-          mergeMap((app: HttpResponse<IApp>) => {
-            if (app.body) {
-              return of(app.body);
-            } else {
-              inject(Router).navigate(['404']);
-              return EMPTY;
-            }
-          }),
-        );
-    }
+    return inject(AppService)
+      .find(id)
+      .pipe(
+        mergeMap((app: HttpResponse<IApp>) => {
+          if (app.body) {
+            return of(app.body);
+          } else {
+            inject(Router).navigate(['404']);
+            return EMPTY;
+          }
+        }),
+      );
   }
   return of(null);
 };
