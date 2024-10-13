@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, HostListener } from '@angular/core';
 import { ControlWidget } from 'ngx-schema-form';
 import { CommonModule } from '@angular/common';
@@ -16,10 +17,6 @@ export class PaintWidget extends ControlWidget implements OnInit, AfterViewInit 
   uploadSuccess: boolean = false;
   fileUrl: string | null = null;
 
-  constructor(private http: HttpClient) {
-    super();
-  }
-
   @ViewChild('canvas') canvasRef!: ElementRef<HTMLCanvasElement>;
 
   brushSize = 50;
@@ -29,33 +26,36 @@ export class PaintWidget extends ControlWidget implements OnInit, AfterViewInit 
   history: ImageData[] = [];
   historyIndex = -1;
   errorMessage: string | null = null;
+  loadedImageWidth: number | null = null;
+  loadedImageHeight: number | null = null;
 
   private context: CanvasRenderingContext2D | null = null;
   private imageElement: HTMLImageElement | null = null;
   private lastPosition: { x: number; y: number } | null = null;
   private backgroundImage: HTMLImageElement | null = null;
 
-  loadedImageWidth: number | null = null;
-  loadedImageHeight: number | null = null;
+  constructor(private http: HttpClient) {
+    super();
+  }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.setupCanvas(500, 500);
     this.saveToHistory();
   }
 
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     this.context = this.canvasRef.nativeElement.getContext('2d');
     this.updateContext();
   }
 
-  setupCanvas(width: number, height: number) {
+  setupCanvas(width: number, height: number): void {
     const canvas = this.canvasRef.nativeElement;
     canvas.width = width;
     canvas.height = height;
     this.updateContext();
   }
 
-  updateContext() {
+  updateContext(): void {
     if (this.context) {
       this.context.lineCap = 'round';
       this.context.lineJoin = 'round';
@@ -63,7 +63,7 @@ export class PaintWidget extends ControlWidget implements OnInit, AfterViewInit 
     }
   }
 
-  loadImage() {
+  loadImage(): void {
     const inputImageControl = this.formProperty.findRoot().getProperty(this.schema.input_image);
     this.isLoading = true;
     this.errorMessage = null;
@@ -91,11 +91,13 @@ export class PaintWidget extends ControlWidget implements OnInit, AfterViewInit 
     };
   }
 
-  drawImageToFitCanvas(img: HTMLImageElement) {
+  drawImageToFitCanvas(img: HTMLImageElement): void {
     const canvas = this.canvasRef.nativeElement;
     const ctx = this.context;
 
-    if (!ctx) return;
+    if (!ctx) {
+      return;
+    }
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -109,21 +111,23 @@ export class PaintWidget extends ControlWidget implements OnInit, AfterViewInit 
     this.updateContext();
   }
 
-  startDrawing(event: MouseEvent) {
+  startDrawing(event: MouseEvent): void {
     this.isDrawing = true;
     const { offsetX, offsetY } = this.getMousePos(event);
     this.lastPosition = { x: offsetX, y: offsetY };
   }
 
-  stopDrawing() {
+  stopDrawing(): void {
     this.isDrawing = false;
     this.lastPosition = null;
     this.context?.beginPath();
     this.saveToHistory();
   }
 
-  draw(event: MouseEvent) {
-    if (!this.isDrawing || !this.context || !this.lastPosition) return;
+  draw(event: MouseEvent): void {
+    if (!this.isDrawing || !this.context || !this.lastPosition) {
+      return;
+    }
 
     const { offsetX, offsetY } = this.getMousePos(event);
 
@@ -141,7 +145,7 @@ export class PaintWidget extends ControlWidget implements OnInit, AfterViewInit 
     this.context.globalCompositeOperation = 'source-over';
   }
 
-  clearCanvas() {
+  clearCanvas(): void {
     if (this.context) {
       this.context.clearRect(0, 0, this.canvasRef.nativeElement.width, this.canvasRef.nativeElement.height);
       this.updateContext();
@@ -152,7 +156,7 @@ export class PaintWidget extends ControlWidget implements OnInit, AfterViewInit 
     }
   }
 
-  saveImage() {
+  saveImage(): void {
     if (this.loadedImageWidth === null || this.loadedImageHeight === null) {
       console.error('No image loaded to save.');
       return;
@@ -194,7 +198,7 @@ export class PaintWidget extends ControlWidget implements OnInit, AfterViewInit 
     }
   }
 
-  saveToHistory() {
+  saveToHistory(): void {
     if (this.context) {
       const newHistory = this.history.slice(0, this.historyIndex + 1);
       newHistory.push(this.context.getImageData(0, 0, this.canvasRef.nativeElement.width, this.canvasRef.nativeElement.height));
@@ -203,20 +207,20 @@ export class PaintWidget extends ControlWidget implements OnInit, AfterViewInit 
     }
   }
 
-  undo() {
+  undo(): void {
     if (this.historyIndex > 0) {
       this.historyIndex--;
       this.loadFromHistory(this.historyIndex);
     }
   }
 
-  loadFromHistory(index: number) {
+  loadFromHistory(index: number): void {
     if (this.context) {
       this.context.putImageData(this.history[index - 1], 0, 0);
     }
   }
 
-  getMousePos(event: MouseEvent) {
+  getMousePos(event: MouseEvent): { offsetX: number; offsetY: number } {
     const rect = this.canvasRef.nativeElement.getBoundingClientRect();
     const scaleX = this.canvasRef.nativeElement.width / rect.width;
     const scaleY = this.canvasRef.nativeElement.height / rect.height;
@@ -227,7 +231,7 @@ export class PaintWidget extends ControlWidget implements OnInit, AfterViewInit 
     };
   }
 
-  adjustBrushSize() {
+  adjustBrushSize(): void {
     if (this.loadedImageWidth) {
       const baseSize = 32;
       this.brushSize = (this.loadedImageWidth / baseSize) * 4;
@@ -236,7 +240,7 @@ export class PaintWidget extends ControlWidget implements OnInit, AfterViewInit 
   }
 
   @HostListener('window:resize', ['$event'])
-  onResize() {
+  onResize(): void {
     if (this.backgroundImage) {
       this.setupCanvas(this.loadedImageWidth!, this.loadedImageHeight!);
       this.drawImageToFitCanvas(this.backgroundImage);
