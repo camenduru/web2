@@ -5,6 +5,7 @@ import { ReadmeWidget } from './readme.widget';
 import { ChatWidget } from './chat.widget';
 import { ExampleWidget } from './example.widget';
 import { UploadWidget } from './upload.widget';
+import { PaintWidget } from './paint.widget';
 
 @Injectable()
 export class MyWidgetRegistry extends DefaultWidgetRegistry {
@@ -15,5 +16,6 @@ export class MyWidgetRegistry extends DefaultWidgetRegistry {
     this.register('chat', ChatWidget);
     this.register('example', ExampleWidget);
     this.register('upload', UploadWidget);
+    this.register('paint', PaintWidget);
   }
 }

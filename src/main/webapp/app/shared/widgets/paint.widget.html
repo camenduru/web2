@@ -1,0 +1,46 @@
+<div class="max-w-3xl mx-auto mt-1">
+  <div class="mb-4">
+    <div class="input-group mb-3">
+      <button class="btn btn-secondary" (click)="loadImage()" [disabled]="isLoading">
+        {{ isLoading ? 'Loading...' : 'Load Image URL' }}
+      </button>
+    </div>
+    <div *ngIf="errorMessage" class="text-danger">{{ errorMessage }}</div>
+  </div>
+
+  <div class="mb-4">
+    <label for="brush-size" class="form-label">Brush Size: {{ brushSize }}</label>
+    <input
+      id="brush-size"
+      type="range"
+      min="1"
+      max="500"
+      step="1"
+      [(ngModel)]="brushSize"
+      (input)="updateContext()"
+      class="form-range"
+      aria-label="Brush size"
+    />
+  </div>
+
+  <div class="mb-4">
+    <canvas
+      #canvas
+      (mousedown)="startDrawing($event)"
+      (mouseup)="stopDrawing()"
+      (mouseout)="stopDrawing()"
+      (mousemove)="draw($event)"
+      class="border border-secondary cursor-crosshair w-100"
+      aria-label="Drawing canvas"
+    ></canvas>
+  </div>
+
+  <div class="btn-group mb-1" role="group">
+    <button class="btn btn-secondary" (click)="clearCanvas()">Clear Canvas</button>
+    <button class="btn btn-secondary" (click)="undo()" [disabled]="historyIndex <= 0">Undo</button>
+    <button class="btn btn-secondary" (click)="saveImage()" [disabled]="isSaving">{{ isSaving ? 'Saving...' : 'Save Mask Image' }}</button>
+  </div>
+  <div class="mb-1">
+    <small class="text-muted"><span class="text-info">(Wait for the Mask Input URL to Update)</span></small>
+  </div>
+</div>
