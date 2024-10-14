@@ -46,6 +46,14 @@ export class PaintWidget extends ControlWidget implements OnInit, AfterViewInit 
   ngAfterViewInit(): void {
     this.context = this.canvasRef.nativeElement.getContext('2d');
     this.updateContext();
+    this.addTouchEventListeners();
+  }
+
+  addTouchEventListeners(): void {
+    const canvasElement = this.canvasRef.nativeElement;
+    canvasElement.addEventListener('touchstart', event => this.startDrawing(event));
+    canvasElement.addEventListener('touchmove', event => this.draw(event));
+    canvasElement.addEventListener('touchend', () => this.stopDrawing());
   }
 
   setupCanvas(width: number, height: number): void {
@@ -111,7 +119,7 @@ export class PaintWidget extends ControlWidget implements OnInit, AfterViewInit 
     this.updateContext();
   }
 
-  startDrawing(event: MouseEvent): void {
+  startDrawing(event: MouseEvent | TouchEvent): void {
     this.isDrawing = true;
     const { offsetX, offsetY } = this.getMousePos(event);
     this.lastPosition = { x: offsetX, y: offsetY };
@@ -124,7 +132,7 @@ export class PaintWidget extends ControlWidget implements OnInit, AfterViewInit 
     this.saveToHistory();
   }
 
-  draw(event: MouseEvent): void {
+  draw(event: MouseEvent | TouchEvent): void {
     if (!this.isDrawing || !this.context || !this.lastPosition) {
       return;
     }
@@ -227,15 +235,23 @@ export class PaintWidget extends ControlWidget implements OnInit, AfterViewInit 
     }
   }
 
-  getMousePos(event: MouseEvent): { offsetX: number; offsetY: number } {
+  getMousePos(event: MouseEvent | TouchEvent): { offsetX: number; offsetY: number } {
     const rect = this.canvasRef.nativeElement.getBoundingClientRect();
     const scaleX = this.canvasRef.nativeElement.width / rect.width;
     const scaleY = this.canvasRef.nativeElement.height / rect.height;
 
-    return {
-      offsetX: (event.clientX - rect.left) * scaleX,
-      offsetY: (event.clientY - rect.top) * scaleY,
-    };
+    if (event instanceof TouchEvent) {
+      const touch = event.touches[0];
+      return {
+        offsetX: (touch.clientX - rect.left) * scaleX,
+        offsetY: (touch.clientY - rect.top) * scaleY,
+      };
+    } else {
+      return {
+        offsetX: (event.clientX - rect.left) * scaleX,
+        offsetY: (event.clientY - rect.top) * scaleY,
+      };
+    }
   }
 
   adjustBrushSize(): void {
