@@ -314,7 +314,7 @@ export class PaintWidget extends ControlWidget implements OnInit, AfterViewInit 
   }
 
   private updateTextarea(url: string): void {
-    const inputImageControl = this.formProperty.findRoot().getProperty(this.schema.mask_image);
+    const inputImageControl = this.formProperty.findRoot().getProperty(this.schema.input_mask);
     if (inputImageControl) {
       inputImageControl.setValue(url, false);
       this.isSaving = false;
