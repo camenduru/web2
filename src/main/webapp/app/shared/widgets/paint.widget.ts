@@ -51,9 +51,18 @@ export class PaintWidget extends ControlWidget implements OnInit, AfterViewInit 
 
   addTouchEventListeners(): void {
     const canvasElement = this.canvasRef.nativeElement;
-    canvasElement.addEventListener('touchstart', event => this.startDrawing(event));
-    canvasElement.addEventListener('touchmove', event => this.draw(event));
-    canvasElement.addEventListener('touchend', () => this.stopDrawing());
+    canvasElement.addEventListener('touchstart', event => {
+      event.preventDefault();
+      this.startDrawing(event);
+    });
+    canvasElement.addEventListener('touchmove', event => {
+      event.preventDefault();
+      this.draw(event);
+    });
+    canvasElement.addEventListener('touchend', event => {
+      event.preventDefault();
+      this.stopDrawing();
+    });
   }
 
   setupCanvas(width: number, height: number): void {
