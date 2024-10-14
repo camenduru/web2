@@ -162,6 +162,13 @@ export class PaintWidget extends ControlWidget implements OnInit, AfterViewInit 
       return;
     }
     this.isSaving = true;
+    const inputImageControl = this.formProperty.findRoot().getProperty(this.schema.input_mask);
+    if (inputImageControl) {
+      const element = document.getElementById(inputImageControl.__canonicalPathNotation);
+      if (element) {
+        element.classList.remove('text-info');
+      }
+    }
     const tempCanvas = document.createElement('canvas');
     tempCanvas.width = this.loadedImageWidth;
     tempCanvas.height = this.loadedImageHeight;
