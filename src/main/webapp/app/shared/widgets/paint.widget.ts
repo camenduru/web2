@@ -63,6 +63,10 @@ export class PaintWidget extends ControlWidget implements OnInit, AfterViewInit 
       event.preventDefault();
       this.stopDrawing();
     });
+    canvasElement.addEventListener('touchcancel', event => {
+      event.preventDefault();
+      this.stopDrawing();
+    });
   }
 
   setupCanvas(width: number, height: number): void {
@@ -132,12 +136,14 @@ export class PaintWidget extends ControlWidget implements OnInit, AfterViewInit 
     this.isDrawing = true;
     const { offsetX, offsetY } = this.getMousePos(event);
     this.lastPosition = { x: offsetX, y: offsetY };
+    this.context?.beginPath();
+    this.context?.moveTo(offsetX, offsetY);
   }
 
   stopDrawing(): void {
     this.isDrawing = false;
     this.lastPosition = null;
-    this.context?.beginPath();
+    this.context?.closePath();
     this.saveToHistory();
   }
 
