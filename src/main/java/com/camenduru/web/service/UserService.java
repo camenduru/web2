@@ -178,12 +178,6 @@ public class UserService {
         if (userDTO.getEmail().contains("+")) {
             isAllowed = false;
         }
-        if (userDTO.getEmail().contains("@gmail")) {
-            String localPart = userDTO.getEmail().substring(0, userDTO.getEmail().indexOf("@gmail"));
-            if (localPart.contains(".")) {
-                isAllowed = false;
-            }
-        }
         if (!isAllowed) {
             throw new EmailServiceNotAllowedException();
         }
