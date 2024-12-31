@@ -136,6 +136,10 @@ spring:
   output:
     ansi:
       console-available: true
+  servlet:
+    multipart:
+      max-file-size: ${com_camenduru_web2_max_file_size}
+      max-request-size: ${com_camenduru_web2_max_file_size}
 
 server:
   servlet:
