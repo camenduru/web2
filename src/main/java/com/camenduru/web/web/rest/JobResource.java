@@ -39,10 +39,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
@@ -493,5 +495,38 @@ public class JobResource {
         log.debug("REST request to delete Job : {}", id);
         jobRepository.deleteById(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id)).build();
+    }
+
+    /**
+     * {@code POST  /jobs/upload} : Upload a new file.
+     *
+     * @param upload a new file.
+     * @return url.
+     * @throws URISyntaxException File upload failed.
+     */
+    @PostMapping("/upload")
+    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) throws URISyntaxException {
+        if (file.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No file provided.");
+        }
+        try {
+            byte[] fileBytes = file.getBytes();
+            String filename = file.getOriginalFilename();
+            String fileType = filename.substring(filename.lastIndexOf('.') + 1);
+            String uniqueFilename = UUID.randomUUID() + "." + fileType;
+            try (ByteArrayInputStream inputStream = new ByteArrayInputStream(fileBytes)) {
+                PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                    .bucket(camenduruWebS3Bucket)
+                    .key(uniqueFilename)
+                    .acl(ObjectCannedACL.PUBLIC_READ)
+                    .build();
+
+                s3Client.putObject(putObjectRequest, software.amazon.awssdk.core.sync.RequestBody.fromBytes(fileBytes));
+                String url = String.format("%s/%s/%s", camenduruWebS3Preview, camenduruWebS3Bucket, uniqueFilename);
+                return ResponseEntity.ok(url);
+            }
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("File upload failed.");
+        }
     }
 }
