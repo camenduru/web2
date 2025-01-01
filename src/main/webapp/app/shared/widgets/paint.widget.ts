@@ -222,6 +222,8 @@ export class PaintWidget extends ControlWidget implements OnInit, AfterViewInit 
             this.uploadFileToUguu();
           } else if (this.schema.upload_url.includes('catbox')) {
             this.uploadFileToLitterbox();
+          } else if (this.schema.upload_url.includes('tost')) {
+            this.uploadFileToTost();
           }
         }
       }, 'image/png');
@@ -346,6 +348,36 @@ export class PaintWidget extends ControlWidget implements OnInit, AfterViewInit 
         error => {
           this.uploadResponse = null;
           this.uploadSuccess = false;
+          this.errorMessage = error.message || 'An error occurred during upload.';
+        },
+      );
+  }
+
+  uploadFileToTost(): void {
+    if (!this.selectedFile) {
+      return;
+    }
+    const formData = new FormData();
+    formData.append('file', this.selectedFile, this.selectedFile.name);
+    const uploadUrl = this.schema.upload_url;
+    this.http
+      .post(uploadUrl, formData, {
+        headers: new HttpHeaders({
+          Accept: 'text/plain',
+        }),
+        responseType: 'text',
+      })
+      .subscribe(
+        (response: string) => {
+          this.uploadSuccess = true;
+          this.fileUrl = response;
+          if (this.fileUrl) {
+            this.updateTextarea(this.fileUrl);
+          }
+        },
+        error => {
+          this.uploadSuccess = false;
+          this.uploadResponse = null;
           this.errorMessage = error.message || 'An error occurred during upload.';
         },
       );
