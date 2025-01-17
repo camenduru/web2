@@ -87,7 +87,7 @@
           }
         </div>
 
-        <div class="mb-3">
+        <div *jhiHasAnyAuthority="'ROLE_ADMIN'" class="mb-3">
           <label class="form-label" for="field_discordUsername" jhiTranslate="web2App.setting.discordUsername">Discord Username</label>
           <input
             type="text"
@@ -108,7 +108,7 @@
           }
         </div>
 
-        <div class="mb-3">
+        <div *jhiHasAnyAuthority="'ROLE_ADMIN'" class="mb-3">
           <label class="form-label" for="field_discordId" jhiTranslate="web2App.setting.discordId">Discord Id</label>
           <input type="text" class="form-control" name="discordId" id="field_discordId" data-cy="discordId" formControlName="discordId" />
           @if (editForm.get('discordId')!.invalid && (editForm.get('discordId')!.dirty || editForm.get('discordId')!.touched)) {
@@ -120,7 +120,7 @@
           }
         </div>
 
-        <div class="mb-3">
+        <div *jhiHasAnyAuthority="'ROLE_ADMIN'" class="mb-3">
           <label class="form-label" for="field_discordChannel" jhiTranslate="web2App.setting.discordChannel">Discord Channel</label>
           <input
             type="text"
@@ -141,7 +141,7 @@
           }
         </div>
 
-        <div *jhiHasAnyAuthority="['ROLE_ADMIN', 'ROLE_PAID']" class="mb-3">
+        <div *jhiHasAnyAuthority="'ROLE_ADMIN'" class="mb-3">
           <label class="form-label" for="field_discordToken" jhiTranslate="web2App.setting.discordToken">Discord Token</label>
           <input
             type="text"
@@ -172,12 +172,6 @@
           </div>
         }
       </div>
-
-      <small>
-        ⚠ It’s important to set these settings correctly; otherwise, Tost won’t work. Please watch the tutorial first:
-        <a class="text-info" href="https://www.youtube.com/watch?v=dtMStkmWKJY">send data to your Discord channel</a>
-        <br /><br />
-      </small>
 
       <div>
         <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">

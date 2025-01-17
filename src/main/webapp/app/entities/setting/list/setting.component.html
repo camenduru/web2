@@ -71,28 +71,28 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
-            <th scope="col" jhiSortBy="discordUsername">
+            <th *jhiHasAnyAuthority="'ROLE_ADMIN'" scope="col" jhiSortBy="discordUsername">
               <div class="d-flex">
                 <span jhiTranslate="web2App.setting.discordUsername">Discord Username</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
-            <th scope="col" jhiSortBy="discordId">
+            <th *jhiHasAnyAuthority="'ROLE_ADMIN'" scope="col" jhiSortBy="discordId">
               <div class="d-flex">
                 <span jhiTranslate="web2App.setting.discordId">Discord Id</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
-            <th scope="col" jhiSortBy="discordChannel">
+            <th *jhiHasAnyAuthority="'ROLE_ADMIN'" scope="col" jhiSortBy="discordChannel">
               <div class="d-flex">
                 <span jhiTranslate="web2App.setting.discordChannel">Discord Channel</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
-            <th *jhiHasAnyAuthority="['ROLE_ADMIN', 'ROLE_PAID']" scope="col" jhiSortBy="discordToken">
+            <th *jhiHasAnyAuthority="'ROLE_ADMIN'" scope="col" jhiSortBy="discordToken">
               <div class="d-flex">
                 <span jhiTranslate="web2App.setting.discordToken">Discord Token</span>
 
@@ -119,10 +119,10 @@
               </td>
               <td *jhiHasAnyAuthority="['ROLE_ADMIN', 'ROLE_PAID']">{{ setting.notifyUri }}</td>
               <td *jhiHasAnyAuthority="['ROLE_ADMIN', 'ROLE_PAID']">{{ setting.notifyToken }}</td>
-              <td>{{ setting.discordUsername }}</td>
-              <td>{{ setting.discordId }}</td>
-              <td>{{ setting.discordChannel }}</td>
-              <td *jhiHasAnyAuthority="['ROLE_ADMIN', 'ROLE_PAID']">{{ setting.discordToken }}</td>
+              <td *jhiHasAnyAuthority="'ROLE_ADMIN'">{{ setting.discordUsername }}</td>
+              <td *jhiHasAnyAuthority="'ROLE_ADMIN'">{{ setting.discordId }}</td>
+              <td *jhiHasAnyAuthority="'ROLE_ADMIN'">{{ setting.discordChannel }}</td>
+              <td *jhiHasAnyAuthority="'ROLE_ADMIN'">{{ setting.discordToken }}</td>
               <td>{{ setting.apiKey }}</td>
               <td class="text-end">
                 <div class="btn-group">
@@ -136,7 +136,12 @@
                     <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
                   </a>
 
-                  <a [routerLink]="['/setting', setting.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+                  <a
+                    *jhiHasAnyAuthority="['ROLE_ADMIN', 'ROLE_PAID']"
+                    [routerLink]="['/setting', setting.id, 'edit']"
+                    class="btn btn-primary btn-sm"
+                    data-cy="entityEditButton"
+                  >
                     <fa-icon icon="pencil-alt"></fa-icon>
                     <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
                   </a>

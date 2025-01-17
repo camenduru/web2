@@ -37,20 +37,20 @@
           <dd *jhiHasAnyAuthority="['ROLE_ADMIN', 'ROLE_PAID']">
             <span>{{ setting()!.notifyToken }}</span>
           </dd>
-          <dt><span jhiTranslate="web2App.setting.discordUsername">Discord Username</span></dt>
-          <dd>
+          <dt *jhiHasAnyAuthority="'ROLE_ADMIN'"><span jhiTranslate="web2App.setting.discordUsername">Discord Username</span></dt>
+          <dd *jhiHasAnyAuthority="'ROLE_ADMIN'">
             <span>{{ setting()!.discordUsername }}</span>
           </dd>
-          <dt><span jhiTranslate="web2App.setting.discordId">Discord Id</span></dt>
-          <dd>
+          <dt *jhiHasAnyAuthority="'ROLE_ADMIN'"><span jhiTranslate="web2App.setting.discordId">Discord Id</span></dt>
+          <dd *jhiHasAnyAuthority="'ROLE_ADMIN'">
             <span>{{ setting()!.discordId }}</span>
           </dd>
-          <dt><span jhiTranslate="web2App.setting.discordChannel">Discord Channel</span></dt>
-          <dd>
+          <dt *jhiHasAnyAuthority="'ROLE_ADMIN'"><span jhiTranslate="web2App.setting.discordChannel">Discord Channel</span></dt>
+          <dd *jhiHasAnyAuthority="'ROLE_ADMIN'">
             <span>{{ setting()!.discordChannel }}</span>
           </dd>
-          <dt *jhiHasAnyAuthority="['ROLE_ADMIN', 'ROLE_PAID']"><span jhiTranslate="web2App.setting.discordToken">Discord Token</span></dt>
-          <dd *jhiHasAnyAuthority="['ROLE_ADMIN', 'ROLE_PAID']">
+          <dt *jhiHasAnyAuthority="'ROLE_ADMIN'"><span jhiTranslate="web2App.setting.discordToken">Discord Token</span></dt>
+          <dd *jhiHasAnyAuthority="'ROLE_ADMIN'">
             <span>{{ setting()!.discordToken }}</span>
           </dd>
           <dt *jhiHasAnyAuthority="'ROLE_ADMIN'"><span jhiTranslate="web2App.setting.apiKey">Api Key</span></dt>
