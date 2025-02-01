@@ -1,7 +1,18 @@
 @if (account() !== null) {
-  @if (!account()?.authorities?.includes('ROLE_ADMIN')) {}
+  @if (!account()?.authorities?.includes('ROLE_ADMIN')) {
+    <div class="row">
+      <div class="col-sm-5 col-md-5 col-lg-5 col-xl-5" style="padding-left: 2%">
+        🥳 Please consider supporting us to help maintain this project via
+        <a href="https://github.com/sponsors/camenduru">GitHub Sponsors</a>, <a href="https://www.patreon.com/camenduru">Patreon</a>, or
+        purchase a <a href="https://buymeacoffee.com/camenduru/extras">Tost Wallet Code</a>.
+      </div>
+      <div class="col-sm-7 col-md-7 col-lg-7 col-xl-7">
+        🐣 Please follow tost for new updates. <a href="https://x.com/tost_ai">x.com/tost_ai</a>
+      </div>
+    </div>
+  }
 }
-<div class="card jh-card" style="margin-top: 0px">
+<div class="card jh-card">
   <div class="row">
     @if (account() !== null) {
       @if (account()?.authorities?.includes('ROLE_ADMIN')) {
@@ -399,6 +410,7 @@
               <span class="text-warning">Tost</span> is a non-profit,
               <a class="text-info" href="https://github.com/camenduru/web">open-source</a> service that serves inference for the latest AI
               papers. <span class="text-warning">Tost</span> does not store any inference data; all data expires within 12 hours.
+              <span class="text-warning">Tost</span>'s budget is supported by companies and individual sponsors.
             </p>
             <div class="d-flex justify-content-center">
               <a
