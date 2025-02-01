@@ -1,36 +1,7 @@
 @if (account() !== null) {
-  @if (!account()?.authorities?.includes('ROLE_ADMIN')) {
-    <div class="row">
-      <div class="col-sm-5 col-md-5 col-lg-5 col-xl-5" style="padding-left: 2%">
-        🥳 Please consider supporting us to help maintain this project via
-        <a href="https://github.com/sponsors/camenduru">GitHub Sponsors</a>, <a href="https://www.patreon.com/camenduru">Patreon</a>, or
-        purchase a <a href="https://buymeacoffee.com/camenduru/extras">Tost Wallet Code</a>. <br />
-        ❤ Sponsors helped cover 87.45% of the server bills this month! <br />
-        <div class="progress" style="width: 100%; --bs-progress-height: 1.25rem; --bs-progress-font-size: 0.9rem">
-          <div
-            class="progress-bar bg-info"
-            role="progressbar"
-            style="width: 87.45%"
-            aria-valuenow="87.45"
-            aria-valuemin="0"
-            aria-valuemax="100"
-          >
-            <span style="padding-left: 10%">$1662.8/$1901.4</span>
-          </div>
-        </div>
-      </div>
-      <div class="col-sm-7 col-md-7 col-lg-7 col-xl-7">
-        🥪 TOST is under heavy development, so things might break at any time. 😋 <br />
-        📂 Because of our limited budget, we don't have a file upload service. 😐 Please use alternatives like
-        <a href="https://uguu.se" target="_blank">uguu</a> | <a href="https://pomf.lain.la" target="_blank">pomf</a> |
-        <a href="https://litterbox.catbox.moe" target="_blank">litterbox</a> |
-        <a href="https://www.youtube.com/watch?v=FDPIjW7vWpI" target="_blank">tutorial</a> <br />
-        🐣 Please follow tost for new updates. <a href="https://x.com/tost_ai">x.com/tost_ai</a>
-      </div>
-    </div>
-  }
+  @if (!account()?.authorities?.includes('ROLE_ADMIN')) {}
 }
-<div class="card jh-card">
+<div class="card jh-card" style="margin-top: 0px">
   <div class="row">
     @if (account() !== null) {
       @if (account()?.authorities?.includes('ROLE_ADMIN')) {
@@ -427,8 +398,7 @@
             <p class="lead mb-4">
               <span class="text-warning">Tost</span> is a non-profit,
               <a class="text-info" href="https://github.com/camenduru/web">open-source</a> service that serves inference for the latest AI
-              papers. <span class="text-warning">Tost</span> does not store any inference data; all data expires within 12 hours.
-              <span class="text-warning">Tost</span>'s budget is supported by companies and individual sponsors.
+              papers.
             </p>
             <div class="d-flex justify-content-center">
               <a

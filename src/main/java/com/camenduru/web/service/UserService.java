@@ -150,37 +150,37 @@ public class UserService {
             });
     }
 
-    String[] allowedDomains = {
-        "@camenduru.",
-        "@tost.",
-        "@gmail.",
-        "@hotmail.",
-        "@live.",
-        "@outlook.",
-        "@msn.",
-        "@ymail.",
-        "@yahoo.",
-        "@icloud.",
-        "@me.",
-        "@qq.",
-        "@yandex.",
-        "@mail.",
-    };
+    // String[] allowedDomains = {
+    //     "@camenduru.",
+    //     "@tost.",
+    //     "@gmail.",
+    //     "@hotmail.",
+    //     "@live.",
+    //     "@outlook.",
+    //     "@msn.",
+    //     "@ymail.",
+    //     "@yahoo.",
+    //     "@icloud.",
+    //     "@me.",
+    //     "@qq.",
+    //     "@yandex.",
+    //     "@mail.",
+    // };
 
     public User registerUser(AdminUserDTO userDTO, String password) {
-        boolean isAllowed = false;
-        for (String allowedDomain : allowedDomains) {
-            if (userDTO.getEmail().contains(allowedDomain)) {
-                isAllowed = true;
-                break;
-            }
-        }
-        if (userDTO.getEmail().contains("+")) {
-            isAllowed = false;
-        }
-        if (!isAllowed) {
-            throw new EmailServiceNotAllowedException();
-        }
+        // boolean isAllowed = true;
+        // for (String allowedDomain : allowedDomains) {
+        //     if (userDTO.getEmail().contains(allowedDomain)) {
+        //         isAllowed = true;
+        //         break;
+        //     }
+        // }
+        // if (userDTO.getEmail().contains("+")) {
+        //     isAllowed = false;
+        // }
+        // if (!isAllowed) {
+        //     throw new EmailServiceNotAllowedException();
+        // }
         userRepository
             .findOneByLogin(userDTO.getLogin().toLowerCase())
             .ifPresent(existingUser -> {
