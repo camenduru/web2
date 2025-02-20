@@ -50,6 +50,7 @@ import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.S3Configuration;
 import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import tech.jhipster.web.util.HeaderUtil;
@@ -125,11 +126,14 @@ public class JobResource {
     }
 
     @PostConstruct
-    public void initializeS3Client() {
+    public void initializeS3Client() throws URISyntaxException {
+        URI.create(camenduruWebS3Endpoint);
+        S3Configuration config = S3Configuration.builder().pathStyleAccessEnabled(true).build();
         this.s3Client = S3Client.builder()
             .region(Region.of(camenduruWebS3Region))
             .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create(camenduruWebS3Access, camenduruWebS3Secret)))
             .endpointOverride(URI.create(camenduruWebS3Endpoint))
+            .serviceConfiguration(config)
             .build();
     }
 
