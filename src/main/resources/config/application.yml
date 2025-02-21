@@ -187,7 +187,7 @@ jhipster:
     license: unlicensed
     license-url:
   security:
-    content-security-policy: "default-src 'self'; media-src 'self' https://cdn.discordapp.com https://ewr1.vultrobjects.com https://files.catbox.moe; frame-src 'self' data:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://storage.googleapis.com; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com data:; connect-src 'self' https://cors-anywhere.herokuapp.com https://uguu.se https://catbox.moe https://litterbox.catbox.moe;"
+    content-security-policy: "default-src 'self'; media-src 'self' https://cdn.discordapp.com http://s3.tost.ai https://files.catbox.moe; frame-src 'self' data:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://storage.googleapis.com; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com data:; connect-src 'self' https://cors-anywhere.herokuapp.com https://uguu.se https://catbox.moe https://litterbox.catbox.moe;"
 # ===================================================================
 # Application specific properties
 # Add your own application properties here, see the ApplicationProperties class
