@@ -48,6 +48,23 @@ https://github.com/guillotinaweb/ngx-schema-form <br />
 
 https://github.com/OvidijusParsiunas/deep-chat <br />
 
+#### 🖼 Object Store
+
+https://github.com/minio/minio <br />
+https://github.com/camenduru/upload <br />
+
+#### 📌 Placeholder Generator
+
+https://github.com/Rydgel/Fake-images-please <br />
+
+#### 💬 Chat Client 
+
+https://github.com/huggingface/chat-ui <br />
+
+#### 🥽 Dev Environment
+
+https://github.com/coder/code-server <br />
+
 ### 🖼 Output
 
 ![Screenshot 2024-05-01 062201](https://github.com/camenduru/web/assets/54370274/8785ceea-4871-405d-a10e-ef6855e1b907)
